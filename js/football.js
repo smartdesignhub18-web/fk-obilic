@@ -399,156 +399,146 @@ function renderFootballData(data) {
 function renderStandings(teams) {
 
     const container =
-        document.querySelector(
-            "#standings-data"
-        );
+        document.querySelector("#standings-data");
 
 
-    /*
-        Ako se tabela ne nalazi na trenutnoj
-        stranici, ništa ne radimo.
-    */
-
+    // Ako na stranici nema tabele
     if (!container) {
-
         return;
-
     }
 
 
-    /*
-        Ako nema podataka.
-    */
-
+    // Ako API nije vratio tabelu
     if (
         !Array.isArray(teams) ||
         teams.length === 0
     ) {
 
         container.innerHTML = `
-
             <div class="football-error">
-
                 <strong>
                     Табела тренутно није доступна.
                 </strong>
-
             </div>
-
         `;
 
         return;
-
     }
 
 
-    container.innerHTML =
-        teams.map((team, index) => {
+    container.innerHTML = teams.map((team, index) => {
 
-            const obilic =
-                isObilic(team.name);
+        /*
+            Obilić prepoznajemo prvenstveno preko ID-a.
+            To je sigurnije od naziva kluba.
+        */
 
-
-            const position =
-                team.position ??
-                index + 1;
-
-
-            return `
-
-                <div
-                    class="
-                        standings-row
-                        ${obilic ? "obilic-row" : ""}
-                    "
-                >
-
-                    <div class="col-position">
-
-                        ${position}
-
-                    </div>
+        const obilic =
+            Number(team.clubId) === FOOTBALL_CONFIG.clubId ||
+            team.isObilic === true ||
+            isObilic(team.team);
 
 
-                    <div class="col-team">
+        const position =
+            team.position ?? index + 1;
+
+
+        /*
+            Gol-razliku prikazujemo sa + kada je pozitivna.
+        */
+
+        let goalDifference = team.goalDifference ?? 0;
+
+        if (goalDifference > 0) {
+            goalDifference = `+${goalDifference}`;
+        }
+
+
+        return `
+
+            <div
+                class="standings-row ${obilic ? "obilic-row" : ""}"
+            >
+
+                <div class="col-position">
+                    ${position}
+                </div>
+
+
+                <div class="col-team">
+
+                    ${
+                        obilic
+                        ? `
+                            <img
+                                src="images/grb.png"
+                                class="table-club-logo"
+                                alt="ФК Обилић"
+                            >
+                        `
+                        : ""
+                    }
+
+
+                    <div class="table-team-info">
+
+                        <strong>
+                            ${team.team ?? "-"}
+                        </strong>
 
                         ${
-                            obilic
+                            team.city
                             ? `
-
-                                <img
-                                    src="images/grb.png"
-                                    class="table-club-logo"
-                                    alt="ФК Обилић"
-                                >
-
+                                <span class="table-team-city">
+                                    ${team.city}
+                                </span>
                             `
                             : ""
                         }
-
-
-                        <span>
-
-                            ${team.name ?? "-"}
-
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        ${team.played ?? "-"}
-
-                    </div>
-
-
-                    <div>
-
-                        ${team.wins ?? "-"}
-
-                    </div>
-
-
-                    <div>
-
-                        ${team.draws ?? "-"}
-
-                    </div>
-
-
-                    <div>
-
-                        ${team.losses ?? "-"}
-
-                    </div>
-
-
-                    <div class="desktop-stat">
-
-                        ${team.goalDifference ?? "-"}
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-
-                            ${team.points ?? "-"}
-
-                        </strong>
 
                     </div>
 
                 </div>
 
-            `;
 
-        }).join("");
+                <div>
+                    ${team.played ?? "-"}
+                </div>
+
+
+                <div>
+                    ${team.won ?? "-"}
+                </div>
+
+
+                <div>
+                    ${team.drawn ?? "-"}
+                </div>
+
+
+                <div>
+                    ${team.lost ?? "-"}
+                </div>
+
+
+                <div class="desktop-stat">
+                    ${goalDifference}
+                </div>
+
+
+                <div class="col-points">
+                    <strong>
+                        ${team.points ?? "-"}
+                    </strong>
+                </div>
+
+            </div>
+
+        `;
+
+    }).join("");
 
 }
-
 
 
 /* =========================================================
