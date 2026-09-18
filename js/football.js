@@ -37,15 +37,113 @@ const FOOTBALL_CONFIG = {
 
 
 /*
-    Normalizuje naziv kluba kako bismo mogli
-    pouzdano da prepoznamo Obilić.
+    Pretvaranje latinice u ćirilicu.
+    Koristi se samo za prikaz na sajtu.
+*/
+
+function toCyrillic(text = "") {
+
+    const map = {
+
+        "Dž": "Џ",
+        "Lj": "Љ",
+        "Nj": "Њ",
+
+        "dž": "џ",
+        "lj": "љ",
+        "nj": "њ",
+
+        "A": "А",
+        "B": "Б",
+        "C": "Ц",
+        "Č": "Ч",
+        "Ć": "Ћ",
+        "D": "Д",
+        "Đ": "Ђ",
+        "E": "Е",
+        "F": "Ф",
+        "G": "Г",
+        "H": "Х",
+        "I": "И",
+        "J": "Ј",
+        "K": "К",
+        "L": "Л",
+        "M": "М",
+        "N": "Н",
+        "O": "О",
+        "P": "П",
+        "R": "Р",
+        "S": "С",
+        "Š": "Ш",
+        "T": "Т",
+        "U": "У",
+        "V": "В",
+        "Z": "З",
+        "Ž": "Ж",
+
+        "a": "а",
+        "b": "б",
+        "c": "ц",
+        "č": "ч",
+        "ć": "ћ",
+        "d": "д",
+        "đ": "ђ",
+        "e": "е",
+        "f": "ф",
+        "g": "г",
+        "h": "х",
+        "i": "и",
+        "j": "ј",
+        "k": "к",
+        "l": "л",
+        "m": "м",
+        "n": "н",
+        "o": "о",
+        "p": "п",
+        "r": "р",
+        "s": "с",
+        "š": "ш",
+        "t": "т",
+        "u": "у",
+        "v": "в",
+        "z": "з",
+        "ž": "ж"
+
+    };
+
+
+    return String(text)
+
+        .replace(
+            /Dž|Lj|Nj|dž|lj|nj/g,
+            match => map[match]
+        )
+
+        .split("")
+
+        .map(
+            character =>
+                map[character] ?? character
+        )
+
+        .join("");
+
+}
+
+
+
+/*
+    Normalizuje naziv kluba.
 */
 
 function normalizeClubName(name = "") {
 
-    return name
+    return String(name)
+
         .toLowerCase()
+
         .trim()
+
         .replaceAll("ć", "c")
         .replaceAll("č", "c")
         .replaceAll("š", "s")
@@ -55,18 +153,105 @@ function normalizeClubName(name = "") {
 }
 
 
+
 /*
     Proverava da li je klub FK Obilić.
 */
 
 function isObilic(name = "") {
 
-    const normalized = normalizeClubName(name);
+    const normalized =
+        normalizeClubName(name);
 
     return (
+
         normalized.includes("obilic") ||
-        name.toLowerCase().includes("обилић")
+
+        String(name)
+            .toLowerCase()
+            .includes("обилић")
+
     );
+
+}
+
+
+
+/*
+    Formatiranje datuma.
+*/
+
+function formatMatchDate(dateString) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const date =
+        new Date(dateString);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "sr-Cyrl-RS",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            timeZone: "Europe/Belgrade"
+        }
+    ).format(date);
+
+}
+
+
+
+/*
+    Formatiranje vremena.
+*/
+
+function formatMatchTime(dateString) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const date =
+        new Date(dateString);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "sr-Cyrl-RS",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            timeZone: "Europe/Belgrade"
+        }
+    ).format(date);
 
 }
 
@@ -75,15 +260,6 @@ function isObilic(name = "") {
 /* =========================================================
    CACHE
 ========================================================= */
-
-
-/*
-    Čuvamo poslednje uspešno preuzete podatke
-    u browseru.
-
-    Ako API privremeno ne radi, možemo prikazati
-    poslednje poznate podatke.
-*/
 
 function saveFootballCache(data) {
 
@@ -97,9 +273,13 @@ function saveFootballCache(data) {
 
         };
 
+
         localStorage.setItem(
+
             "fkObilicFootballData",
+
             JSON.stringify(cache)
+
         );
 
     }
@@ -107,8 +287,11 @@ function saveFootballCache(data) {
     catch (error) {
 
         console.warn(
+
             "Није могуће сачувати фудбалске податке.",
+
             error
+
         );
 
     }
@@ -116,10 +299,6 @@ function saveFootballCache(data) {
 }
 
 
-
-/*
-    Učitavanje podataka iz cache-a.
-*/
 
 function getFootballCache() {
 
@@ -159,9 +338,13 @@ function getFootballCache() {
     catch (error) {
 
         console.warn(
+
             "Грешка приликом читања сачуваних података.",
+
             error
+
         );
+
 
         return null;
 
@@ -170,10 +353,6 @@ function getFootballCache() {
 }
 
 
-
-/*
-    Proveravamo da li je cache još svež.
-*/
 
 function isCacheValid(cache) {
 
@@ -202,14 +381,14 @@ function isCacheValid(cache) {
 
 async function loadFootballData() {
 
-    /*
-        Prvo proveravamo da li već imamo
-        sveže podatke u browseru.
-    */
-
     const cached =
         getFootballCache();
 
+
+    /*
+        Ako imamo sveže podatke,
+        odmah ih prikazujemo.
+    */
 
     if (isCacheValid(cached)) {
 
@@ -221,11 +400,6 @@ async function loadFootballData() {
 
     }
 
-
-    /*
-        Ako nemamo sveže podatke,
-        tražimo ih od našeg API-ja.
-    */
 
     try {
 
@@ -252,30 +426,20 @@ async function loadFootballData() {
             await response.json();
 
 
-        /*
-            Ako API vrati grešku.
-        */
-
         if (data.success === false) {
 
             throw new Error(
+
                 data.error ||
                 "Подаци нису доступни."
+
             );
 
         }
 
 
-        /*
-            Čuvamo uspešno preuzete podatke.
-        */
-
         saveFootballCache(data);
 
-
-        /*
-            Prikazujemo ih na stranici.
-        */
 
         renderFootballData(data);
 
@@ -284,18 +448,23 @@ async function loadFootballData() {
     catch (error) {
 
         console.error(
+
             "Грешка при учитавању фудбалских података:",
+
             error
+
         );
 
 
         /*
             Ako API trenutno ne radi,
-            pokušavamo da prikažemo
-            poslednje sačuvane podatke.
+            koristimo poslednje poznate podatke.
         */
 
-        if (cached && cached.data) {
+        if (
+            cached &&
+            cached.data
+        ) {
 
             renderFootballData(
                 cached.data
@@ -307,11 +476,6 @@ async function loadFootballData() {
 
         }
 
-
-        /*
-            Ako nemamo ni cache,
-            prikazujemo poruku o grešci.
-        */
 
         showFootballError();
 
@@ -337,7 +501,9 @@ function renderFootballData(data) {
     /* TABELA */
 
     if (
-        Array.isArray(data.standings)
+        Array.isArray(
+            data.standings
+        )
     ) {
 
         renderStandings(
@@ -369,10 +535,12 @@ function renderFootballData(data) {
     }
 
 
-    /* SVE UTAKMICE */
+    /* UTAKMICE */
 
     if (
-        Array.isArray(data.matches)
+        Array.isArray(
+            data.matches
+        )
     ) {
 
         renderMatches(
@@ -399,146 +567,218 @@ function renderFootballData(data) {
 function renderStandings(teams) {
 
     const container =
-        document.querySelector("#standings-data");
+        document.querySelector(
+            "#standings-data"
+        );
 
 
-    // Ako na stranici nema tabele
     if (!container) {
+
         return;
+
     }
 
 
-    // Ako API nije vratio tabelu
     if (
         !Array.isArray(teams) ||
         teams.length === 0
     ) {
 
         container.innerHTML = `
+
             <div class="football-error">
+
                 <strong>
                     Табела тренутно није доступна.
                 </strong>
+
             </div>
+
         `;
 
         return;
+
     }
 
 
-    container.innerHTML = teams.map((team, index) => {
-
-        /*
-            Obilić prepoznajemo prvenstveno preko ID-a.
-            To je sigurnije od naziva kluba.
-        */
-
-        const obilic =
-            Number(team.clubId) === FOOTBALL_CONFIG.clubId ||
-            team.isObilic === true ||
-            isObilic(team.team);
+    container.innerHTML =
+        teams.map(
+            (team, index) => {
 
 
-        const position =
-            team.position ?? index + 1;
+                /*
+                    Obilić prvenstveno prepoznajemo
+                    preko Srbijasport ID-a.
+                */
+
+                const obilic =
+
+                    Number(team.clubId) ===
+                        FOOTBALL_CONFIG.clubId ||
+
+                    team.isObilic === true ||
+
+                    isObilic(team.team);
 
 
-        /*
-            Gol-razliku prikazujemo sa + kada je pozitivna.
-        */
-
-        let goalDifference = team.goalDifference ?? 0;
-
-        if (goalDifference > 0) {
-            goalDifference = `+${goalDifference}`;
-        }
+                const position =
+                    team.position ??
+                    index + 1;
 
 
-        return `
+                /*
+                    Gol razlika.
+                */
 
-            <div
-                class="standings-row ${obilic ? "obilic-row" : ""}"
-            >
-
-                <div class="col-position">
-                    ${position}
-                </div>
+                let goalDifference =
+                    team.goalDifference ?? 0;
 
 
-                <div class="col-team">
+                if (
+                    Number(goalDifference) > 0
+                ) {
 
-                    ${
-                        obilic
-                        ? `
-                            <img
-                                src="images/grb.png"
-                                class="table-club-logo"
-                                alt="ФК Обилић"
-                            >
-                        `
-                        : ""
-                    }
+                    goalDifference =
+                        `+${goalDifference}`;
+
+                }
 
 
-                    <div class="table-team-info">
+                /*
+                    Naziv i mesto prebacujemo
+                    na ćirilicu.
+                */
 
-                        <strong>
-                            ${team.team ?? "-"}
-                        </strong>
+                const teamName =
+                    toCyrillic(
+                        team.team ?? "-"
+                    );
 
-                        ${
-                            team.city
-                            ? `
-                                <span class="table-team-city">
-                                    ${team.city}
-                                </span>
-                            `
-                            : ""
-                        }
+
+                const city =
+                    toCyrillic(
+                        team.city ?? ""
+                    );
+
+
+                return `
+
+                    <div
+                        class="
+                            standings-row
+                            ${obilic ? "obilic-row" : ""}
+                        "
+                    >
+
+                        <div class="col-position">
+
+                            ${position}
+
+                        </div>
+
+
+                        <div class="col-team">
+
+                            ${
+                                obilic
+                                ? `
+
+                                    <img
+                                        src="images/grb.png"
+                                        class="table-club-logo"
+                                        alt="ФК Обилић"
+                                    >
+
+                                `
+                                : ""
+                            }
+
+
+                            <div class="table-team-info">
+
+                                <strong>
+
+                                    ${teamName}
+
+                                </strong>
+
+
+                                ${
+                                    city
+                                    ? `
+
+                                        <span
+                                            class="table-team-city"
+                                        >
+
+                                            ${city}
+
+                                        </span>
+
+                                    `
+                                    : ""
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            ${team.played ?? "-"}
+
+                        </div>
+
+
+                        <div>
+
+                            ${team.won ?? "-"}
+
+                        </div>
+
+
+                        <div>
+
+                            ${team.drawn ?? "-"}
+
+                        </div>
+
+
+                        <div>
+
+                            ${team.lost ?? "-"}
+
+                        </div>
+
+
+                        <div class="desktop-stat">
+
+                            ${goalDifference}
+
+                        </div>
+
+
+                        <div class="col-points">
+
+                            <strong>
+
+                                ${team.points ?? "-"}
+
+                            </strong>
+
+                        </div>
 
                     </div>
 
-                </div>
+                `;
 
+            }
 
-                <div>
-                    ${team.played ?? "-"}
-                </div>
-
-
-                <div>
-                    ${team.won ?? "-"}
-                </div>
-
-
-                <div>
-                    ${team.drawn ?? "-"}
-                </div>
-
-
-                <div>
-                    ${team.lost ?? "-"}
-                </div>
-
-
-                <div class="desktop-stat">
-                    ${goalDifference}
-                </div>
-
-
-                <div class="col-points">
-                    <strong>
-                        ${team.points ?? "-"}
-                    </strong>
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
+        ).join("");
 
 }
+
 
 
 /* =========================================================
@@ -560,6 +800,24 @@ function renderLastMatch(match) {
     }
 
 
+    const date =
+        formatMatchDate(
+            match.startDate
+        );
+
+
+    const home =
+        toCyrillic(
+            match.home ?? "-"
+        );
+
+
+    const away =
+        toCyrillic(
+            match.away ?? "-"
+        );
+
+
     container.innerHTML = `
 
         <span class="match-label">
@@ -571,7 +829,7 @@ function renderLastMatch(match) {
 
         <div class="match-date">
 
-            ${match.date ?? ""}
+            ${date}
 
         </div>
 
@@ -586,7 +844,7 @@ function renderLastMatch(match) {
                 "
             >
 
-                ${match.home ?? "-"}
+                ${home}
 
             </div>
 
@@ -623,7 +881,7 @@ function renderLastMatch(match) {
                 "
             >
 
-                ${match.away ?? "-"}
+                ${away}
 
             </div>
 
@@ -662,6 +920,36 @@ function renderNextMatch(match) {
     }
 
 
+    const date =
+        formatMatchDate(
+            match.startDate
+        );
+
+
+    const time =
+        formatMatchTime(
+            match.startDate
+        );
+
+
+    const home =
+        toCyrillic(
+            match.home ?? "-"
+        );
+
+
+    const away =
+        toCyrillic(
+            match.away ?? "-"
+        );
+
+
+    const location =
+        toCyrillic(
+            match.location ?? ""
+        );
+
+
     container.innerHTML = `
 
         <span class="match-label">
@@ -673,11 +961,11 @@ function renderNextMatch(match) {
 
         <div class="match-date">
 
-            ${match.date ?? ""}
+            ${date}
 
             ${
-                match.time
-                ? ` • ${match.time}`
+                time
+                ? ` • ${time}`
                 : ""
             }
 
@@ -694,7 +982,7 @@ function renderNextMatch(match) {
                 "
             >
 
-                ${match.home ?? "-"}
+                ${home}
 
             </div>
 
@@ -713,7 +1001,7 @@ function renderNextMatch(match) {
                 "
             >
 
-                ${match.away ?? "-"}
+                ${away}
 
             </div>
 
@@ -722,12 +1010,12 @@ function renderNextMatch(match) {
 
 
         ${
-            match.location
+            location
             ? `
 
                 <div class="match-location">
 
-                    ${match.location}
+                    ${location}
 
                 </div>
 
@@ -781,128 +1069,156 @@ function renderMatches(matches) {
 
 
     container.innerHTML =
-        matches.map((match) => {
+        matches.map(
+            match => {
 
 
-            /*
-                Ako postoje oba rezultata,
-                utakmica je završena.
-            */
+                const finished =
 
-            const finished =
-                match.homeScore !== null &&
-                match.homeScore !== undefined &&
-                match.awayScore !== null &&
-                match.awayScore !== undefined;
+                    match.homeScore !== null &&
+                    match.homeScore !== undefined &&
+
+                    match.awayScore !== null &&
+                    match.awayScore !== undefined;
 
 
-            return `
-
-                <article class="fixture-row">
-
-
-                    <div class="fixture-round">
-
-                        ${match.round ?? ""}
-
-                    </div>
+                const date =
+                    formatMatchDate(
+                        match.startDate
+                    );
 
 
-                    <div class="fixture-date">
-
-                        ${match.date ?? ""}
-
-                        ${
-                            match.time
-                            ? `
-
-                                <span>
-
-                                    ${match.time}
-
-                                </span>
-
-                            `
-                            : ""
-                        }
-
-                    </div>
+                const time =
+                    formatMatchTime(
+                        match.startDate
+                    );
 
 
-                    <div
-                        class="
-                            fixture-team
-                            ${isObilic(match.home) ? "our-team" : ""}
-                        "
-                    >
-
-                        ${match.home ?? "-"}
-
-                    </div>
+                const home =
+                    toCyrillic(
+                        match.home ?? "-"
+                    );
 
 
-                    <div class="fixture-result">
+                const away =
+                    toCyrillic(
+                        match.away ?? "-"
+                    );
 
 
-                        ${
-                            finished
+                return `
 
-                            ? `
-
-                                <strong>
-
-                                    ${match.homeScore}
-
-                                </strong>
+                    <article class="fixture-row">
 
 
-                                <span>
+                        <div class="fixture-round">
 
-                                    :
+                            ${
+                                match.round
+                                    ? toCyrillic(match.round)
+                                    : ""
+                            }
 
-                                </span>
-
-
-                                <strong>
-
-                                    ${match.awayScore}
-
-                                </strong>
-
-                            `
-
-                            : `
-
-                                <span class="fixture-vs">
-
-                                    VS
-
-                                </span>
-
-                            `
-                        }
+                        </div>
 
 
-                    </div>
+                        <div class="fixture-date">
+
+                            ${date}
+
+                            ${
+                                time
+                                ? `
+
+                                    <span>
+
+                                        ${time}
+
+                                    </span>
+
+                                `
+                                : ""
+                            }
+
+                        </div>
 
 
-                    <div
-                        class="
-                            fixture-team
-                            ${isObilic(match.away) ? "our-team" : ""}
-                        "
-                    >
+                        <div
+                            class="
+                                fixture-team
+                                ${isObilic(match.home) ? "our-team" : ""}
+                            "
+                        >
 
-                        ${match.away ?? "-"}
+                            ${home}
 
-                    </div>
+                        </div>
 
 
-                </article>
+                        <div class="fixture-result">
 
-            `;
 
-        }).join("");
+                            ${
+                                finished
+
+                                ? `
+
+                                    <strong>
+
+                                        ${match.homeScore}
+
+                                    </strong>
+
+
+                                    <span>
+
+                                        :
+
+                                    </span>
+
+
+                                    <strong>
+
+                                        ${match.awayScore}
+
+                                    </strong>
+
+                                `
+
+                                : `
+
+                                    <span class="fixture-vs">
+
+                                        VS
+
+                                    </span>
+
+                                `
+                            }
+
+
+                        </div>
+
+
+                        <div
+                            class="
+                                fixture-team
+                                ${isObilic(match.away) ? "our-team" : ""}
+                            "
+                        >
+
+                            ${away}
+
+                        </div>
+
+
+                    </article>
+
+                `;
+
+            }
+
+        ).join("");
 
 }
 
@@ -932,8 +1248,37 @@ function updateFootballTimestamp(
     }
 
 
+    const date =
+        new Date(updatedAt);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const formatted =
+        new Intl.DateTimeFormat(
+            "sr-Cyrl-RS",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                timeZone: "Europe/Belgrade"
+            }
+        ).format(date);
+
+
     element.textContent =
-        `Последње ажурирање: ${updatedAt}`;
+        `Последње ажурирање: ${formatted}`;
 
 }
 
