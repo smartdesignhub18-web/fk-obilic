@@ -1,6 +1,7 @@
 const LEAGUE_URL =
     "https://srbijasport.net/league/8794-potiska-medjuopstinska-liga";
-
+const CLUB_URL =
+    "https://srbijasport.net/club/787-obilic";
 const CLUB_ID = 787;
 const CLUB_NAME = "Obilić";
 
@@ -229,6 +230,52 @@ function findPreviousAndNextMatch(matches) {
 }
 
 exports.handler = async function () {
+        if (process.env.DIAG_CLUB === "1") {
+
+        try {
+
+            const response = await fetch(CLUB_URL, {
+                headers: {
+                    "User-Agent":
+                        "Mozilla/5.0 (compatible; FKObilicWebsite/1.0)",
+                    "Accept":
+                        "text/html,application/xhtml+xml",
+                    "Accept-Language":
+                        "sr-RS,sr;q=0.9,en;q=0.8"
+                }
+            });
+
+            const html = await response.text();
+
+            const index = html.indexOf("Bačka");
+
+            const sample =
+                index !== -1
+                    ? html.substring(
+                        Math.max(0, index - 4000),
+                        index + 4000
+                    )
+                    : html.substring(0, 8000);
+
+            return {
+                statusCode: 200,
+                headers: {
+                    "Content-Type":
+                        "text/plain; charset=utf-8"
+                },
+                body: sample
+            };
+
+        } catch (error) {
+
+            return {
+                statusCode: 500,
+                body: error.message
+            };
+
+        }
+
+    }
     try {
         const response = await fetch(LEAGUE_URL, {
             headers: {
