@@ -14,41 +14,102 @@ exports.handler = async function () {
             }
         });
 
+        if (!response.ok) {
+            throw new Error(
+                `Srbijasport HTTP greška: ${response.status}`
+            );
+        }
+
         const html = await response.text();
 
-        const containsObilic =
-            html.toLowerCase().includes("obilić") ||
-            html.toLowerCase().includes("obilic") ||
-            html.toLowerCase().includes("обилић");
+        // Tražimo sva pojavljivanja Obilića u HTML-u
+        const lowerHtml = html.toLowerCase();
+
+        const searchTerms = [
+            "obilić",
+            "obilic",
+            "обилић"
+        ];
+
+        let positions = [];
+
+        searchTerms.forEach(term => {
+            let start = 0;
+
+            while (true) {
+                const index = lowerHtml.indexOf(term, start);
+
+                if (index === -1) break;
+
+                positions.push(index);
+
+                start = index + term.length;
+
+                // Dovoljno nam je nekoliko primera
+                if (positions.length >= 10) break;
+            }
+        });
+
+        positions = [...new Set(positions)]
+            .sort((a, b) => a - b)
+            .slice(0, 10);
+
+        const snippets = positions.map((position, i) => {
+            const start = Math.max(0, position - 1500);
+            const end = Math.min(
+                html.length,
+                position + 2500
+            );
+
+            return {
+                number: i + 1,
+                position,
+                html: html
+                    .slice(start, end)
+                    .replace(/\r/g, "")
+            };
+        });
 
         return {
             statusCode: 200,
             headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                "Cache-Control": "public, max-age=0, s-maxage=1800"
+                "Content-Type":
+                    "application/json; charset=utf-8",
+                "Cache-Control":
+                    "no-store"
             },
-            body: JSON.stringify({
-                success: true,
-                source: "srbijasport.net",
-                sourceStatus: response.status,
-                htmlReceived: html.length > 0,
-                htmlLength: html.length,
-                containsObilic: containsObilic,
-                message: "Netlify функција ради."
-            })
+
+            body: JSON.stringify(
+                {
+                    success: true,
+                    source: "srbijasport.net",
+                    sourceStatus: response.status,
+                    htmlLength: html.length,
+                    obilicOccurrences: positions.length,
+                    snippets
+                },
+                null,
+                2
+            )
         };
 
     } catch (error) {
+
         return {
             statusCode: 500,
             headers: {
-                "Content-Type": "application/json; charset=utf-8"
+                "Content-Type":
+                    "application/json; charset=utf-8"
             },
-            body: JSON.stringify({
-                success: false,
-                source: "srbijasport.net",
-                error: error.message
-            })
+
+            body: JSON.stringify(
+                {
+                    success: false,
+                    error: error.message
+                },
+                null,
+                2
+            )
         };
     }
 };
