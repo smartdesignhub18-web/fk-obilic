@@ -24,10 +24,18 @@ exports.handler = async function () {
 
         const html = await response.text();
 
+        /*
+         * Tražimo delove HTML-a koji nam mogu otkriti
+         * kako Srbijasport učitava tab "Planirano".
+         */
+
         const searchTerms = [
-            "Bačka",
-            "Jadran",
-            "Obilić"
+            "planned",
+            "played",
+            "club_games",
+            "Planirano",
+            "Odigramo",
+            "Odigrao"
         ];
 
         const samples = [];
@@ -37,7 +45,7 @@ exports.handler = async function () {
             let startIndex = 0;
             let found = 0;
 
-            while (found < 5) {
+            while (found < 10) {
 
                 const index = html.indexOf(term, startIndex);
 
@@ -46,10 +54,12 @@ exports.handler = async function () {
                 }
 
                 samples.push(
-                    `\n\n========== ${term} / POJAVA ${found + 1} ==========\n\n` +
+                    "\n\n========================================\n" +
+                    `POJAM: ${term} / POJAVA ${found + 1}\n` +
+                    "========================================\n\n" +
                     html.substring(
-                        Math.max(0, index - 2500),
-                        Math.min(html.length, index + 4000)
+                        Math.max(0, index - 3500),
+                        Math.min(html.length, index + 5000)
                     )
                 );
 
@@ -68,7 +78,7 @@ exports.handler = async function () {
 
             body:
                 `HTML DUŽINA: ${html.length}\n` +
-                `PRONAĐENIH ISEČAKA: ${samples.length}\n` +
+                `PRONAĐENIH ISEČAKA: ${samples.length}\n\n` +
                 samples.join("\n")
         };
 
@@ -85,5 +95,7 @@ exports.handler = async function () {
             body:
                 `GREŠKA: ${error.message}`
         };
+
     }
+
 };
