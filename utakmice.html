@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="sr-Cyrl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Утакмице | ФК Обилић Нови Кнежевац</title>
+
+    <meta
+        name="description"
+        content="Распоред утакмица и резултати ФК Обилић Нови Кнежевац у Потиској међуопштинској лиги."
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header inner-header">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="club-brand">
+
+            <img
+                src="images/grb.png"
+                alt="ФК Обилић"
+                class="nav-logo"
+            >
+
+            <div>
+                <strong>ФК ОБИЛИЋ</strong>
+                <span>НОВИ КНЕЖЕВАЦ</span>
+            </div>
+
+        </a>
+
+
+        <button class="menu-toggle" aria-label="Отвори мени">
+            ☰
+        </button>
+
+
+        <nav class="navigation">
+
+            <a href="index.html">ПОЧЕТНА</a>
+            <a href="index.html#vesti">ВЕСТИ</a>
+            <a href="index.html#ekipe">ЕКИПЕ</a>
+
+            <a href="utakmice.html" class="active">
+                УТАКМИЦЕ
+            </a>
+
+            <a href="tabela.html">
+                ТАБЕЛА
+            </a>
+
+            <a href="index.html#klub">КЛУБ</a>
+            <a href="index.html#galerija">ГАЛЕРИЈА</a>
+            <a href="index.html#partneri">ПАРТНЕРИ</a>
+            <a href="index.html#kontakt">КОНТАКТ</a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================
+     PAGE HERO
+========================= -->
+
+<section class="page-hero">
+
+    <div class="page-hero-overlay"></div>
+
+    <img
+        src="images/grb.png"
+        class="page-hero-crest"
+        alt=""
+    >
+
+    <div class="container page-hero-content">
+
+        <span>
+            СЕЗОНА 2026/27
+        </span>
+
+        <h1>
+            УТАКМИЦЕ
+        </h1>
+
+        <p>
+            Распоред и резултати првог тима
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     UTAKMICE
+========================= -->
+
+<section class="matches-page-section">
+
+    <div class="container">
+
+
+        <!-- NASLOV -->
+
+        <div class="standings-top">
+
+            <div>
+
+                <span class="section-mini-title">
+                    ПРВИ ТИМ
+                </span>
+
+                <h2>
+                    ПОТИСКА МЕЂУОПШТИНСКА ЛИГА
+                </h2>
+
+            </div>
+
+
+            <div class="data-status">
+
+                <span class="status-dot"></span>
+
+                АЖУРИРАНИ ПОДАЦИ
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             SLEDEĆA UTAKMICA
+        ========================= -->
+
+        <div class="matches-section-heading">
+
+            <span>
+                СЛЕДЕЋИ МЕЧ
+            </span>
+
+            <h2>
+                СЛЕДЕЋА УТАКМИЦА
+            </h2>
+
+        </div>
+
+
+        <div
+            id="next-match"
+            class="next-match-card"
+        >
+
+            <div class="standings-loading">
+
+                <div class="loader"></div>
+
+                <span>
+                    Учитавање следеће утакмице...
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             POSLEDNJA UTAKMICA
+        ========================= -->
+
+        <div class="matches-section-heading">
+
+            <span>
+                ПОСЛЕДЊИ МЕЧ
+            </span>
+
+            <h2>
+                ПОСЛЕДЊА УТАКМИЦА
+            </h2>
+
+        </div>
+
+
+        <div
+            id="last-match"
+            class="last-match-card"
+        >
+
+            <div class="standings-loading">
+
+                <div class="loader"></div>
+
+                <span>
+                    Учитавање последње утакмице...
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             RASPORED
+        ========================= -->
+
+        <div class="matches-section-heading schedule-heading">
+
+            <span>
+                СЕЗОНА 2026/27
+            </span>
+
+            <h2>
+                РАСПОРЕД И РЕЗУЛТАТИ
+            </h2>
+
+        </div>
+
+
+        <div class="fixtures-card">
+
+            <div class="fixtures-head">
+
+                <div>КОЛО</div>
+
+                <div>
+                    ДАТУМ
+                </div>
+
+                <div>
+                    ДОМАЋИН
+                </div>
+
+                <div>
+                    РЕЗУЛТАТ
+                </div>
+
+                <div>
+                    ГОСТ
+                </div>
+
+            </div>
+
+
+            <div id="matches-data">
+
+                <div class="standings-loading">
+
+                    <div class="loader"></div>
+
+                    <span>
+                        Учитавање распореда...
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- IZVOR -->
+
+        <div class="standings-source">
+
+            <span>
+                Подаци о утакмицама се аутоматски ажурирају.
+            </span>
+
+        </div>
+
+
+        <div
+            id="football-updated"
+            class="football-updated"
+        ></div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="footer">
+
+    <div class="container footer-content">
+
+        <div class="footer-club">
+
+            <img
+                src="images/grb.png"
+                alt="ФК Обилић"
+            >
+
+            <div>
+
+                <strong>
+                    ФК ОБИЛИЋ
+                </strong>
+
+                <span>
+                    Нови Кнежевац
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <p class="footer-message">
+
+            Један град. Један клуб.<br>
+
+            <strong>
+                Само напред Обилић!
+            </strong>
+
+        </p>
+
+
+        <div class="copyright">
+
+            <p>
+                © 2026 ФК Обилић Нови Кнежевац
+            </p>
+
+            <p>
+                Сва права задржана
+            </p>
+
+            <p class="smart-design">
+
+                Сајт израдио и дизајнирао
+                <strong>Smart Design Hub</strong>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+<script src="js/football.js"></script>
+
+
+</body>
+</html>

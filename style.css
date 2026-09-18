@@ -1956,3 +1956,710 @@ img {
     }
 
 }
+
+/* ==================================================
+   STRANICA - UTAKMICE
+================================================== */
+
+.matches-page-section {
+    padding: 80px 0 110px;
+    background: #f5f5f5;
+}
+
+
+/* ==================================================
+   NASLOVI SEKCIJA
+================================================== */
+
+.matches-section-heading {
+    margin-top: 55px;
+    margin-bottom: 20px;
+}
+
+.matches-section-heading:first-of-type {
+    margin-top: 35px;
+}
+
+.matches-section-heading > span {
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--red);
+}
+
+.matches-section-heading h2 {
+    margin-top: 5px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 27px;
+    line-height: 1.1;
+}
+
+.schedule-heading {
+    margin-top: 70px;
+}
+
+
+/* ==================================================
+   SLEDEĆA UTAKMICA
+================================================== */
+
+.next-match-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 260px;
+    padding: 42px 50px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(215, 11, 69, 0.28),
+            transparent 38%
+        ),
+        linear-gradient(
+            120deg,
+            #111111,
+            #23151a
+        );
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.16);
+}
+
+
+/* Dekorativna linija */
+
+.next-match-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 6px;
+    height: 100%;
+
+    background: var(--red);
+}
+
+
+/* Providni grb */
+
+.next-match-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    right: -40px;
+    top: -25px;
+
+    background:
+        url("images/grb.png")
+        center / contain
+        no-repeat;
+
+    opacity: 0.045;
+
+    transform: rotate(-8deg);
+
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   PODACI U KARTICI
+================================================== */
+
+.next-match-card .match-label,
+.last-match-card .match-label {
+    position: relative;
+    z-index: 2;
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 3px;
+
+    color: var(--red-light);
+}
+
+
+.next-match-card .match-date,
+.last-match-card .match-date {
+    position: relative;
+    z-index: 2;
+
+    margin: 0 0 30px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 17px;
+
+    opacity: 0.8;
+}
+
+
+/* TIMOVI */
+
+.match-teams {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 1fr)
+        90px
+        minmax(180px, 1fr);
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.match-team {
+    font-family: "Oswald", sans-serif;
+
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 700;
+
+    line-height: 1.1;
+
+    text-align: center;
+}
+
+
+.match-team.our-team {
+    color: var(--red-light);
+}
+
+
+/* VS */
+
+.match-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 62px;
+    height: 62px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background: var(--red);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: white;
+
+    box-shadow:
+        0 7px 20px rgba(215,11,69,0.3);
+}
+
+
+/* MESTO */
+
+.match-location {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 28px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    opacity: 0.65;
+}
+
+
+/* ==================================================
+   POSLEDNJA UTAKMICA
+================================================== */
+
+.last-match-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 230px;
+    padding: 40px 50px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            120deg,
+            #202020,
+            #111111
+        );
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.13);
+}
+
+
+.last-match-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 6px;
+    height: 100%;
+
+    background: #555;
+}
+
+
+/* REZULTAT */
+
+.match-score {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 27px;
+}
+
+
+.match-score strong {
+    min-width: 34px;
+
+    font-size: 36px;
+
+    text-align: center;
+}
+
+
+.match-score span {
+    opacity: 0.5;
+}
+
+
+/* ZAVRŠENO */
+
+.match-finished {
+    display: block;
+
+    margin-top: 25px;
+
+    text-align: center;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    opacity: 0.5;
+}
+
+
+/* ==================================================
+   RASPORED I REZULTATI
+================================================== */
+
+.fixtures-card {
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: white;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.10);
+}
+
+
+/* HEADER */
+
+.fixtures-head {
+    min-height: 55px;
+
+    padding: 0 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        90px
+        140px
+        minmax(180px, 1fr)
+        110px
+        minmax(180px, 1fr);
+
+    align-items: center;
+
+    background:
+        linear-gradient(
+            90deg,
+            #171717,
+            #292929
+        );
+
+    color: white;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+}
+
+
+.fixtures-head > div:nth-child(3) {
+    text-align: right;
+}
+
+
+.fixtures-head > div:nth-child(5) {
+    text-align: left;
+}
+
+
+/* RED UTAKMICE */
+
+.fixture-row {
+    min-height: 82px;
+
+    padding: 0 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        90px
+        140px
+        minmax(180px, 1fr)
+        110px
+        minmax(180px, 1fr);
+
+    align-items: center;
+
+    border-bottom:
+        1px solid #ececec;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.fixture-row:last-child {
+    border-bottom: none;
+}
+
+
+.fixture-row:hover {
+    background: #fafafa;
+}
+
+
+/* KOLO */
+
+.fixture-round {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 12px;
+
+    color: #999;
+}
+
+
+/* DATUM */
+
+.fixture-date {
+    font-size: 12px;
+
+    color: #555;
+}
+
+
+.fixture-date span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 13px;
+
+    color: #111;
+}
+
+
+/* TIM */
+
+.fixture-team {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.fixture-team:nth-of-type(3) {
+    text-align: right;
+}
+
+
+.fixture-team.our-team {
+    color: var(--red);
+
+    font-weight: 700;
+}
+
+
+/* REZULTAT */
+
+.fixture-result {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 18px;
+}
+
+
+.fixture-result strong {
+    font-size: 21px;
+}
+
+
+.fixture-vs {
+    color: #999;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+}
+
+
+/* ==================================================
+   POSLEDNJE AŽURIRANJE
+================================================== */
+
+.football-updated {
+    margin-top: 8px;
+
+    text-align: right;
+
+    font-size: 10px;
+
+    color: #aaa;
+}
+
+
+/* ==================================================
+   GREŠKE
+================================================== */
+
+.football-error {
+    min-height: 120px;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    text-align: center;
+
+    color: #888;
+}
+
+
+.next-match-card .football-error,
+.last-match-card .football-error {
+    color: rgba(255,255,255,0.65);
+}
+
+
+/* ==================================================
+   TABLET / MOBILE
+================================================== */
+
+@media (max-width: 800px) {
+
+    .matches-page-section {
+        padding: 55px 0 75px;
+    }
+
+
+    .matches-section-heading {
+        margin-top: 45px;
+    }
+
+
+    .matches-section-heading h2 {
+        font-size: 24px;
+    }
+
+
+    /* GLAVNA UTAKMICA */
+
+    .next-match-card,
+    .last-match-card {
+        padding:
+            35px 20px;
+    }
+
+
+    .match-teams {
+        grid-template-columns:
+            1fr
+            55px
+            1fr;
+
+        gap: 10px;
+    }
+
+
+    .match-team {
+        font-size: 21px;
+    }
+
+
+    .match-vs {
+        width: 48px;
+        height: 48px;
+
+        font-size: 14px;
+    }
+
+
+    /* RASPORED */
+
+    .fixtures-card {
+        overflow-x: auto;
+    }
+
+
+    .fixtures-head,
+    .fixture-row {
+        min-width: 720px;
+
+        grid-template-columns:
+            75px
+            120px
+            minmax(160px, 1fr)
+            90px
+            minmax(160px, 1fr);
+    }
+
+}
+
+
+/* ==================================================
+   MALI TELEFONI
+================================================== */
+
+@media (max-width: 520px) {
+
+    .next-match-card {
+        min-height: 230px;
+    }
+
+
+    .last-match-card {
+        min-height: 210px;
+    }
+
+
+    .match-team {
+        font-size: 17px;
+    }
+
+
+    .match-teams {
+        grid-template-columns:
+            1fr
+            42px
+            1fr;
+
+        gap: 7px;
+    }
+
+
+    .match-vs {
+        width: 40px;
+        height: 40px;
+
+        font-size: 11px;
+    }
+
+
+    .next-match-card .match-date,
+    .last-match-card .match-date {
+        font-size: 14px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .match-location {
+        margin-top: 22px;
+
+        font-size: 10px;
+    }
+
+
+    .fixtures-head,
+    .fixture-row {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+
+    .football-updated,
+    .standings-source {
+        text-align: left;
+    }
+
+}
