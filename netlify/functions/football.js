@@ -12,11 +12,11 @@ const CLUB_NAME = "Obilić";
 
 const REQUEST_HEADERS = {
     "User-Agent":
-        "Mozilla/5.0 (compatible; FKObilicWebsite/1.0)",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
     "Accept":
         "text/html,application/xhtml+xml,application/json",
     "Accept-Language":
-        "sr-RS,sr;q=0.9,en;q=0.8"
+        "sr-RS,sr;q=0.9,en-US;q=0.8,en;q=0.7,hr;q=0.6"
 };
 
 
@@ -223,10 +223,6 @@ function parseSerbianDate(dateText, timeText = "") {
         minute = timeMatch[2];
     }
 
-    /*
-     * Srbijasport prikazuje lokalno vreme Srbije.
-     * Frontend već formatira Europe/Belgrade.
-     */
     return `${year}-${month}-${day}T${hour}:${minute}:00`;
 }
 
@@ -333,10 +329,6 @@ function parseClubGames(html, forcedStatus = null) {
             /<div[^>]*class=["'][^"']*hidden\s+sm:block[^"']*["'][^>]*>\s*(\d{1,2}\.\d{1,2}\.\d{4})\s*<\/div>/i
         );
 
-        /*
-         * Vreme se na Srbijasportu nalazi odmah nakon
-         * desktop/mobilnog prikaza datuma.
-         */
         let timeText = "";
 
         if (dateMatch) {
@@ -365,10 +357,6 @@ function parseClubGames(html, forcedStatus = null) {
             continue;
         }
 
-        /*
-         * Pošto je ovo stranica konkretnog kluba,
-         * dodatno proveravamo da je Obilić učesnik.
-         */
         if (
             !isObilicName(home) &&
             !isObilicName(away)
@@ -394,10 +382,6 @@ function parseClubGames(html, forcedStatus = null) {
                 : "scheduled";
         }
 
-        /*
-         * Ako je forcedStatus finished, ali izvor ipak
-         * nema rezultat, ne izmišljamo rezultat.
-         */
         if (
             status === "finished" &&
             !hasScore
@@ -472,11 +456,6 @@ function getClubGamesFormHtml(html) {
         return html;
     }
 
-    /*
-     * Ograničavamo pretragu na komponentu utakmica
-     * kako ne bismo uzeli sf_state podatke neke
-     * druge komponente sa stranice.
-     */
     return html.substring(
         componentIndex,
         Math.min(
@@ -534,17 +513,59 @@ function getAjaxState(clubHtml) {
 
 
 /* ==================================================
+   SESSION COOKIE
+================================================== */
+
+function getSessionCookie(response) {
+    let setCookies = [];
+
+    if (
+        response &&
+        response.headers &&
+        typeof response.headers.getSetCookie === "function"
+    ) {
+        setCookies =
+            response.headers.getSetCookie();
+    } else if (
+        response &&
+        response.headers
+    ) {
+        const single =
+            response.headers.get("set-cookie");
+
+        if (single) {
+            setCookies = [single];
+        }
+    }
+
+    const cookiePairs = [];
+
+    for (const cookie of setCookies) {
+        const firstPart =
+            String(cookie)
+                .split(";")[0]
+                .trim();
+
+        if (firstPart) {
+            cookiePairs.push(firstPart);
+        }
+    }
+
+    return cookiePairs.join("; ");
+}
+
+
+/* ==================================================
    AJAX: PLANIRANE UTAKMICE
 ================================================== */
 
-async function fetchScheduledGames(clubHtml) {
+async function fetchScheduledGames(
+    clubHtml,
+    sessionCookie = ""
+) {
     const state =
         getAjaxState(clubHtml);
 
-    /*
-     * Ovo je isti sadržaj koji browser šalje
-     * kroz sf_form_data.
-     */
     const formData =
         new URLSearchParams();
 
@@ -578,14 +599,6 @@ async function fetchScheduledGames(clubHtml) {
         state.sfAjaxKey
     );
 
-    /*
-     * SF.a() šalje ova dva POST polja:
-     * sf_source
-     * sf_form_data
-     * sf_action
-     *
-     * sf_source je prazan u uhvaćenom zahtevu.
-     */
     const body =
         new URLSearchParams();
 
@@ -610,14 +623,31 @@ async function fetchScheduledGames(clubHtml) {
 
             headers: {
                 ...REQUEST_HEADERS,
+
+                "Accept":
+                    "application/json, text/javascript, */*; q=0.01",
+
                 "Content-Type":
                     "application/x-www-form-urlencoded; charset=UTF-8",
+
                 "X-Requested-With":
                     "XMLHttpRequest",
+
+                "sf-ajax-key":
+                    state.sfAjaxKey,
+
                 "Referer":
                     CLUB_URL,
+
                 "Origin":
-                    "https://srbijasport.net"
+                    "https://srbijasport.net",
+
+                ...(sessionCookie
+                    ? {
+                        "Cookie":
+                            sessionCookie
+                    }
+                    : {})
             },
 
             body: body.toString()
@@ -682,11 +712,6 @@ function collectHtmlStrings(value, result = []) {
 
 
 function extractScheduledHtml(responseText) {
-    /*
-     * Neke SF instalacije vraćaju HTML direktno,
-     * a neke JSON koji u sebi sadrži HTML.
-     * Podržavamo oba slučaja.
-     */
     if (
         responseText.includes("game-row") &&
         responseText.includes("team-host")
@@ -738,10 +763,6 @@ function mergeMatches(
         const old =
             map.get(key);
 
-        /*
-         * Ako imamo završenu utakmicu sa rezultatom,
-         * ona ima prednost nad planiranom verzijom.
-         */
         if (
             match.status === "finished" &&
             old.status !== "finished"
@@ -813,11 +834,6 @@ function findPreviousAndNextMatch(matches) {
             ]
             : null;
 
-    /*
-     * Ne određujemo planiranu utakmicu samo na osnovu
-     * toga da li je datum u budućnosti. Status dolazi
-     * sa taba "Planirano".
-     */
     const nextMatch =
         scheduled.length
             ? scheduled[0]
@@ -837,10 +853,6 @@ function findPreviousAndNextMatch(matches) {
 exports.handler = async function () {
     try {
 
-        /*
-         * Tabelu i stranicu kluba možemo učitati
-         * paralelno.
-         */
         const [
             leagueResponse,
             clubResponse
@@ -874,6 +886,16 @@ exports.handler = async function () {
             );
         }
 
+        /*
+         * VAŽNO:
+         * Uzimamo PHPSESSID koji je Srbijasport
+         * postavio prilikom GET zahteva.
+         */
+        const sessionCookie =
+            getSessionCookie(
+                clubResponse
+            );
+
         const [
             leagueHtml,
             clubHtml
@@ -883,7 +905,7 @@ exports.handler = async function () {
         ]);
 
         /*
-         * Tabela ostaje iz istog izvora kao do sada.
+         * TABELA
          */
         const standings =
             parseStandings(
@@ -891,8 +913,7 @@ exports.handler = async function () {
             );
 
         /*
-         * Početna stranica kluba prikazuje tab
-         * "Odigrano".
+         * ODIGRANE UTAKMICE
          */
         const playedMatches =
             parseClubGames(
@@ -901,8 +922,7 @@ exports.handler = async function () {
             );
 
         /*
-         * Tab "Planirano" učitavamo istim AJAX
-         * mehanizmom kao Srbijasport browser.
+         * PLANIRANE UTAKMICE
          */
         let scheduledMatches = [];
 
@@ -911,7 +931,8 @@ exports.handler = async function () {
         try {
             const scheduledResponseText =
                 await fetchScheduledGames(
-                    clubHtml
+                    clubHtml,
+                    sessionCookie
                 );
 
             const scheduledHtml =
@@ -926,10 +947,6 @@ exports.handler = async function () {
                 );
 
         } catch (error) {
-            /*
-             * Ako Srbijasport privremeno promeni AJAX,
-             * ne rušimo celu tabelu i rezultate.
-             */
             scheduledError =
                 error.message;
         }
@@ -1009,6 +1026,9 @@ exports.handler = async function () {
                         totalMatchesFound:
                             matches.length,
 
+                        sessionCookieFound:
+                            Boolean(sessionCookie),
+
                         scheduledError
                     }
                 },
@@ -1030,8 +1050,10 @@ exports.handler = async function () {
             body: JSON.stringify(
                 {
                     success: false,
+
                     source:
                         "srbijasport.net",
+
                     error:
                         error.message
                 },
