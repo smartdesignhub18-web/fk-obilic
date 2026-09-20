@@ -94,6 +94,43 @@ function absoluteUrl(url = "") {
 }
 
 
+/*
+ * AJAX odgovor Srbijasporta može da sadrži
+ * HTML sa escape-ovanim navodnicima:
+ *
+ * class=\"game-row\"
+ *
+ * Ova funkcija ga pretvara u normalan HTML:
+ *
+ * class="game-row"
+ */
+function normalizeAjaxHtml(value = "") {
+    let html = String(value);
+
+    /*
+     * Ponekad sadržaj ostane escape-ovan
+     * jedan nivo i nakon JSON.parse().
+     */
+    for (let i = 0; i < 3; i++) {
+        const before = html;
+
+        html = html
+            .replace(/\\"/g, '"')
+            .replace(/\\'/g, "'")
+            .replace(/\\\//g, "/")
+            .replace(/\\r/g, "")
+            .replace(/\\n/g, "\n")
+            .replace(/\\t/g, "\t");
+
+        if (html === before) {
+            break;
+        }
+    }
+
+    return html;
+}
+
+
 /* ==================================================
    TABELA
 ================================================== */
@@ -319,10 +356,15 @@ function parseSerbianDate(
 
 
 /* ==================================================
-   UTAKMICE SA STRANICE KLUBA
+   UTAKMICE
 ================================================== */
 
 function splitGameRows(html) {
+    /*
+     * Za svaki slučaj normalizujemo HTML i ovde.
+     */
+    html = normalizeAjaxHtml(html);
+
     const starts = [];
 
     const startRegex =
@@ -354,7 +396,7 @@ function splitGameRows(html) {
                 ? starts[i + 1]
                 : Math.min(
                     html.length,
-                    start + 15000
+                    start + 20000
                 );
 
         blocks.push(
@@ -424,10 +466,17 @@ function parseClubGames(
     html,
     forcedStatus = null
 ) {
+    html =
+        normalizeAjaxHtml(
+            html
+        );
+
     const games = [];
 
     const blocks =
-        splitGameRows(html);
+        splitGameRows(
+            html
+        );
 
     for (const block of blocks) {
 
@@ -445,17 +494,23 @@ function parseClubGames(
                 idMatch[1]
             );
 
+        /*
+         * URL utakmice.
+         */
         const urlMatch =
             block.match(
-                /onclick=["'][^"']*location\.href\s*=\s*['"]([^'"]+)['"]/i
-            ) ||
-            block.match(
-                /onkeydown=["'][^"']*location\.href\s*=\s*['"]([^'"]+)['"]/i
+                /location\.href\s*=\s*['"]([^'"]+)['"]/i
             );
 
+        /*
+         * Datum.
+         *
+         * Za odigrane utakmice datum postoji.
+         * Kod planiranih može trenutno biti prazan.
+         */
         const dateMatch =
             block.match(
-                /<div[^>]*class=["'][^"']*hidden\s+sm:block[^"']*["'][^>]*>\s*(\d{1,2}\.\d{1,2}\.\d{4})\s*<\/div>/i
+                /(\d{1,2}\.\d{1,2}\.\d{4})/
             );
 
         let timeText = "";
@@ -465,7 +520,7 @@ function parseClubGames(
                 block.substring(
                     dateMatch.index,
                     dateMatch.index +
-                        1000
+                        1500
                 );
 
             const timeMatch =
@@ -498,6 +553,10 @@ function parseClubGames(
             continue;
         }
 
+        /*
+         * Sa stranice kluba uzimamo samo
+         * utakmice FK Obilić.
+         */
         if (
             !isObilicName(home) &&
             !isObilicName(away)
@@ -905,22 +964,27 @@ function collectHtmlStrings(
         typeof value ===
         "string"
     ) {
+        const normalized =
+            normalizeAjaxHtml(
+                value
+            );
+
         if (
-            value.includes(
+            normalized.includes(
                 "game-row"
             ) ||
-            value.includes(
+            normalized.includes(
                 "team-host"
             ) ||
-            value.includes(
+            normalized.includes(
                 "team-guest"
             ) ||
-            value.includes(
+            normalized.includes(
                 "club_games"
             )
         ) {
             result.push(
-                value
+                normalized
             );
         }
 
@@ -962,18 +1026,12 @@ function collectHtmlStrings(
 }
 
 
-/*
- * OVDE JE GLAVNA ISPRAVKA.
- *
- * Srbijasport AJAX odgovor je JSON koji u sebi
- * sadrži HTML.
- *
- * Zato PRVO radimo JSON.parse(), pa tek onda
- * izvlačimo HTML.
- */
 function extractScheduledHtml(
     responseText
 ) {
+    /*
+     * PRVO pokušavamo normalan JSON.parse().
+     */
     try {
         const data =
             JSON.parse(
@@ -988,28 +1046,83 @@ function extractScheduledHtml(
         if (
             htmlParts.length
         ) {
-            return htmlParts.join(
-                "\n"
+            return normalizeAjaxHtml(
+                htmlParts.join(
+                    "\n"
+                )
             );
         }
 
     } catch (error) {
         /*
-         * Ako odgovor nije JSON,
-         * proverićemo direktan HTML.
+         * Ako nije običan JSON,
+         * nastavljamo ispod.
          */
     }
 
+
+    /*
+     * Ako je kompletan odgovor još uvek
+     * escape-ovan, normalizujemo ga.
+     */
+    const normalized =
+        normalizeAjaxHtml(
+            responseText
+        );
+
+
+    /*
+     * Moguće je da smo tek sada dobili
+     * validan JSON.
+     */
+    try {
+        const data =
+            JSON.parse(
+                normalized
+            );
+
+        const htmlParts =
+            collectHtmlStrings(
+                data
+            );
+
+        if (
+            htmlParts.length
+        ) {
+            return normalizeAjaxHtml(
+                htmlParts.join(
+                    "\n"
+                )
+            );
+        }
+
+    } catch (error) {
+        /*
+         * Nije problem.
+         * Možda je direktan HTML.
+         */
+    }
+
+
+    /*
+     * Direktan HTML fallback.
+     */
     if (
-        responseText.includes(
+        normalized.includes(
             "game-row"
         ) &&
-        responseText.includes(
-            "team-host"
+        (
+            normalized.includes(
+                "team-host"
+            ) ||
+            normalized.includes(
+                "team-guest"
+            )
         )
     ) {
-        return responseText;
+        return normalized;
     }
+
 
     return "";
 }
@@ -1067,25 +1180,28 @@ function mergeMatches(
         ...map.values()
     ].sort(
         (a, b) => {
-            const dateA =
-                a.startDate
-                    ? new Date(
-                        a.startDate
-                    ).getTime()
-                    : Number
-                        .MAX_SAFE_INTEGER;
+            if (
+                !a.startDate &&
+                !b.startDate
+            ) {
+                return 0;
+            }
 
-            const dateB =
-                b.startDate
-                    ? new Date(
-                        b.startDate
-                    ).getTime()
-                    : Number
-                        .MAX_SAFE_INTEGER;
+            if (!a.startDate) {
+                return 1;
+            }
+
+            if (!b.startDate) {
+                return -1;
+            }
 
             return (
-                dateA -
-                dateB
+                new Date(
+                    a.startDate
+                ).getTime() -
+                new Date(
+                    b.startDate
+                ).getTime()
             );
         }
     );
@@ -1112,6 +1228,7 @@ function findPreviousAndNextMatch(
                     ).getTime()
             );
 
+
     const scheduled =
         matches
             .filter(
@@ -1121,11 +1238,6 @@ function findPreviousAndNextMatch(
             )
             .sort(
                 (a, b) => {
-                    /*
-                     * Dok nemamo datum iz scheduled
-                     * odgovora, utakmice bez datuma
-                     * ostaju na kraju.
-                     */
                     if (
                         !a.startDate &&
                         !b.startDate
@@ -1133,15 +1245,11 @@ function findPreviousAndNextMatch(
                         return 0;
                     }
 
-                    if (
-                        !a.startDate
-                    ) {
+                    if (!a.startDate) {
                         return 1;
                     }
 
-                    if (
-                        !b.startDate
-                    ) {
+                    if (!b.startDate) {
                         return -1;
                     }
 
@@ -1156,6 +1264,7 @@ function findPreviousAndNextMatch(
                 }
             );
 
+
     const lastMatch =
         finished.length
             ? finished[
@@ -1163,10 +1272,12 @@ function findPreviousAndNextMatch(
             ]
             : null;
 
+
     const nextMatch =
         scheduled.length
             ? scheduled[0]
             : null;
+
 
     return {
         lastMatch,
@@ -1225,10 +1336,6 @@ async function () {
         }
 
 
-        /*
-         * Srbijasport postavlja PHPSESSID
-         * prilikom otvaranja stranice kluba.
-         */
         const sessionCookie =
             getSessionCookie(
                 clubResponse
@@ -1256,7 +1363,7 @@ async function () {
 
 
         /* ==============================
-           ODIGRANE UTAKMICE
+           ODIGRANE
         ============================== */
 
         const playedMatches =
@@ -1267,7 +1374,7 @@ async function () {
 
 
         /* ==============================
-           PLANIRANE UTAKMICE
+           PLANIRANE
         ============================== */
 
         let scheduledMatches =
