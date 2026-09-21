@@ -1405,20 +1405,24 @@ img {
 .page-hero-crest {
     position: absolute;
 
-    width: 420px;
+    right: 9%;
+    top: 50%;
 
-    right: 7%;
-    top: 30px;
+    transform: translateY(-50%);
 
-    opacity: 0.08;
+    width: 190px;
+    height: 190px;
 
-    filter:
-        grayscale(1)
-        brightness(4);
+    object-fit: contain;
 
-    transform: rotate(-8deg);
+    opacity: 1;
+
+    z-index: 2;
+
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.35));
+
+    pointer-events: none;
 }
-
 
 .page-hero-content {
     position: relative;
@@ -2662,4 +2666,229 @@ img {
         text-align: left;
     }
 
+}
+
+/* =========================================================
+   UTAKMICE - ISTAKNUTE KARTICE
+========================================================= */
+
+.next-match-card,
+.last-match-card {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 65px;
+    padding: 34px 45px 42px;
+    background: linear-gradient(135deg, #161616 0%, #0d0d0d 55%, #181818 100%);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(0,0,0,.16);
+}
+
+.next-match-card::before,
+.last-match-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 5px;
+    background: var(--red);
+}
+
+.next-match-card::after,
+.last-match-card::after {
+    content: "";
+    position: absolute;
+    width: 220px; height: 220px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -45%);
+    background: url("images/grb.png") center / contain no-repeat;
+    opacity: .09;
+    filter: grayscale(35%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.featured-match-top {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    gap: 18px; min-height: 30px; margin-bottom: 30px;
+}
+.featured-match-top .match-date {
+    display: inline-flex; align-items: center; justify-content: center;
+    margin: 0; padding: 8px 16px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 50px; color: #fff;
+    font-size: 13px; font-weight: 700; letter-spacing: .7px;
+}
+.match-status-finished {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 8px 14px; background: var(--red); border-radius: 50px;
+    color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px;
+}
+.featured-match-teams {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: minmax(0,1fr) 160px minmax(0,1fr);
+    align-items: center; gap: 30px;
+}
+.featured-team {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 0; text-align: center;
+}
+.featured-team strong {
+    margin-top: 17px; color: #fff; font-size: 24px; line-height: 1.15;
+    font-weight: 800; text-transform: uppercase;
+}
+.featured-team > span {
+    margin-top: 8px; color: rgba(255,255,255,.48);
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+}
+.featured-logo-wrap {
+    display: flex; align-items: center; justify-content: center;
+    width: 130px; height: 130px;
+}
+.featured-club-logo {
+    display: block; width: 100%; height: 100%; object-fit: contain;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,.35));
+}
+.featured-match-center { display:flex; align-items:center; justify-content:center; }
+.featured-vs {
+    display:flex; align-items:center; justify-content:center;
+    width:72px; height:72px; border:1px solid rgba(255,255,255,.12);
+    border-radius:50%; background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.75); font-size:18px; font-weight:800;
+}
+.featured-score { display:flex; align-items:center; justify-content:center; gap:13px; color:#fff; }
+.featured-score strong {
+    display:flex; align-items:center; justify-content:center;
+    min-width:64px; height:72px; padding:0 15px; background:var(--red);
+    border-radius:10px; font-size:36px; line-height:1; font-weight:900;
+}
+.featured-score span { color:rgba(255,255,255,.55); font-size:28px; font-weight:800; }
+.featured-match-location {
+    position:relative; z-index:2; margin-top:30px; padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.58);
+    font-size:12px; font-weight:600; text-align:center;
+}
+
+/* RASPORED */
+.fixtures-card {
+    width:100%; overflow:hidden; background:#fff; border:1px solid #e8e8e8;
+    border-radius:16px; box-shadow:0 12px 35px rgba(0,0,0,.07);
+}
+.fixtures-head, .fixture-row {
+    display:grid; grid-template-columns:110px 150px 1fr 110px 1fr; align-items:center;
+}
+.fixtures-head {
+    min-height:54px; padding:0 25px; background:#151515;
+    color:rgba(255,255,255,.65); font-size:10px; font-weight:800; letter-spacing:1.2px;
+}
+.fixtures-head > div:nth-child(3) { text-align:right; padding-right:58px; }
+.fixtures-head > div:nth-child(4) { text-align:center; }
+.fixtures-head > div:nth-child(5) { padding-left:58px; }
+.fixture-row {
+    position:relative; min-height:94px; padding:12px 25px;
+    border-bottom:1px solid #eee; transition:background .2s ease;
+}
+.fixture-row:last-child { border-bottom:none; }
+.fixture-row:hover { background:#fafafa; }
+.fixture-finished::before {
+    content:""; position:absolute; top:0; bottom:0; left:0; width:4px; background:var(--red);
+}
+.fixture-round { color:#999; font-size:11px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; }
+.fixture-date { display:flex; flex-direction:column; gap:4px; color:#555; }
+.fixture-date strong { color:#171717; font-size:13px; font-weight:800; }
+.fixture-date > span:not(.fixture-date-pending) { color:#999; font-size:11px; font-weight:700; }
+.fixture-date-pending { max-width:100px; color:#a1a1a1; font-size:10px; line-height:1.3; font-weight:800; }
+.fixture-team { display:flex; align-items:center; gap:13px; min-width:0; }
+.fixture-home { justify-content:flex-end; text-align:right; }
+.fixture-away { justify-content:flex-start; text-align:left; }
+.fixture-team-name { min-width:0; }
+.fixture-team-name strong { display:block; color:#222; font-size:14px; line-height:1.2; font-weight:800; text-transform:uppercase; }
+.fixture-team.our-team .fixture-team-name strong { color:var(--red); }
+.fixture-club-logo { flex:0 0 auto; display:block; width:48px; height:48px; object-fit:contain; }
+.fixture-result { display:flex; align-items:center; justify-content:center; }
+.fixture-score { display:flex; align-items:center; justify-content:center; gap:7px; }
+.fixture-score strong {
+    display:flex; align-items:center; justify-content:center; width:34px; height:38px;
+    border-radius:6px; background:#171717; color:#fff; font-size:17px; font-weight:900;
+}
+.fixture-score span { color:#999; font-size:15px; font-weight:800; }
+.fixture-vs {
+    display:flex; align-items:center; justify-content:center; width:42px; height:42px;
+    border-radius:50%; background:#f3f3f3; color:#777; font-size:10px; font-weight:900;
+}
+
+/* PAGE HERO GRB - puna boja */
+.page-hero-crest {
+    position:absolute; right:9%; top:54%; transform:translateY(-50%);
+    width:190px; height:190px; object-fit:contain; opacity:1; z-index:2;
+    filter:drop-shadow(0 12px 20px rgba(0,0,0,.42)); pointer-events:none;
+}
+
+@media (max-width: 800px) {
+    .page-hero-crest { right:6%; top:53%; width:115px; height:115px; opacity:1; }
+}
+
+@media (max-width: 768px) {
+    .next-match-card, .last-match-card { margin-bottom:48px; padding:28px 16px 32px; border-radius:14px; }
+    .next-match-card::after, .last-match-card::after { width:150px; height:150px; opacity:.08; }
+    .featured-match-top { flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+    .featured-match-top .match-date { padding:7px 12px; font-size:11px; }
+    .match-status-finished { padding:7px 11px; font-size:9px; }
+    .featured-match-teams { grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr); gap:8px; }
+    .featured-logo-wrap { width:82px; height:82px; }
+    .featured-team strong { margin-top:13px; font-size:15px; }
+    .featured-team > span { margin-top:6px; font-size:8px; letter-spacing:1px; }
+    .featured-vs { width:52px; height:52px; font-size:13px; }
+    .featured-score { gap:5px; }
+    .featured-score strong { min-width:37px; height:48px; padding:0 7px; border-radius:7px; font-size:24px; }
+    .featured-score span { font-size:19px; }
+    .featured-match-location { margin-top:25px; padding-top:16px; font-size:10px; }
+
+    .fixtures-card { overflow:visible; background:transparent; border:none; border-radius:0; box-shadow:none; }
+    .fixtures-head { display:none; }
+    #matches-data { display:flex; flex-direction:column; gap:12px; }
+    .fixture-row {
+        display:grid; grid-template-columns:1fr 62px 1fr;
+        grid-template-areas:"date date date" "home result away";
+        min-height:0; padding:17px 12px 19px; background:#fff;
+        border:1px solid #e9e9e9; border-radius:12px; box-shadow:0 7px 22px rgba(0,0,0,.055);
+    }
+    .fixture-row:last-child { border-bottom:1px solid #e9e9e9; }
+    .fixture-round { display:none; }
+    .fixture-date { grid-area:date; flex-direction:row; align-items:center; justify-content:center; gap:7px; margin-bottom:17px; padding-bottom:12px; border-bottom:1px solid #eee; text-align:center; }
+    .fixture-date strong { font-size:11px; }
+    .fixture-date > span:not(.fixture-date-pending) { font-size:10px; }
+    .fixture-date-pending { max-width:none; font-size:9px; }
+    .fixture-home { grid-area:home; }
+    .fixture-away { grid-area:away; }
+    .fixture-result { grid-area:result; }
+    .fixture-team { flex-direction:column; justify-content:flex-start; gap:8px; text-align:center; }
+    .fixture-home { flex-direction:column-reverse; }
+    .fixture-team-name strong { font-size:11px; text-align:center; }
+    .fixture-club-logo { width:48px; height:48px; }
+    .fixture-score { gap:3px; }
+    .fixture-score strong { width:27px; height:34px; font-size:15px; }
+    .fixture-score span { font-size:13px; }
+    .fixture-vs { width:38px; height:38px; font-size:9px; }
+}
+
+@media (max-width: 480px) {
+    .page-hero-crest { right:5%; width:82px; height:82px; }
+}
+
+@media (max-width: 420px) {
+    .featured-match-teams { grid-template-columns:minmax(0,1fr) 58px minmax(0,1fr); gap:4px; }
+    .featured-logo-wrap { width:70px; height:70px; }
+    .featured-team strong { font-size:13px; }
+    .featured-vs { width:44px; height:44px; font-size:11px; }
+    .featured-score strong { min-width:31px; height:43px; padding:0 5px; font-size:21px; }
+}
+
+@media (max-width: 400px) {
+    .fixture-row { grid-template-columns:1fr 55px 1fr; padding-left:8px; padding-right:8px; }
+    .fixture-club-logo { width:42px; height:42px; }
+    .fixture-team-name strong { font-size:10px; }
 }

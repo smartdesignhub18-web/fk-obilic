@@ -10,6 +10,8 @@
 
 const FOOTBALL_CONFIG = {
 
+    
+
     // Srbijasport ID kluba
     clubId: 787,
 
@@ -28,6 +30,53 @@ const FOOTBALL_CONFIG = {
     // Keširanje podataka - 30 minuta
     cacheTime: 30 * 60 * 1000
 };
+
+const CLUB_LOGOS = {
+    "Обилић": "images/grbovi/obilic.webp",
+    "Obilić": "images/grbovi/obilic.webp",
+
+    "Потисје": "images/grbovi/potisje.webp",
+    "Potisje": "images/grbovi/potisje.webp",
+
+    "Ђала 1922": "images/grbovi/djala-1922.webp",
+    "Đala 1922": "images/grbovi/djala-1922.webp",
+
+    "Хоргош 1911": "images/grbovi/horgos-1911.webp",
+    "Horgoš 1911": "images/grbovi/horgos-1911.webp",
+
+    "Бачка": "images/grbovi/backa.webp",
+    "Bačka": "images/grbovi/backa.webp",
+
+    "Јединство (СК)": "images/grbovi/jedinstvo-sk.webp",
+    "Jedinstvo (SK)": "images/grbovi/jedinstvo-sk.webp",
+
+    "Славија": "images/grbovi/slavija.webp",
+    "Slavija": "images/grbovi/slavija.webp",
+
+    "Слога (О)": "images/grbovi/sloga-o.webp",
+    "Sloga (O)": "images/grbovi/sloga-o.webp",
+
+    "Шампион": "images/grbovi/sampion.webp",
+    "Šampion": "images/grbovi/sampion.webp",
+
+    "Тиса": "images/grbovi/tisa.webp",
+    "Tisa": "images/grbovi/tisa.webp",
+
+    "Јадран": "images/grbovi/jadran.webp",
+    "Jadran": "images/grbovi/jadran.webp",
+
+    "Тромеђа": "images/grbovi/tromedja.webp",
+    "Tromeđa": "images/grbovi/tromedja.webp",
+
+    "Јединство (М)": "images/grbovi/jedinstvo-m.webp",
+    "Jedinstvo (M)": "images/grbovi/jedinstvo-m.webp"
+};
+
+function getClubLogo(teamName) {
+    return CLUB_LOGOS[teamName] || "images/grbovi/default.webp";
+}
+
+
 
 
 
@@ -784,121 +833,140 @@ function renderStandings(teams) {
 /* =========================================================
    POSLEDNJA UTAKMICA
 ========================================================= */
-
 function renderLastMatch(match) {
 
     const container =
-        document.querySelector(
-            "#last-match"
-        );
-
+        document.querySelector("#last-match");
 
     if (!container) {
-
         return;
-
     }
 
-
     const date =
-        formatMatchDate(
-            match.startDate
-        );
-
+        formatMatchDate(match.startDate);
 
     const home =
-        toCyrillic(
-            match.home ?? "-"
-        );
-
+        toCyrillic(match.home ?? "-");
 
     const away =
-        toCyrillic(
-            match.away ?? "-"
-        );
+        toCyrillic(match.away ?? "-");
 
+    const homeLogo =
+        getClubLogo(match.home);
+
+    const awayLogo =
+        getClubLogo(match.away);
+
+    const hasScore =
+        match.homeScore !== null &&
+        match.homeScore !== undefined &&
+        match.awayScore !== null &&
+        match.awayScore !== undefined;
 
     container.innerHTML = `
 
-        <span class="match-label">
+        <div class="featured-match-top">
 
-            ПОСЛЕДЊА УТАКМИЦА
+            <span class="match-date">
+                ${date || "ДАТУМ НИЈЕ ДОСТУПАН"}
+            </span>
 
-        </span>
-
-
-        <div class="match-date">
-
-            ${date}
+            <span class="match-status-finished">
+                ЗАВРШЕНО
+            </span>
 
         </div>
 
 
-        <div class="match-teams">
+        <div class="featured-match-teams">
 
+            <!-- DOMAĆIN -->
 
-            <div
-                class="
-                    match-team
-                    ${isObilic(match.home) ? "our-team" : ""}
-                "
-            >
+            <div class="featured-team">
 
-                ${home}
+                <div class="featured-logo-wrap">
 
-            </div>
+                    <img
+                        src="${homeLogo}"
+                        alt="${home}"
+                        class="featured-club-logo"
+                        onerror="this.src='images/grbovi/default.webp'"
+                    >
 
-
-            <div class="match-score">
+                </div>
 
                 <strong>
-
-                    ${match.homeScore ?? "-"}
-
+                    ${home}
                 </strong>
-
 
                 <span>
-
-                    :
-
+                    ДОМАЋИН
                 </span>
 
+            </div>
+
+
+            <!-- REZULTAT -->
+
+            <div class="featured-match-center">
+
+                ${
+                    hasScore
+                        ? `
+                            <div class="featured-score">
+
+                                <strong>
+                                    ${match.homeScore}
+                                </strong>
+
+                                <span>:</span>
+
+                                <strong>
+                                    ${match.awayScore}
+                                </strong>
+
+                            </div>
+                        `
+                        : `
+                            <span class="featured-vs">
+                                —
+                            </span>
+                        `
+                }
+
+            </div>
+
+
+            <!-- GOST -->
+
+            <div class="featured-team">
+
+                <div class="featured-logo-wrap">
+
+                    <img
+                        src="${awayLogo}"
+                        alt="${away}"
+                        class="featured-club-logo"
+                        onerror="this.src='images/grbovi/default.webp'"
+                    >
+
+                </div>
 
                 <strong>
-
-                    ${match.awayScore ?? "-"}
-
+                    ${away}
                 </strong>
 
-            </div>
-
-
-            <div
-                class="
-                    match-team
-                    ${isObilic(match.away) ? "our-team" : ""}
-                "
-            >
-
-                ${away}
+                <span>
+                    ГОСТ
+                </span>
 
             </div>
-
 
         </div>
-
-
-        <span class="match-finished">
-
-            ЗАВРШЕНО
-
-        </span>
 
     `;
 
 }
-
 
 
 /* =========================================================
@@ -908,125 +976,119 @@ function renderLastMatch(match) {
 function renderNextMatch(match) {
 
     const container =
-        document.querySelector(
-            "#next-match"
-        );
-
+        document.querySelector("#next-match");
 
     if (!container) {
-
         return;
-
     }
 
-
     const date =
-        formatMatchDate(
-            match.startDate
-        );
-
+        formatMatchDate(match.startDate);
 
     const time =
-        formatMatchTime(
-            match.startDate
-        );
-
+        formatMatchTime(match.startDate);
 
     const home =
-        toCyrillic(
-            match.home ?? "-"
-        );
-
+        toCyrillic(match.home ?? "-");
 
     const away =
-        toCyrillic(
-            match.away ?? "-"
-        );
+        toCyrillic(match.away ?? "-");
 
+    const homeLogo =
+        getClubLogo(match.home);
+
+    const awayLogo =
+        getClubLogo(match.away);
 
     const location =
-        toCyrillic(
-            match.location ?? ""
-        );
-
+        toCyrillic(match.location ?? "");
 
     container.innerHTML = `
 
-        <span class="match-label">
+        <div class="featured-match-top">
 
-            СЛЕДЕЋА УТАКМИЦА
-
-        </span>
-
-
-        <div class="match-date">
-
-            ${date}
-
-            ${
-                time
-                ? ` • ${time}`
-                : ""
-            }
+            <span class="match-date">
+                ${date || "ТЕРМИН НИЈЕ ОДРЕЂЕН"}
+                ${time ? ` • ${time}` : ""}
+            </span>
 
         </div>
 
 
-        <div class="match-teams">
+        <div class="featured-match-teams">
+
+            <div class="featured-team">
+
+                <div class="featured-logo-wrap">
+
+                    <img
+                        src="${homeLogo}"
+                        alt="${home}"
+                        class="featured-club-logo"
+                        onerror="this.src='images/grbovi/default.webp'"
+                    >
+
+                </div>
+
+                <strong>
+                    ${home}
+                </strong>
+
+                <span>
+                    ДОМАЋИН
+                </span>
+
+            </div>
 
 
-            <div
-                class="
-                    match-team
-                    ${isObilic(match.home) ? "our-team" : ""}
-                "
-            >
+            <div class="featured-match-center">
 
-                ${home}
+                <span class="featured-vs">
+                    VS
+                </span>
 
             </div>
 
 
-            <div class="match-vs">
+            <div class="featured-team">
 
-                VS
+                <div class="featured-logo-wrap">
+
+                    <img
+                        src="${awayLogo}"
+                        alt="${away}"
+                        class="featured-club-logo"
+                        onerror="this.src='images/grbovi/default.webp'"
+                    >
+
+                </div>
+
+                <strong>
+                    ${away}
+                </strong>
+
+                <span>
+                    ГОСТ
+                </span>
 
             </div>
-
-
-            <div
-                class="
-                    match-team
-                    ${isObilic(match.away) ? "our-team" : ""}
-                "
-            >
-
-                ${away}
-
-            </div>
-
 
         </div>
 
 
         ${
             location
-            ? `
-
-                <div class="match-location">
-
-                    ${location}
-
-                </div>
-
-            `
-            : ""
+                ? `
+                    <div class="featured-match-location">
+                        ${location}
+                    </div>
+                `
+                : ""
         }
 
     `;
 
 }
-
 
 
 /* =========================================================
@@ -1036,17 +1098,11 @@ function renderNextMatch(match) {
 function renderMatches(matches) {
 
     const container =
-        document.querySelector(
-            "#matches-data"
-        );
-
+        document.querySelector("#matches-data");
 
     if (!container) {
-
         return;
-
     }
-
 
     if (
         !Array.isArray(matches) ||
@@ -1056,173 +1112,194 @@ function renderMatches(matches) {
         container.innerHTML = `
 
             <div class="football-error">
-
                 Распоред утакмица тренутно није доступан.
-
             </div>
 
         `;
 
         return;
-
     }
 
 
     container.innerHTML =
-        matches.map(
-            match => {
+        matches.map(match => {
+
+            const finished =
+                match.homeScore !== null &&
+                match.homeScore !== undefined &&
+                match.awayScore !== null &&
+                match.awayScore !== undefined;
 
 
-                const finished =
+            const date =
+                formatMatchDate(match.startDate);
 
-                    match.homeScore !== null &&
-                    match.homeScore !== undefined &&
-
-                    match.awayScore !== null &&
-                    match.awayScore !== undefined;
+            const time =
+                formatMatchTime(match.startDate);
 
 
-                const date =
-                    formatMatchDate(
-                        match.startDate
-                    );
+            const home =
+                toCyrillic(match.home ?? "-");
+
+            const away =
+                toCyrillic(match.away ?? "-");
 
 
-                const time =
-                    formatMatchTime(
-                        match.startDate
-                    );
+            const homeLogo =
+                getClubLogo(match.home);
+
+            const awayLogo =
+                getClubLogo(match.away);
 
 
-                const home =
-                    toCyrillic(
-                        match.home ?? "-"
-                    );
+            const round =
+                match.round
+                    ? toCyrillic(match.round)
+                    : "";
 
 
-                const away =
-                    toCyrillic(
-                        match.away ?? "-"
-                    );
+            return `
+
+                <article class="
+                    fixture-row
+                    ${finished ? "fixture-finished" : "fixture-scheduled"}
+                ">
 
 
-                return `
+                    <!-- KOLO -->
 
-                    <article class="fixture-row">
+                    <div class="fixture-round">
 
+                        ${
+                            round
+                                ? `<span>${round}</span>`
+                                : `<span>—</span>`
+                        }
 
-                        <div class="fixture-round">
-
-                            ${
-                                match.round
-                                    ? toCyrillic(match.round)
-                                    : ""
-                            }
-
-                        </div>
+                    </div>
 
 
-                        <div class="fixture-date">
+                    <!-- DATUM -->
 
-                            ${date}
+                    <div class="fixture-date">
 
-                            ${
-                                time
+                        ${
+                            date
                                 ? `
-
-                                    <span>
-
-                                        ${time}
-
-                                    </span>
-
-                                `
-                                : ""
-                            }
-
-                        </div>
-
-
-                        <div
-                            class="
-                                fixture-team
-                                ${isObilic(match.home) ? "our-team" : ""}
-                            "
-                        >
-
-                            ${home}
-
-                        </div>
-
-
-                        <div class="fixture-result">
-
-
-                            ${
-                                finished
-
-                                ? `
-
                                     <strong>
-
-                                        ${match.homeScore}
-
+                                        ${date}
                                     </strong>
 
-
-                                    <span>
-
-                                        :
-
-                                    </span>
-
-
-                                    <strong>
-
-                                        ${match.awayScore}
-
-                                    </strong>
-
+                                    ${
+                                        time
+                                            ? `
+                                                <span>
+                                                    ${time}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
                                 `
-
                                 : `
-
-                                    <span class="fixture-vs">
-
-                                        VS
-
+                                    <span class="fixture-date-pending">
+                                        ТЕРМИН НАКНАДНО
                                     </span>
-
                                 `
-                            }
+                        }
 
+                    </div>
+
+
+                    <!-- DOMAĆIN -->
+
+                    <div class="
+                        fixture-team
+                        fixture-home
+                        ${isObilic(match.home) ? "our-team" : ""}
+                    ">
+
+                        <div class="fixture-team-name">
+
+                            <strong>
+                                ${home}
+                            </strong>
 
                         </div>
 
-
-                        <div
-                            class="
-                                fixture-team
-                                ${isObilic(match.away) ? "our-team" : ""}
-                            "
+                        <img
+                            src="${homeLogo}"
+                            alt="${home}"
+                            class="fixture-club-logo"
+                            onerror="this.src='images/grbovi/default.webp'"
                         >
 
-                            ${away}
+                    </div>
+
+
+                    <!-- REZULTAT / VS -->
+
+                    <div class="fixture-result">
+
+                        ${
+                            finished
+                                ? `
+                                    <div class="fixture-score">
+
+                                        <strong>
+                                            ${match.homeScore}
+                                        </strong>
+
+                                        <span>:</span>
+
+                                        <strong>
+                                            ${match.awayScore}
+                                        </strong>
+
+                                    </div>
+                                `
+                                : `
+                                    <span class="fixture-vs">
+                                        VS
+                                    </span>
+                                `
+                        }
+
+                    </div>
+
+
+                    <!-- GOST -->
+
+                    <div class="
+                        fixture-team
+                        fixture-away
+                        ${isObilic(match.away) ? "our-team" : ""}
+                    ">
+
+                        <img
+                            src="${awayLogo}"
+                            alt="${away}"
+                            class="fixture-club-logo"
+                            onerror="this.src='images/grbovi/default.webp'"
+                        >
+
+                        <div class="fixture-team-name">
+
+                            <strong>
+                                ${away}
+                            </strong>
 
                         </div>
 
+                    </div>
 
-                    </article>
 
-                `;
+                </article>
 
-            }
+            `;
 
-        ).join("");
+        }).join("");
 
 }
-
-
 
 /* =========================================================
    DATUM POSLEDNJEG AŽURIRANJA
