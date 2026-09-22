@@ -25,7 +25,7 @@ const FOOTBALL_CONFIG = {
     clubName: "Обилић",
 
     // Naš API
-    apiUrl: "/api/football",
+   apiUrl: "data/football.json",
 
     // Keširanje podataka - 30 minuta
     cacheTime: 30 * 60 * 1000
@@ -452,10 +452,8 @@ async function loadFootballData() {
 
     try {
 
-        const url =
-            `${FOOTBALL_CONFIG.apiUrl}` +
-            `?league=${FOOTBALL_CONFIG.leagueId}` +
-            `&club=${FOOTBALL_CONFIG.clubId}`;
+       const url =
+    FOOTBALL_CONFIG.apiUrl;
 
 
         const response =
