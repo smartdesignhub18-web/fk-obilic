@@ -2892,3 +2892,180 @@ img {
     .fixture-club-logo { width:42px; height:42px; }
     .fixture-team-name strong { font-size:10px; }
 }
+
+/* =========================================================
+   FINALNI MOBILE FIX - UTAKMICE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .matches-page-section {
+        overflow-x: hidden;
+    }
+
+    .fixtures-card {
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+    }
+
+    #matches-data {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .fixture-row {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0 !important;
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            58px
+            minmax(0, 1fr);
+
+        grid-template-areas:
+            "date date date"
+            "home result away";
+
+        column-gap: 8px;
+        row-gap: 0;
+
+        padding: 16px 10px 18px;
+    }
+
+    .fixture-date {
+        grid-area: date;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        width: 100%;
+
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .fixture-home {
+        grid-area: home;
+    }
+
+    .fixture-result {
+        grid-area: result;
+    }
+
+    .fixture-away {
+        grid-area: away;
+    }
+
+    .fixture-team {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: flex-start;
+
+        gap: 8px;
+
+        text-align: center;
+    }
+
+    .fixture-home {
+        flex-direction: column;
+    }
+
+    .fixture-away {
+        flex-direction: column;
+    }
+
+    .fixture-club-logo {
+        width: 52px;
+        height: 52px;
+
+        object-fit: contain;
+    }
+
+    .fixture-team-name {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .fixture-team-name strong {
+        display: block;
+
+        width: 100%;
+
+        font-size: 11px;
+        line-height: 1.2;
+
+        text-align: center;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .fixture-result {
+        align-self: center;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fixture-score {
+        gap: 3px;
+    }
+
+    .fixture-score strong {
+        width: 26px;
+        height: 34px;
+
+        font-size: 15px;
+    }
+
+    .fixture-score span {
+        font-size: 12px;
+    }
+
+    .fixture-vs {
+        width: 38px;
+        height: 38px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .fixture-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            52px
+            minmax(0, 1fr);
+
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+
+    .fixture-club-logo {
+        width: 46px;
+        height: 46px;
+    }
+
+    .fixture-team-name strong {
+        font-size: 10px;
+    }
+
+}
