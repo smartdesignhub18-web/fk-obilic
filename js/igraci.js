@@ -58,9 +58,9 @@ async function loadFirstTeam() {
             data.prviTim || {};
 
 
-        /*
-            IGRAČI
-        */
+        /* =================================================
+           IGRAČI
+        ================================================= */
 
         if (playersContainer) {
 
@@ -100,9 +100,9 @@ async function loadFirstTeam() {
         }
 
 
-        /*
-            STRUČNI ŠTAB
-        */
+        /* =================================================
+           STRUČNI ŠTAB
+        ================================================= */
 
         if (staffContainer) {
 
@@ -187,9 +187,14 @@ async function loadFirstTeam() {
 
 function createPlayerCard(player) {
 
+    const rawName =
+        player.ime ||
+        "Име није унето";
+
+
     const name =
         escapeTeamHtml(
-            player.ime || "Име није унето"
+            rawName
         );
 
 
@@ -216,11 +221,38 @@ function createPlayerCard(player) {
 
 
     /*
-        Ako imamo fotografiju igrača,
-        prikazujemo nju.
+        Ako igrač nema broj,
+        prikazujemo inicijale.
+    */
 
-        Ako je još nemamo,
-        prikazujemo jednostavan placeholder.
+    const initials =
+        escapeTeamHtml(
+            getInitials(
+                rawName
+            )
+        );
+
+
+    const placeholderContent =
+        number
+            ? `
+                <strong>
+                    ${number}
+                </strong>
+            `
+            : `
+                <strong class="player-initials">
+                    ${initials}
+                </strong>
+            `;
+
+
+    /*
+        Ako postoji fotografija igrača,
+        prikazujemo fotografiju.
+
+        Ako fotografija ne postoji,
+        prikazujemo grb + broj ili inicijale.
     */
 
     const visual =
@@ -236,32 +268,32 @@ function createPlayerCard(player) {
                 >
 
                 <div
-                  <div class="player-placeholder">
+                    class="player-placeholder"
+                    style="display:none;"
+                >
 
-    <img
-        src="images/grb.png"
-        alt=""
-        class="player-placeholder-crest"
-    >
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                        class="player-placeholder-crest"
+                    >
 
-    ${
-        number
-            ? `<strong>${number}</strong>`
-            : `<span>ФК</span>`
-    }
+                    ${placeholderContent}
 
-</div>
+                </div>
 
             `
             : `
 
                 <div class="player-placeholder">
 
-                    ${
-                        number
-                            ? `<strong>${number}</strong>`
-                            : `<span>ФК</span>`
-                    }
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                        class="player-placeholder-crest"
+                    >
+
+                    ${placeholderContent}
 
                 </div>
 
@@ -271,6 +303,7 @@ function createPlayerCard(player) {
     return `
 
         <article class="player-card">
+
 
             <div class="player-photo-wrap">
 
@@ -319,6 +352,7 @@ function createPlayerCard(player) {
 
             </div>
 
+
         </article>
 
     `;
@@ -333,21 +367,35 @@ function createPlayerCard(player) {
 
 function createStaffCard(member) {
 
+    const rawName =
+        member.ime ||
+        "Име није унето";
+
+
     const name =
         escapeTeamHtml(
-            member.ime || "Име није унето"
+            rawName
         );
 
 
     const role =
         escapeTeamHtml(
-            member.uloga || "Стручни штаб"
+            member.uloga ||
+            "Стручни штаб"
         );
 
 
     const image =
         escapeTeamHtml(
             member.slika || ""
+        );
+
+
+    const initials =
+        escapeTeamHtml(
+            getInitials(
+                rawName
+            )
         );
 
 
@@ -364,23 +412,37 @@ function createStaffCard(member) {
                 >
 
                 <div
-                    <div class="player-placeholder staff-placeholder">
+                    class="player-placeholder staff-placeholder"
+                    style="display:none;"
+                >
 
-    <img
-        src="images/grb.png"
-        alt=""
-        class="player-placeholder-crest"
-    >
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                        class="player-placeholder-crest"
+                    >
 
-    <span>ФК</span>
+                    <strong class="player-initials">
+                        ${initials}
+                    </strong>
 
-</div>
+                </div>
 
             `
             : `
 
                 <div class="player-placeholder staff-placeholder">
-                    <span>ФК</span>
+
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                        class="player-placeholder-crest"
+                    >
+
+                    <strong class="player-initials">
+                        ${initials}
+                    </strong>
+
                 </div>
 
             `;
@@ -389,6 +451,7 @@ function createStaffCard(member) {
     return `
 
         <article class="player-card staff-card">
+
 
             <div class="player-photo-wrap">
 
@@ -409,9 +472,41 @@ function createStaffCard(member) {
 
             </div>
 
+
         </article>
 
     `;
+
+}
+
+
+
+/* =========================================================
+   INICIJALI
+========================================================= */
+
+function getInitials(name = "") {
+
+    const parts =
+        String(name)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (parts.length === 0) {
+        return "ФК";
+    }
+
+
+    return parts
+        .slice(0, 2)
+        .map(
+            part =>
+                part.charAt(0)
+        )
+        .join("")
+        .toUpperCase();
 
 }
 
