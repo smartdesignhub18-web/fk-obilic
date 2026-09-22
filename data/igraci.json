@@ -1,0 +1,121 @@
+{
+  "prviTim": {
+    "igraci": [
+      {
+        "ime": "Чанади Даниел",
+        "broj": 26,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Терзин Зоран",
+        "broj": 5,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Ђурђев Срђан",
+        "broj": 4,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Грујин Милош",
+        "broj": 2,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Вучевић Вељко",
+        "broj": 3,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Пантелин Игор",
+        "broj": 18,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Стојков Марко",
+        "broj": 6,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Кеча Здравко",
+        "broj": 9,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Крпић Дражен",
+        "broj": 7,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Дабевски Тома",
+        "broj": 8,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Сарапа Станислав",
+        "broj": 10,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Берић Стефан",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Дабевски Роберт",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Живков Бранислав",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Ранков Иван",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Стеванов Зоран",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Банов Реља",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      },
+      {
+        "ime": "Стојановић Милан",
+        "broj": null,
+        "pozicija": "",
+        "slika": ""
+      }
+    ],
+    "strucniStab": [
+      {
+        "ime": "Николин Давор",
+        "uloga": "Тренер",
+        "slika": ""
+      }
+    ]
+  }
+}
