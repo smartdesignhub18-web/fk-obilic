@@ -196,10 +196,19 @@ function renderNewsPage(news) {
             ".news-page-grid"
         );
 
+        const loading =
+    document.querySelector(
+        "#news-page-loading"
+    );
+
 
     if (!container) {
         return;
     }
+
+    if (loading) {
+    loading.remove();
+}
 
 
     if (!news.length) {
