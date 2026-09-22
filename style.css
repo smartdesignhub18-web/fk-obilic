@@ -5469,3 +5469,446 @@ img {
     }
 
 }
+
+/* ==================================================
+   STRANICA - KLUB
+================================================== */
+
+.club-page-section {
+    padding: 85px 0 105px;
+    background: #f5f5f5;
+}
+
+
+/* ==================================================
+   GLAVNE KARTICE
+================================================== */
+
+.club-page-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 40px;
+}
+
+.club-page-card {
+    position: relative;
+
+    min-height: 250px;
+
+    padding: 30px 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #242424,
+            #101010
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,0.13);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.club-page-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: var(--red);
+}
+
+.club-page-card:hover {
+    transform: translateY(-6px);
+
+    background:
+        linear-gradient(
+            145deg,
+            #3b151f,
+            #111111
+        );
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,0.20);
+}
+
+.club-page-number {
+    position: absolute;
+
+    top: 22px;
+    right: 22px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 54px;
+    font-weight: 700;
+
+    color: rgba(255,255,255,0.07);
+
+    line-height: 1;
+}
+
+.club-page-card h3 {
+    position: relative;
+    z-index: 2;
+
+    margin: 0 0 9px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 23px;
+    line-height: 1.15;
+}
+
+.club-page-card p {
+    position: relative;
+    z-index: 2;
+
+    margin: 0 0 20px;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    color: rgba(255,255,255,0.58);
+}
+
+.club-page-card strong {
+    position: relative;
+    z-index: 2;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+
+    letter-spacing: 1.5px;
+
+    color: var(--red);
+}
+
+
+/* ==================================================
+   DETALJNE SEKCIJE
+================================================== */
+
+.club-detail-section {
+    padding: 90px 0;
+
+    background: #ffffff;
+}
+
+.club-detail-dark {
+    background:
+        linear-gradient(
+            135deg,
+            #191919,
+            #251218
+        );
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   NASLOV DETALJNE SEKCIJE
+================================================== */
+
+.club-detail-heading {
+    margin-bottom: 35px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.club-detail-heading > span {
+    width: 62px;
+    height: 62px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background: var(--red);
+
+    font-family: "Oswald", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+.club-detail-heading small {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 3px;
+
+    color: var(--red);
+}
+
+.club-detail-heading h2 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 32px;
+    line-height: 1.1;
+}
+
+.club-detail-dark .club-detail-heading h2 {
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+}
+
+
+/* ==================================================
+   ISTORIJA
+================================================== */
+
+.club-info-placeholder {
+    min-height: 300px;
+
+    padding: 45px;
+
+    display: grid;
+
+    grid-template-columns:
+        210px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 50px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7f7f7,
+            #ededed
+        );
+
+    border: 1px solid #e2e2e2;
+}
+
+.club-info-placeholder img {
+    width: 180px;
+    max-height: 210px;
+
+    object-fit: contain;
+
+    margin: auto;
+
+    filter:
+        drop-shadow(
+            0 10px 15px rgba(0,0,0,0.16)
+        );
+}
+
+.club-info-placeholder h3 {
+    margin: 0 0 15px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 30px;
+
+    color: #111111;
+}
+
+.club-info-placeholder p {
+    max-width: 650px;
+
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.8;
+
+    color: #666666;
+}
+
+
+/* ==================================================
+   PRIVREMENI BLOKOVI
+================================================== */
+
+.club-empty-box {
+    min-height: 185px;
+
+    padding: 35px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    border:
+        1px dashed rgba(120,120,120,0.30);
+
+    background:
+        rgba(0,0,0,0.025);
+}
+
+.club-detail-dark .club-empty-box {
+    border-color:
+        rgba(255,255,255,0.13);
+
+    background:
+        rgba(255,255,255,0.035);
+}
+
+.club-empty-box strong {
+    margin-bottom: 10px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+
+    color: var(--red);
+}
+
+.club-empty-box p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: #777777;
+}
+
+.club-detail-dark .club-empty-box p {
+    color: rgba(255,255,255,0.55);
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 950px) {
+
+    .club-page-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .club-info-placeholder {
+        grid-template-columns:
+            160px
+            minmax(0, 1fr);
+
+        gap: 35px;
+
+        padding: 35px;
+    }
+
+    .club-info-placeholder img {
+        width: 145px;
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .club-page-section {
+        padding: 60px 0 75px;
+    }
+
+    .club-page-grid {
+        grid-template-columns: 1fr;
+
+        gap: 13px;
+    }
+
+    .club-page-card {
+        min-height: 190px;
+
+        padding: 25px 22px;
+    }
+
+    .club-page-number {
+        font-size: 45px;
+    }
+
+    .club-detail-section {
+        padding: 65px 0;
+    }
+
+    .club-detail-heading {
+        gap: 14px;
+    }
+
+    .club-detail-heading > span {
+        width: 52px;
+        height: 52px;
+
+        font-size: 18px;
+    }
+
+    .club-detail-heading h2 {
+        font-size: 26px;
+    }
+
+    .club-info-placeholder {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+
+        padding: 30px 22px;
+
+        text-align: center;
+    }
+
+    .club-info-placeholder img {
+        width: 125px;
+    }
+
+    .club-info-placeholder h3 {
+        font-size: 25px;
+    }
+
+    .club-info-placeholder p {
+        font-size: 13px;
+    }
+
+    .club-empty-box {
+        min-height: 160px;
+
+        padding: 28px 22px;
+    }
+
+}
