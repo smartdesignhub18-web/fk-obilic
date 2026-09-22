@@ -5183,3 +5183,13 @@ img {
     }
 
 }
+
+/* Naslovi u delu igrača i stručnog štaba */
+
+.first-team-roster .first-team-heading h2 {
+    color: #ffffff !important;
+}
+
+.first-team-roster .first-team-heading span {
+    color: var(--red) !important;
+}
