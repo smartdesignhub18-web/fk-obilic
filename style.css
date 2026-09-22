@@ -5205,3 +5205,42 @@ img {
     background: none !important;
     text-shadow: none !important;
 }
+
+/* ==================================================
+   WATERMARK GRB NA KARTICAMA IGRAČA
+================================================== */
+
+.player-placeholder {
+    position: relative;
+    overflow: hidden;
+}
+
+.player-placeholder-crest {
+    position: absolute;
+
+    width: 150px;
+    max-width: 70%;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    opacity: 0.08;
+
+    filter:
+        grayscale(1)
+        brightness(3);
+
+    pointer-events: none;
+}
+
+.player-placeholder strong,
+.player-placeholder span {
+    position: relative;
+    z-index: 2;
+}
+
+.staff-placeholder .player-placeholder-crest {
+    width: 135px;
+}
