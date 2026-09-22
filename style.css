@@ -4760,3 +4760,426 @@ img {
     }
 
 }
+
+/* ==================================================
+   PRVI TIM - IGRAČI I STRUČNI ŠTAB
+================================================== */
+
+.first-team-roster {
+    margin-top: 70px;
+}
+
+.first-team-roster .first-team-heading {
+    margin-bottom: 28px;
+}
+
+.first-team-roster .first-team-heading span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 3px;
+
+    color: var(--red);
+}
+
+.first-team-roster .first-team-heading h2 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+
+    color: #111;
+}
+
+
+/* ==================================================
+   MREŽA IGRAČA
+================================================== */
+
+.players-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+/* ==================================================
+   KARTICA IGRAČA
+================================================== */
+
+.player-card {
+    position: relative;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 10px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.06);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.11);
+}
+
+
+/* ==================================================
+   SLIKA / PLACEHOLDER
+================================================== */
+
+.player-photo-wrap {
+    position: relative;
+
+    height: 260px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #191919,
+            #2c171d
+        );
+}
+
+.player-photo {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center top;
+}
+
+.player-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(215, 11, 69, 0.3),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            #111,
+            #28161c
+        );
+}
+
+.player-placeholder strong {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 88px;
+    font-weight: 700;
+
+    color: rgba(255, 255, 255, 0.12);
+}
+
+.player-placeholder span {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 52px;
+    font-weight: 700;
+
+    color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* ==================================================
+   BROJ IGRAČA
+================================================== */
+
+.player-number {
+    position: absolute;
+
+    left: 16px;
+    bottom: 14px;
+
+    min-width: 45px;
+    height: 45px;
+
+    padding: 0 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--red);
+
+    border-radius: 5px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #fff;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ==================================================
+   PODACI IGRAČA
+================================================== */
+
+.player-card-info {
+    min-height: 105px;
+
+    padding: 20px 18px 22px;
+}
+
+.player-card-info h3 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    color: #111;
+}
+
+.player-position {
+    display: block;
+
+    margin-top: 9px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    color: var(--red);
+}
+
+.player-position-empty {
+    color: #999;
+}
+
+
+/* ==================================================
+   STRUČNI ŠTAB
+================================================== */
+
+.staff-heading {
+    margin-top: 70px;
+}
+
+.staff-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+.staff-card {
+    max-width: 340px;
+}
+
+.staff-role {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    color: var(--red);
+}
+
+.staff-placeholder {
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(215, 11, 69, 0.35),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            #111,
+            #26151a
+        );
+}
+
+
+/* ==================================================
+   UČITAVANJE / GREŠKA
+================================================== */
+
+.team-data-empty {
+    grid-column: 1 / -1;
+
+    min-height: 130px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+
+    background: #fafafa;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    color: #888;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 1000px) {
+
+    .players-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .staff-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 700px) {
+
+    .first-team-roster {
+        margin-top: 55px;
+    }
+
+    .first-team-roster .first-team-heading h2 {
+        font-size: 27px;
+    }
+
+    .players-grid,
+    .staff-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+    }
+
+    .player-photo-wrap {
+        height: 215px;
+    }
+
+    .player-card-info {
+        min-height: 95px;
+
+        padding: 16px 14px 18px;
+    }
+
+    .player-card-info h3 {
+        font-size: 17px;
+    }
+
+    .player-number {
+        left: 12px;
+        bottom: 12px;
+
+        min-width: 39px;
+        height: 39px;
+
+        font-size: 19px;
+    }
+
+    .player-placeholder strong {
+        font-size: 68px;
+    }
+
+    .staff-heading {
+        margin-top: 55px;
+    }
+
+}
+
+
+/* ==================================================
+   MALI TELEFONI
+================================================== */
+
+@media (max-width: 430px) {
+
+    .players-grid,
+    .staff-grid {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .player-photo-wrap {
+        height: 185px;
+    }
+
+    .player-card-info {
+        min-height: 88px;
+
+        padding: 14px 11px 16px;
+    }
+
+    .player-card-info h3 {
+        font-size: 15px;
+    }
+
+    .player-position,
+    .staff-role {
+        font-size: 9px;
+    }
+
+    .player-number {
+        left: 10px;
+        bottom: 10px;
+
+        min-width: 35px;
+        height: 35px;
+
+        font-size: 17px;
+    }
+
+}
