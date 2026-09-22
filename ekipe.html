@@ -12,7 +12,7 @@
         content="Екипе ФК Обилић Нови Кнежевац — први тим, пионири и петлићи."
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -353,7 +353,10 @@
 
 
 
-            <a href="tabela.html?v=3" class="team-action-card">
+            <a
+                href="tabela.html?v=3"
+                class="team-action-card"
+            >
 
                 <span>
                     🏆
@@ -503,56 +506,76 @@
 
 
         <!-- =================================================
-             IGRAČI / STRUČNI ŠTAB - ZA ADMIN KASNIJE
+             IGRAČI / STRUČNI ŠTAB
         ================================================== -->
-<section class="first-team-roster">
 
-    <div class="first-team-heading">
+        <section class="first-team-roster">
 
-        <span>ПРВИ ТИМ</span>
 
-        <h2>
-            ИГРАЧКИ КАДАР
-        </h2>
+            <div class="first-team-heading">
+
+                <div>
+
+                    <span class="section-mini-title">
+                        ПРВИ ТИМ
+                    </span>
+
+                    <h2>
+                        ИГРАЧКИ КАДАР
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="players-grid"
+                class="players-grid"
+            >
+
+                <div class="team-data-empty">
+                    Учитавање играча...
+                </div>
+
+            </div>
+
+
+
+            <div class="first-team-heading staff-heading">
+
+                <div>
+
+                    <span class="section-mini-title">
+                        ФК ОБИЛИЋ
+                    </span>
+
+                    <h2>
+                        СТРУЧНИ ШТАБ
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="staff-grid"
+                class="players-grid staff-grid"
+            >
+
+                <div class="team-data-empty">
+                    Учитавање стручног штаба...
+                </div>
+
+            </div>
+
+
+        </section>
+
 
     </div>
 
-
-    <div
-        id="players-grid"
-        class="players-grid"
-    >
-
-        <div class="team-data-empty">
-            Учитавање играча...
-        </div>
-
-    </div>
-
-
-    <div class="first-team-heading staff-heading">
-
-        <span>ФК ОБИЛИЋ</span>
-
-        <h2>
-            СТРУЧНИ ШТАБ
-        </h2>
-
-    </div>
-
-
-    <div
-        id="staff-grid"
-        class="players-grid staff-grid"
-    >
-
-        <div class="team-data-empty">
-            Учитавање стручног штаба...
-        </div>
-
-    </div>
-
-</section>
 </section>
 
 
@@ -635,8 +658,8 @@
 
 
 <script src="script.js"></script>
-<script src="js/football.js"></script>
-<script src="js/igraci.js?v=1"></script>
+<script src="js/football.js?v=3"></script>
+<script src="js/igraci.js?v=2"></script>
 
 
 </body>
