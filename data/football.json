@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-22T11:26:50.934Z",
+  "updatedAt": "2026-09-22T12:32:42.507Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,13 +368,37 @@
       "status": "scheduled"
     },
     {
-      "id": 889629,
+      "id": 889580,
       "round": null,
-      "home": "Obilić",
-      "away": "Horgoš 1911",
+      "home": "Đala 1922",
+      "away": "Obilić",
       "startDate": null,
       "location": "",
-      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
+      "url": "https://srbijasport.net/game/889580--ala-1922-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889567,
+      "round": null,
+      "home": "Bačka",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889567-backa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889553,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jadran",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889553-obilic-jadran",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -387,6 +411,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889629,
+      "round": null,
+      "home": "Obilić",
+      "away": "Horgoš 1911",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -471,42 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889593-slavija-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889580,
-      "round": null,
-      "home": "Đala 1922",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889580--ala-1922-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889567,
-      "round": null,
-      "home": "Bačka",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889553,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jadran",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889553-obilic-jadran",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
