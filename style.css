@@ -5193,3 +5193,15 @@ img {
 .first-team-roster .first-team-heading span {
     color: var(--red) !important;
 }
+
+/* SIGURAN FIX ZA NASLOVE PRVOG TIMA */
+
+.first-team-roster .first-team-heading h2 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    background: none !important;
+    text-shadow: none !important;
+}
