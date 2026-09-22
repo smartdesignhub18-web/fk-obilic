@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="sr-Cyrl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,11 @@
 
 <body>
 
-    <!-- HEADER -->
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
     <header class="header">
 
         <div class="container nav-container">
@@ -36,21 +41,52 @@
 
             </a>
 
-            <button class="menu-toggle" aria-label="Отвори мени">
+
+            <button
+                class="menu-toggle"
+                aria-label="Отвори мени"
+            >
                 ☰
             </button>
 
+
             <nav class="navigation">
 
-                <a href="#" class="active">ПОЧЕТНА</a>
-                <a href="#vesti">ВЕСТИ</a>
-                <a href="#ekipe">ЕКИПЕ</a>
-                <a href="#utakmice">УТАКМИЦЕ</a>
-                <a href="#tabela">ТАБЕЛА</a>
-                <a href="#klub">КЛУБ</a>
-                <a href="#galerija">ГАЛЕРИЈА</a>
-                <a href="#partneri">ПАРТНЕРИ</a>
-                <a href="#kontakt">КОНТАКТ</a>
+                <a href="index.html" class="active">
+                    ПОЧЕТНА
+                </a>
+
+                <a href="#vesti">
+                    ВЕСТИ
+                </a>
+
+                <a href="#ekipe">
+                    ЕКИПЕ
+                </a>
+
+                <a href="utakmice.html">
+                    УТАКМИЦЕ
+                </a>
+
+                <a href="tabela.html">
+                    ТАБЕЛА
+                </a>
+
+                <a href="#klub">
+                    КЛУБ
+                </a>
+
+                <a href="#galerija">
+                    ГАЛЕРИЈА
+                </a>
+
+                <a href="#partneri">
+                    ПАРТНЕРИ
+                </a>
+
+                <a href="#kontakt">
+                    КОНТАКТ
+                </a>
 
             </nav>
 
@@ -59,21 +95,32 @@
     </header>
 
 
-    <!-- HERO -->
+
     <main>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
 
         <section class="hero">
 
             <div class="hero-overlay"></div>
 
-            <!-- велики провидни грб у позадини -->
+
+            <!-- VELIKI PROVIDNI GRB U POZADINI -->
+
             <img
                 src="images/grb.png"
                 alt=""
                 class="background-crest"
             >
 
+
             <div class="container hero-content">
+
+
+                <!-- LEVA STRANA -->
 
                 <div class="hero-message">
 
@@ -81,10 +128,12 @@
                         ТРАДИЦИЈА • ЗАЈЕДНИШТВО • БУДУЋНОСТ
                     </span>
 
+
                     <h1>
                         Само напред<br>
                         <span>Обилић!</span>
                     </h1>
+
 
                     <p>
                         Један град. Један клуб.<br>
@@ -93,6 +142,8 @@
 
                 </div>
 
+
+                <!-- GRB -->
 
                 <div class="hero-crest">
 
@@ -108,92 +159,115 @@
         </section>
 
 
-        <!-- GLAVNI SADRŽAJ -->
-        <section class="main-content">
 
-            <div class="container content-grid">
+        <!-- =================================================
+             GLAVNI SADRŽAJ
+        ================================================== -->
 
+        <section class="main-content" id="utakmice">
 
-                <!-- SLEDEĆA UTAKMICA -->
-
-                <article class="card match-card" id="utakmice">
-
-                    <div class="card-heading">
-
-                        <h2>СЛЕДЕЋА УТАКМИЦА</h2>
-
-                        <a href="#">
-                            СВЕ УТАКМИЦЕ →
-                        </a>
-
-                    </div>
-
-                    <div class="match-info">
-
-                        <p class="competition">
-                            ПРВЕНСТВО
-                        </p>
-
-                        <p class="match-date">
-                            Недеља • 16:30
-                        </p>
+            <div class="container">
 
 
-                        <div class="clubs">
+                <!-- =========================================
+                     UTAKMICE NA POČETNOJ
+                ========================================== -->
 
-                            <div class="club">
-
-                                <img
-                                    src="images/grb.png"
-                                    alt="ФК Обилић"
-                                >
-
-                                <strong>
-                                    ФК ОБИЛИЋ
-                                </strong>
-
-                                <span>
-                                    Нови Кнежевац
-                                </span>
-
-                            </div>
+                <div class="home-matches-grid">
 
 
-                            <div class="versus">
-                                VS
-                            </div>
+                    <!-- SLEDEĆA UTAKMICA -->
+
+                    <article class="card home-match-card">
+
+                        <div class="card-heading">
+
+                            <h2>
+                                СЛЕДЕЋА УТАКМИЦА
+                            </h2>
+
+                            <a href="utakmice.html">
+                                СВЕ УТАКМИЦЕ →
+                            </a>
+
+                        </div>
 
 
-                            <div class="club opponent">
+                        <div
+                            id="next-match"
+                            class="home-football-content"
+                        >
 
-                                <div class="unknown-club">
-                                    ?
-                                </div>
+                            <div class="standings-loading">
 
-                                <strong>
-                                    ПРОТИВНИК
-                                </strong>
+                                <div class="loader"></div>
 
                                 <span>
-                                    —
+                                    Учитавање следеће утакмице...
                                 </span>
 
                             </div>
 
                         </div>
 
-                    </div>
-
-                </article>
+                    </article>
 
 
-                <!-- VESTI -->
 
-                <article class="card news-card" id="vesti">
+                    <!-- POSLEDNJI REZULTAT -->
+
+                    <article class="card home-match-card">
+
+                        <div class="card-heading">
+
+                            <h2>
+                                ПОСЛЕДЊИ РЕЗУЛТАТ
+                            </h2>
+
+                            <a href="utakmice.html">
+                                РЕЗУЛТАТИ →
+                            </a>
+
+                        </div>
+
+
+                        <div
+                            id="last-match"
+                            class="home-football-content"
+                        >
+
+                            <div class="standings-loading">
+
+                                <div class="loader"></div>
+
+                                <span>
+                                    Учитавање резултата...
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     VESTI
+                ========================================== -->
+
+                <article
+                    class="card news-card home-news-card"
+                    id="vesti"
+                >
 
                     <div class="card-heading">
 
-                        <h2>НАЈНОВИЈЕ ВЕСТИ</h2>
+                        <h2>
+                            НАЈНОВИЈЕ ВЕСТИ
+                        </h2>
 
                         <a href="#">
                             СВЕ ВЕСТИ →
@@ -204,15 +278,21 @@
 
                     <div class="news-list">
 
+
                         <a href="#" class="news-item">
 
                             <div class="news-placeholder"></div>
 
                             <div>
-                                <span>18. септембар 2026.</span>
+
+                                <span>
+                                    18. септембар 2026.
+                                </span>
+
                                 <h3>
                                     Припреме за наредну утакмицу
                                 </h3>
+
                             </div>
 
                         </a>
@@ -223,10 +303,15 @@
                             <div class="news-placeholder"></div>
 
                             <div>
-                                <span>15. септембар 2026.</span>
+
+                                <span>
+                                    15. септембар 2026.
+                                </span>
+
                                 <h3>
                                     Новости из нашег клуба
                                 </h3>
+
                             </div>
 
                         </a>
@@ -237,10 +322,15 @@
                             <div class="news-placeholder"></div>
 
                             <div>
-                                <span>12. септембар 2026.</span>
+
+                                <span>
+                                    12. септембар 2026.
+                                </span>
+
                                 <h3>
                                     Млађе селекције ФК Обилића
                                 </h3>
+
                             </div>
 
                         </a>
@@ -250,32 +340,88 @@
                 </article>
 
 
-                <!-- BRZI LINKOVI -->
+
+                <!-- =========================================
+                     BRZI LINKOVI
+                ========================================== -->
 
                 <div class="quick-links">
 
+
                     <a href="#ekipe" class="quick-card">
-                        <span class="icon">⚽</span>
-                        <strong>ЕКИПЕ</strong>
-                        <small>Први тим и млађе селекције</small>
+
+                        <span class="icon">
+                            ⚽
+                        </span>
+
+                        <strong>
+                            ЕКИПЕ
+                        </strong>
+
+                        <small>
+                            Први тим и млађе селекције
+                        </small>
+
                     </a>
 
-                    <a href="#utakmice" class="quick-card">
-                        <span class="icon">📅</span>
-                        <strong>РАСПОРЕД</strong>
-                        <small>Све утакмице клуба</small>
+
+                    <a
+                        href="utakmice.html"
+                        class="quick-card"
+                    >
+
+                        <span class="icon">
+                            📅
+                        </span>
+
+                        <strong>
+                            РАСПОРЕД
+                        </strong>
+
+                        <small>
+                            Све утакмице клуба
+                        </small>
+
                     </a>
 
-                    <a href="#tabela" class="quick-card">
-                        <span class="icon">🏆</span>
-                        <strong>ТАБЕЛА</strong>
-                        <small>Пласман првог тима</small>
+
+                    <a
+                        href="tabela.html"
+                        class="quick-card"
+                    >
+
+                        <span class="icon">
+                            🏆
+                        </span>
+
+                        <strong>
+                            ТАБЕЛА
+                        </strong>
+
+                        <small>
+                            Пласман првог тима
+                        </small>
+
                     </a>
 
-                    <a href="#galerija" class="quick-card">
-                        <span class="icon">▣</span>
-                        <strong>ГАЛЕРИЈА</strong>
-                        <small>Фотографије клуба</small>
+
+                    <a
+                        href="#galerija"
+                        class="quick-card"
+                    >
+
+                        <span class="icon">
+                            ▣
+                        </span>
+
+                        <strong>
+                            ГАЛЕРИЈА
+                        </strong>
+
+                        <small>
+                            Фотографије клуба
+                        </small>
+
                     </a>
 
                 </div>
@@ -285,23 +431,36 @@
         </section>
 
 
-        <!-- EKIPE -->
+
+        <!-- =================================================
+             EKIPE
+        ================================================== -->
 
         <section class="section" id="ekipe">
 
             <div class="container">
 
                 <div class="section-heading">
-                    <span>НАШ КЛУБ</span>
-                    <h2>ЕКИПЕ ФК ОБИЛИЋ</h2>
+
+                    <span>
+                        НАШ КЛУБ
+                    </span>
+
+                    <h2>
+                        ЕКИПЕ ФК ОБИЛИЋ
+                    </h2>
+
                 </div>
 
 
                 <div class="teams-grid">
 
+
                     <a href="#" class="team-card">
 
-                        <span>⚽</span>
+                        <span>
+                            ⚽
+                        </span>
 
                         <h3>
                             ПРВИ ТИМ
@@ -316,7 +475,9 @@
 
                     <a href="#" class="team-card">
 
-                        <span>⚽</span>
+                        <span>
+                            ⚽
+                        </span>
 
                         <h3>
                             ПИОНИРИ
@@ -331,7 +492,9 @@
 
                     <a href="#" class="team-card">
 
-                        <span>⚽</span>
+                        <span>
+                            ⚽
+                        </span>
 
                         <h3>
                             ПЕТЛИЋИ
@@ -343,21 +506,6 @@
 
                     </a>
 
-
-                    <a href="#" class="team-card">
-
-                        <span>+</span>
-
-                        <h3>
-                            ОСТАЛЕ СЕЛЕКЦИЈЕ
-                        </h3>
-
-                        <p>
-                            Ускоро више информација
-                        </p>
-
-                    </a>
-
                 </div>
 
             </div>
@@ -365,38 +513,83 @@
         </section>
 
 
-        <!-- KLUB -->
 
-        <section class="club-section" id="klub">
+        <!-- =================================================
+             KLUB
+        ================================================== -->
+
+        <section
+            class="club-section"
+            id="klub"
+        >
 
             <div class="container">
 
                 <div class="section-heading light">
-                    <span>ФК ОБИЛИЋ</span>
-                    <h2>КЛУБ</h2>
+
+                    <span>
+                        ФК ОБИЛИЋ
+                    </span>
+
+                    <h2>
+                        КЛУБ
+                    </h2>
+
                 </div>
 
 
                 <div class="club-links">
 
-                    <a href="#">
-                        <strong>ИСТОРИЈА КЛУБА</strong>
-                        <span>Од 1930. године до данас</span>
-                    </a>
 
                     <a href="#">
-                        <strong>УПРАВА КЛУБА</strong>
-                        <span>Људи који воде ФК Обилић</span>
+
+                        <strong>
+                            ИСТОРИЈА КЛУБА
+                        </strong>
+
+                        <span>
+                            Од 1930. године до данас
+                        </span>
+
                     </a>
 
-                    <a href="#">
-                        <strong>СТРУЧНИ ШТАБ</strong>
-                        <span>Тренери наших селекција</span>
-                    </a>
 
                     <a href="#">
-                        <strong>СТАДИОН</strong>
-                        <span>Дом ФК Обилић</span>
+
+                        <strong>
+                            УПРАВА КЛУБА
+                        </strong>
+
+                        <span>
+                            Људи који воде ФК Обилић
+                        </span>
+
+                    </a>
+
+
+                    <a href="#">
+
+                        <strong>
+                            СТРУЧНИ ШТАБ
+                        </strong>
+
+                        <span>
+                            Тренери наших селекција
+                        </span>
+
+                    </a>
+
+
+                    <a href="#">
+
+                        <strong>
+                            СТАДИОН
+                        </strong>
+
+                        <span>
+                            Дом ФК Обилић
+                        </span>
+
                     </a>
 
                 </div>
@@ -406,15 +599,57 @@
         </section>
 
 
-        <!-- PARTNERI -->
 
-        <section class="partners" id="partneri">
+        <!-- =================================================
+             GALERIJA
+        ================================================== -->
+
+        <section
+            class="section"
+            id="galerija"
+        >
 
             <div class="container">
 
                 <div class="section-heading">
 
-                    <span>ЗАЈЕДНО СМО ЈАЧИ</span>
+                    <span>
+                        ФК ОБИЛИЋ
+                    </span>
+
+                    <h2>
+                        ГАЛЕРИЈА
+                    </h2>
+
+                    <p>
+                        Фотографије са утакмица,
+                        тренинга и дешавања у клубу.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PARTNERI
+        ================================================== -->
+
+        <section
+            class="partners"
+            id="partneri"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span>
+                        ЗАЈЕДНО СМО ЈАЧИ
+                    </span>
 
                     <h2>
                         ПАРТНЕРИ КЛУБА
@@ -456,14 +691,22 @@
 
         </section>
 
+
     </main>
 
 
-    <!-- FOOTER -->
 
-    <footer class="footer" id="kontakt">
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer
+        class="footer"
+        id="kontakt"
+    >
 
         <div class="container footer-content">
+
 
             <div class="footer-club">
 
@@ -473,17 +716,31 @@
                 >
 
                 <div>
-                    <strong>ФК ОБИЛИЋ</strong>
-                    <span>Нови Кнежевац</span>
+
+                    <strong>
+                        ФК ОБИЛИЋ
+                    </strong>
+
+                    <span>
+                        Нови Кнежевац
+                    </span>
+
                 </div>
 
             </div>
 
 
+
             <p class="footer-message">
+
                 Један град. Један клуб.<br>
-                <strong>Само напред Обилић!</strong>
+
+                <strong>
+                    Само напред Обилић!
+                </strong>
+
             </p>
+
 
 
             <div class="copyright">
@@ -497,8 +754,12 @@
                 </p>
 
                 <p class="smart-design">
+
                     Сајт израдио и дизајнирао
-                    <strong>Smart Design Hub</strong>
+                    <strong>
+                        Smart Design Hub
+                    </strong>
+
                 </p>
 
             </div>
@@ -508,7 +769,15 @@
     </footer>
 
 
+
     <script src="script.js"></script>
+
+    <!--
+        Isti JS koji koristi stranica utakmica i tabela.
+        Automatski učitava sledeću i poslednju utakmicu.
+    -->
+    <script src="js/football.js"></script>
+
 
 </body>
 </html>
