@@ -4300,3 +4300,13 @@ img {
     }
 
 }
+
+/* =========================================================
+   FIX - SAKRIVANJE LOADERA I GREŠKE NA VESTI
+========================================================= */
+
+.article-loading[hidden],
+.article-error[hidden],
+.article-content[hidden] {
+    display: none !important;
+}
