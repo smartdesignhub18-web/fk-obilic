@@ -5244,3 +5244,228 @@ img {
 .staff-placeholder .player-placeholder-crest {
     width: 135px;
 }
+
+/* ==================================================
+   ZAVRŠNO UREĐENJE KARTICA IGRAČA
+================================================== */
+
+.players-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.player-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+
+    background: #161616;
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.player-photo-wrap {
+    position: relative;
+    height: 265px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #21161a,
+            #0f0f0f
+        );
+}
+
+/* diskretna crvena linija gore */
+
+.player-card::before {
+    content: "";
+
+    display: block;
+
+    width: 100%;
+    height: 4px;
+
+    background: var(--red);
+}
+
+
+/* grb u pozadini */
+
+.player-placeholder-crest {
+    width: 145px;
+
+    opacity: 0.10;
+
+    filter:
+        grayscale(1)
+        brightness(3);
+}
+
+
+/* veliki broj / inicijali */
+
+.player-placeholder strong {
+    position: relative;
+    z-index: 2;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 82px;
+    font-weight: 700;
+
+    color: rgba(255,255,255,0.17);
+
+    line-height: 1;
+}
+
+.player-placeholder .player-initials {
+    font-size: 62px;
+    letter-spacing: 3px;
+}
+
+
+/* mali broj dole levo */
+
+.player-number {
+    left: 15px;
+    bottom: 15px;
+
+    min-width: 44px;
+    height: 44px;
+
+    border-radius: 5px;
+
+    background: var(--red);
+
+    font-size: 21px;
+}
+
+
+/* donji deo kartice */
+
+.player-card-info {
+    min-height: 100px;
+
+    padding: 19px 17px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #1d1d1d,
+            #151515
+        );
+}
+
+.player-card-info h3 {
+    color: #ffffff;
+
+    font-size: 19px;
+    line-height: 1.2;
+}
+
+.player-position,
+.player-position-empty {
+    margin-top: 8px;
+
+    color: rgba(255,255,255,0.48);
+
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+
+/* trener */
+
+.staff-role {
+    color: var(--red);
+}
+
+.staff-grid {
+    grid-template-columns:
+        repeat(auto-fill, minmax(220px, 270px));
+}
+
+
+/* hover */
+
+.player-card {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 16px 35px rgba(0, 0, 0, 0.32);
+}
+
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+
+    .players-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* MOBILNI */
+
+@media (max-width: 700px) {
+
+    .players-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .player-photo-wrap {
+        height: 205px;
+    }
+
+    .player-placeholder strong {
+        font-size: 64px;
+    }
+
+    .player-placeholder .player-initials {
+        font-size: 46px;
+    }
+
+    .player-placeholder-crest {
+        width: 115px;
+    }
+
+    .player-card-info {
+        min-height: 88px;
+
+        padding: 14px 12px;
+    }
+
+    .player-card-info h3 {
+        font-size: 15px;
+    }
+
+}
+
+
+/* VRLO MALI TELEFONI */
+
+@media (max-width: 380px) {
+
+    .players-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .player-photo-wrap {
+        height: 250px;
+    }
+
+}
