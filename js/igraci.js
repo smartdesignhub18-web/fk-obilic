@@ -236,15 +236,21 @@ function createPlayerCard(player) {
                 >
 
                 <div
-                    class="player-placeholder"
-                    style="display:none;"
-                >
-                    ${
-                        number
-                            ? `<strong>${number}</strong>`
-                            : `<span>ФК</span>`
-                    }
-                </div>
+                  <div class="player-placeholder">
+
+    <img
+        src="images/grb.png"
+        alt=""
+        class="player-placeholder-crest"
+    >
+
+    ${
+        number
+            ? `<strong>${number}</strong>`
+            : `<span>ФК</span>`
+    }
+
+</div>
 
             `
             : `
@@ -358,11 +364,17 @@ function createStaffCard(member) {
                 >
 
                 <div
-                    class="player-placeholder staff-placeholder"
-                    style="display:none;"
-                >
-                    <span>ФК</span>
-                </div>
+                    <div class="player-placeholder staff-placeholder">
+
+    <img
+        src="images/grb.png"
+        alt=""
+        class="player-placeholder-crest"
+    >
+
+    <span>ФК</span>
+
+</div>
 
             `
             : `
