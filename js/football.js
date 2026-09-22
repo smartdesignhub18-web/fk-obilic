@@ -620,9 +620,7 @@ function renderStandings(teams) {
 
 
     if (!container) {
-
         return;
-
     }
 
 
@@ -654,8 +652,7 @@ function renderStandings(teams) {
 
 
                 /*
-                    Obilić prvenstveno prepoznajemo
-                    preko Srbijasport ID-a.
+                    Prepoznavanje Obilića.
                 */
 
                 const obilic =
@@ -692,8 +689,7 @@ function renderStandings(teams) {
 
 
                 /*
-                    Naziv i mesto prebacujemo
-                    na ćirilicu.
+                    Naziv i mesto na ćirilici.
                 */
 
                 const teamName =
@@ -705,6 +701,16 @@ function renderStandings(teams) {
                 const city =
                     toCyrillic(
                         team.city ?? ""
+                    );
+
+
+                /*
+                    Grb kluba.
+                */
+
+                const clubLogo =
+                    getClubLogo(
+                        teamName
                     );
 
 
@@ -726,27 +732,19 @@ function renderStandings(teams) {
 
                         <div class="col-team">
 
-                            ${
-                                obilic
-                                ? `
 
-                                    <img
-                                        src="images/grb.png"
-                                        class="table-club-logo"
-                                        alt="ФК Обилић"
-                                    >
-
-                                `
-                                : ""
-                            }
+                            <img
+                                src="${clubLogo}"
+                                class="table-club-logo"
+                                alt="${teamName}"
+                                onerror="this.style.display='none'"
+                            >
 
 
                             <div class="table-team-info">
 
                                 <strong>
-
                                     ${teamName}
-
                                 </strong>
 
 
@@ -825,7 +823,6 @@ function renderStandings(teams) {
         ).join("");
 
 }
-
 
 
 /* =========================================================
