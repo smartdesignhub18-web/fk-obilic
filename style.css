@@ -4310,3 +4310,453 @@ img {
 .article-content[hidden] {
     display: none !important;
 }
+
+/* =========================================================
+   STRANICA - EKIPE
+========================================================= */
+
+.teams-page-section {
+    padding: 80px 0 100px;
+    background: #f5f5f5;
+}
+
+.teams-main-grid {
+    margin-top: 35px;
+}
+
+.team-page-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 320px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px 25px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.07);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.team-page-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 16px 38px rgba(0, 0, 0, 0.11);
+}
+
+.team-primary {
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(215, 11, 69, 0.18),
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #181818,
+            #101010
+        );
+
+    color: #ffffff;
+}
+
+.team-page-logo {
+    width: 105px;
+    height: 105px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+
+.team-page-logo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 10px 16px rgba(0, 0, 0, 0.25)
+        );
+}
+
+.team-label {
+    margin-bottom: 9px;
+
+    color: var(--red);
+
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+}
+
+.team-primary .team-label {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+.team-page-card h3 {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 28px;
+    line-height: 1.1;
+
+    margin-bottom: 10px;
+}
+
+.team-page-card p {
+    max-width: 240px;
+
+    color: #777777;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.team-primary p {
+    color: rgba(255,255,255,0.62);
+}
+
+.team-card-link {
+    margin-top: 22px;
+
+    padding-bottom: 4px;
+
+    border-bottom:
+        2px solid var(--red);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 11px;
+    letter-spacing: 0.8px;
+}
+
+.team-primary .team-card-link {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.team-soon {
+    margin-top: 20px;
+
+    color: #aaaaaa;
+
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+
+/* =========================================================
+   PRVI TIM
+========================================================= */
+
+.first-team-section {
+    padding: 95px 0 110px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #171717,
+            #0e0e0e
+        );
+
+    color: #ffffff;
+}
+
+.first-team-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 38px;
+}
+
+.first-team-heading h2 {
+    margin-top: 5px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 44px;
+    line-height: 1;
+}
+
+.first-team-heading p {
+    margin-top: 10px;
+
+    color: rgba(255,255,255,0.55);
+
+    font-size: 13px;
+}
+
+.first-team-crest {
+    width: 130px;
+    height: 130px;
+
+    flex: 0 0 auto;
+}
+
+.first-team-crest img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 12px 20px rgba(0,0,0,0.35)
+        );
+}
+
+
+/* =========================================================
+   BRZI LINKOVI PRVOG TIMA
+========================================================= */
+
+.team-action-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 55px;
+}
+
+.team-action-card {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 20px 22px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius: 12px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.team-action-card:hover {
+    transform: translateY(-3px);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+.team-action-card > span {
+    font-size: 25px;
+}
+
+.team-action-card strong {
+    display: block;
+
+    color: #ffffff;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 16px;
+}
+
+.team-action-card small {
+    display: block;
+
+    margin-top: 4px;
+
+    color:
+        rgba(255,255,255,0.48);
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   NASLOV UTAKMICA
+========================================================= */
+
+.team-matches-heading {
+    margin-bottom: 22px;
+}
+
+.team-matches-heading h2 {
+    margin-top: 5px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 34px;
+}
+
+
+/* =========================================================
+   FUTURE - IGRAČI / TRENERI
+========================================================= */
+
+.team-future-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 18px;
+
+    margin-top: 55px;
+}
+
+.team-future-card {
+    padding: 30px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 14px;
+}
+
+.team-future-card h3 {
+    margin-top: 8px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 25px;
+}
+
+.team-future-card p {
+    margin-top: 13px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   KARTICE UTAKMICA NA TAMNOJ POZADINI
+========================================================= */
+
+.first-team-section .home-match-card {
+    background: #ffffff;
+}
+
+.first-team-section .card-heading h2 {
+    color: #171717;
+}
+
+.first-team-section .card-heading a {
+    color: var(--red);
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .teams-main-grid {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+    .team-primary {
+        grid-column: 1 / -1;
+    }
+
+    .team-action-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   TELEFON
+========================================================= */
+
+@media (max-width: 620px) {
+
+    .teams-page-section {
+        padding: 55px 0 75px;
+    }
+
+    .teams-main-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .team-primary {
+        grid-column: auto;
+    }
+
+    .team-page-card {
+        min-height: 270px;
+
+        padding: 30px 20px;
+    }
+
+    .team-page-logo {
+        width: 88px;
+        height: 88px;
+    }
+
+    .team-page-card h3 {
+        font-size: 24px;
+    }
+
+
+    .first-team-section {
+        padding: 65px 0 80px;
+    }
+
+    .first-team-heading {
+        align-items: flex-start;
+    }
+
+    .first-team-heading h2 {
+        font-size: 36px;
+    }
+
+    .first-team-crest {
+        width: 82px;
+        height: 82px;
+    }
+
+    .team-action-card {
+        padding: 17px 18px;
+    }
+
+    .team-future-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
