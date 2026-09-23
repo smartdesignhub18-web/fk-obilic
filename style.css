@@ -6167,3 +6167,337 @@ img {
     }
 
 }
+
+/* ==================================================
+   UPRAVA KLUBA - ISTAKNUT PREDSEDNIK
+================================================== */
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(220px, 260px)
+    );
+
+    justify-content: center;
+    gap: 22px;
+
+    margin-top: 10px;
+}
+
+
+/* ==================================================
+   OSNOVNA KARTICA
+================================================== */
+
+.management-card {
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #161616;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,0.22);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.management-card::before {
+    content: "";
+
+    display: block;
+
+    width: 100%;
+    height: 4px;
+
+    background: var(--red);
+}
+
+.management-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,0.32);
+}
+
+
+/* ==================================================
+   FOTOGRAFIJA
+================================================== */
+
+.management-photo-wrap {
+    position: relative;
+
+    height: 245px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #21161a,
+            #0f0f0f
+        );
+}
+
+.management-photo {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center top;
+}
+
+
+/* ==================================================
+   PLACEHOLDER
+================================================== */
+
+.management-placeholder {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.management-placeholder-crest {
+    position: absolute;
+
+    width: 145px;
+    max-width: 70%;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    opacity: 0.10;
+
+    filter:
+        grayscale(1)
+        brightness(3);
+
+    pointer-events: none;
+}
+
+.management-placeholder strong {
+    position: relative;
+
+    z-index: 2;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 62px;
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    color: rgba(255,255,255,0.17);
+
+    line-height: 1;
+}
+
+
+/* ==================================================
+   INFORMACIJE
+================================================== */
+
+.management-card-info {
+    min-height: 100px;
+
+    padding: 19px 17px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #1d1d1d,
+            #151515
+        );
+}
+
+.management-role {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+
+    color: var(--red);
+}
+
+.management-card-info h3 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 19px;
+    line-height: 1.2;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   PREDSEDNIK - VEĆA KARTICA NA VRHU
+================================================== */
+
+.management-president {
+    grid-column: 1 / -1;
+
+    width: 340px;
+    max-width: 100%;
+
+    justify-self: center;
+
+    margin-bottom: 18px;
+}
+
+.management-president .management-photo-wrap {
+    height: 330px;
+}
+
+.management-president .management-placeholder-crest {
+    width: 175px;
+}
+
+.management-president .management-placeholder strong {
+    font-size: 78px;
+}
+
+.management-president .management-card-info {
+    min-height: 115px;
+
+    padding: 22px 20px;
+}
+
+.management-president .management-role {
+    font-size: 11px;
+}
+
+.management-president .management-card-info h3 {
+    font-size: 23px;
+}
+
+
+/* ==================================================
+   OSTALI ČLANOVI
+================================================== */
+
+.management-member {
+    width: 100%;
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .management-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .management-president {
+        grid-column: 1 / -1;
+
+        width: 260px;
+
+        margin-bottom: 10px;
+    }
+
+    .management-president .management-photo-wrap {
+        height: 285px;
+    }
+
+    .management-president .management-placeholder-crest {
+        width: 135px;
+    }
+
+    .management-president .management-placeholder strong {
+        font-size: 58px;
+    }
+
+    .management-president .management-card-info {
+        min-height: 100px;
+
+        padding: 17px 14px;
+    }
+
+    .management-president .management-card-info h3 {
+        font-size: 19px;
+    }
+
+    .management-photo-wrap {
+        height: 195px;
+    }
+
+    .management-placeholder-crest {
+        width: 105px;
+    }
+
+    .management-placeholder strong {
+        font-size: 44px;
+    }
+
+    .management-card-info {
+        min-height: 88px;
+
+        padding: 14px 12px;
+    }
+
+    .management-card-info h3 {
+        font-size: 15px;
+    }
+
+    .management-role {
+        font-size: 9px;
+    }
+
+}
+
+
+/* ==================================================
+   VEOMA MALI EKRANI
+================================================== */
+
+@media (max-width: 380px) {
+
+    .management-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .management-president {
+        width: 100%;
+    }
+
+    .management-president .management-photo-wrap {
+        height: 300px;
+    }
+
+    .management-photo-wrap {
+        height: 250px;
+    }
+
+}

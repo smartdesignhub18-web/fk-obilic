@@ -27,12 +27,14 @@ async function loadClubManagement() {
         if (members.length === 0) {
             container.innerHTML = `
                 <div class="club-management-empty">
+
                     <img
                         src="images/grb.png"
                         alt=""
                     >
 
                     <div>
+
                         <strong>
                             УПРАВА ФК ОБИЛИЋ
                         </strong>
@@ -40,19 +42,36 @@ async function loadClubManagement() {
                         <p>
                             Подаци о члановима управе биће додати након уноса званичних података.
                         </p>
+
                     </div>
+
                 </div>
             `;
 
             return;
         }
 
+
+        /* Predsednik automatski ide prvi */
+
+        const sortedMembers = [...members].sort((a, b) => {
+            const aPresident =
+                isPresidentRole(a.funkcija);
+
+            const bPresident =
+                isPresidentRole(b.funkcija);
+
+            return Number(bPresident) - Number(aPresident);
+        });
+
+
         container.innerHTML =
-            members
+            sortedMembers
                 .map(member => createManagementCard(member))
                 .join("");
 
     } catch (error) {
+
         console.error(
             "Грешка при учитавању управе клуба:",
             error
@@ -60,37 +79,60 @@ async function loadClubManagement() {
 
         container.innerHTML = `
             <div class="club-management-empty">
+
                 <p>
                     Подаци о управи тренутно нису доступни.
                 </p>
+
             </div>
         `;
     }
 }
 
 
+
+/* =========================================================
+   KARTICA ČLANA UPRAVE
+========================================================= */
+
 function createManagementCard(member) {
+
     const rawName =
         member.ime || "Име није унето";
+
+
+    const rawRole =
+        member.funkcija || "";
+
 
     const name =
         escapeManagementHtml(rawName);
 
+
     const role =
-        escapeManagementHtml(
-            member.funkcija || ""
-        );
+        escapeManagementHtml(rawRole);
+
 
     const image =
         escapeManagementHtml(
             member.slika || ""
         );
 
+
     const initials =
         escapeManagementHtml(
             getManagementInitials(rawName)
         );
 
+
+    const isPresident =
+        isPresidentRole(rawRole);
+
+
+
+    /* =====================================================
+       FOTOGRAFIJA / PLACEHOLDER
+    ===================================================== */
 
     const visual = image
         ? `
@@ -139,12 +181,26 @@ function createManagementCard(member) {
         `;
 
 
+
+    /* =====================================================
+       KARTICA
+    ===================================================== */
+
     return `
-        <article class="management-card">
+        <article
+            class="management-card ${
+                isPresident
+                    ? "management-president"
+                    : "management-member"
+            }"
+        >
 
             <div class="management-photo-wrap">
+
                 ${visual}
+
             </div>
+
 
             <div class="management-card-info">
 
@@ -169,16 +225,38 @@ function createManagementCard(member) {
 }
 
 
+
+/* =========================================================
+   PROVERA DA LI JE PREDSEDNIK
+========================================================= */
+
+function isPresidentRole(role = "") {
+
+    return String(role)
+        .trim()
+        .toLocaleLowerCase("sr")
+        .includes("председник");
+}
+
+
+
+/* =========================================================
+   INICIJALI
+========================================================= */
+
 function getManagementInitials(name = "") {
+
     const parts =
         String(name)
             .trim()
             .split(/\s+/)
             .filter(Boolean);
 
+
     if (parts.length === 0) {
         return "ФК";
     }
+
 
     return parts
         .slice(0, 2)
@@ -188,7 +266,13 @@ function getManagementInitials(name = "") {
 }
 
 
+
+/* =========================================================
+   ZAŠTITA TEKSTA
+========================================================= */
+
 function escapeManagementHtml(value = "") {
+
     return String(value)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
@@ -197,6 +281,11 @@ function escapeManagementHtml(value = "") {
         .replaceAll("'", "&#039;");
 }
 
+
+
+/* =========================================================
+   POKRETANJE
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
