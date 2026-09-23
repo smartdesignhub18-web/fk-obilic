@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-23T03:27:55.274Z",
+  "updatedAt": "2026-09-23T04:28:16.151Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,18 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889567,
-      "round": null,
-      "home": "Bačka",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889553,
       "round": null,
       "home": "Obilić",
@@ -416,18 +404,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889614,
-      "round": null,
-      "home": "Obilić",
-      "away": "Šampion",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889614-obilic-sampion",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889569,
       "round": null,
       "home": "Obilić",
@@ -435,6 +411,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889569-obilic-tromedja",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889614,
+      "round": null,
+      "home": "Obilić",
+      "away": "Šampion",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889614-obilic-sampion",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -507,6 +495,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889580--ala-1922-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889567,
+      "round": null,
+      "home": "Bačka",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889567-backa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
