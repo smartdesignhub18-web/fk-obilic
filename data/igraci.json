@@ -4,112 +4,141 @@
       {
         "ime": "Чанади Даниел",
         "broj": 26,
-        "pozicija": "",
+        "grupa": "golmani",
+        "pozicija": "Голман",
         "slika": "images/igraci/canadi-daniel.jpg"
       },
       {
+        "ime": "Радаковић Дане",
+        "broj": 1,
+        "grupa": "golmani",
+        "pozicija": "Голман",
+        "slika": "images/igraci/radakovic-dane.jpg"
+      },
+
+      {
         "ime": "Терзин Зоран",
         "broj": 5,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/terzin-zoran.jpg"
       },
       {
         "ime": "Ђурђев Срђан",
         "broj": 4,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/djurdjev-srdjan.jpg"
       },
       {
         "ime": "Грујин Милош",
         "broj": 2,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/grujin-milos.jpg"
       },
       {
         "ime": "Вучевић Вељко",
         "broj": 3,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/vucevic-veljko.jpg"
       },
       {
-        "ime": "Пантелин Игор",
-        "broj": 18,
-        "pozicija": "",
-        "slika": "images/igraci/pantelin-igor.jpg"
-      },
-      {
-        "ime": "Стојков Марко",
-        "broj": 6,
-        "pozicija": "",
-        "slika": "images/igraci/stojkov-marko.jpg"
-      },
-      {
-        "ime": "Кеча Здравко",
-        "broj": 9,
-        "pozicija": "",
-        "slika": "images/igraci/keca-zdravko.jpg"
-      },
-      {
-        "ime": "Крпић Дражен",
-        "broj": 7,
-        "pozicija": "",
-        "slika": "images/igraci/krpic-drazen.jpg"
-      },
-      {
-        "ime": "Дабевски Тома",
-        "broj": 8,
-        "pozicija": "",
-        "slika": "images/igraci/dabevski-toma.jpg"
-      },
-      {
-        "ime": "Сарапа Станислав",
-        "broj": 10,
-        "pozicija": "",
-        "slika": "images/igraci/sarapa-stanislav.jpg"
-      },
-      {
-        "ime": "Берић Стефан",
+        "ime": "Ђерић Стефан",
         "broj": null,
-        "pozicija": "",
-        "slika": "images/igraci/beric-stefan.jpg"
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
+        "slika": "images/igraci/deric-stefan.jpg"
       },
       {
         "ime": "Дабевски Роберт",
         "broj": null,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/dabevski-robert.jpg"
       },
       {
         "ime": "Живков Бранислав",
         "broj": null,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/zivkov-branislav.jpg"
-      },
-      {
-        "ime": "Ранков Иван",
-        "broj": null,
-        "pozicija": "",
-        "slika": "images/igraci/rankov-ivan.jpg"
-      },
-      {
-        "ime": "Стеванов Зоран",
-        "broj": null,
-        "pozicija": "",
-        "slika": "images/igraci/stevanov-zoran.jpg"
       },
       {
         "ime": "Банов Реља",
         "broj": null,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/banov-relja.jpg"
       },
       {
         "ime": "Стојановић Милан",
         "broj": null,
-        "pozicija": "",
+        "grupa": "odbrana",
+        "pozicija": "Одбрана",
         "slika": "images/igraci/stojanovic-milan.jpg"
+      },
+
+      {
+        "ime": "Стојков Марко",
+        "broj": 6,
+        "grupa": "vezni",
+        "pozicija": "Везни ред",
+        "slika": "images/igraci/stojkov-marko.jpg"
+      },
+      {
+        "ime": "Пантелин Игор",
+        "broj": 18,
+        "grupa": "vezni",
+        "pozicija": "Везни ред",
+        "slika": "images/igraci/pantelin-igor.jpg"
+      },
+
+      {
+        "ime": "Сарапа Станислав",
+        "broj": 10,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/sarapa-stanislav.jpg"
+      },
+      {
+        "ime": "Дабевски Томo",
+        "broj": 8,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/dabevski-toma.jpg"
+      },
+      {
+        "ime": "Кеча Здравко",
+        "broj": 9,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/keca-zdravko.jpg"
+      },
+      {
+        "ime": "Крпић Дражен",
+        "broj": 7,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/krpic-drazen.jpg"
+      },
+      {
+        "ime": "Ранков Иван",
+        "broj": null,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/rankov-ivan.jpg"
+      },
+      {
+        "ime": "Стеванов Зоран",
+        "broj": null,
+        "grupa": "napad",
+        "pozicija": "Напад",
+        "slika": "images/igraci/stevanov-zoran.jpg"
       }
     ],
+
     "strucniStab": [
       {
         "ime": "Николин Давор",

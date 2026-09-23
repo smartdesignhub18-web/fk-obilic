@@ -6501,3 +6501,154 @@ img {
     }
 
 }
+
+/* ==================================================
+   PRVI TIM - GRUPE IGRAČA
+================================================== */
+
+.players-groups {
+    display: block;
+    width: 100%;
+}
+
+
+/* POJEDINAČNA GRUPA */
+
+.player-group-section {
+    width: 100%;
+    margin-top: 55px;
+}
+
+.player-group-section:first-child {
+    margin-top: 30px;
+}
+
+
+/* ==================================================
+   NASLOV GRUPE
+================================================== */
+
+.player-group-heading {
+    position: relative;
+
+    display: flex;
+    align-items: flex-end;
+
+    gap: 14px;
+
+    margin-bottom: 25px;
+
+    padding-bottom: 13px;
+}
+
+.player-group-heading::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        rgba(255,255,255,0.10);
+}
+
+
+/* MALI NATPIS */
+
+.player-group-heading > span {
+    position: absolute;
+
+    top: -15px;
+    left: 0;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 2.5px;
+
+    color: rgba(255,255,255,0.38);
+}
+
+
+/* GLAVNI NASLOV */
+
+.player-group-heading h3 {
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 27px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 0.8px;
+
+    color: #ffffff;
+}
+
+
+/* CRVENA LINIJA */
+
+.player-group-line {
+    width: 45px;
+    height: 3px;
+
+    margin-bottom: 2px;
+
+    border-radius: 3px;
+
+    background: var(--red);
+}
+
+
+/* ==================================================
+   GRID IGRAČA U SVAKOJ GRUPI
+================================================== */
+
+.player-group-grid {
+    margin-top: 0;
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 700px) {
+
+    .player-group-section {
+        margin-top: 45px;
+    }
+
+    .player-group-section:first-child {
+        margin-top: 25px;
+    }
+
+    .player-group-heading {
+        margin-bottom: 18px;
+
+        padding-bottom: 11px;
+    }
+
+    .player-group-heading h3 {
+        font-size: 22px;
+    }
+
+    .player-group-line {
+        width: 35px;
+    }
+
+    .player-group-heading > span {
+        font-size: 8px;
+
+        letter-spacing: 2px;
+    }
+
+}
