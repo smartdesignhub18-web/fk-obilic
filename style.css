@@ -9403,3 +9403,214 @@ img {
     }
 
 }
+
+/* ==================================================
+   KLUPSKA PESMA - HERO
+================================================== */
+
+.club-song {
+    margin-top: 24px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+/* ==================================================
+   DUGME
+================================================== */
+
+.club-song-button {
+    min-height: 46px;
+
+    padding: 11px 15px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 10px;
+
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 6px;
+
+    background:
+        rgba(0,0,0,0.28);
+
+    backdrop-filter: blur(7px);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 1.4px;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.20);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.club-song-button:hover {
+    transform: translateY(-2px);
+
+    background:
+        rgba(180,25,45,0.16);
+
+    border-color:
+        rgba(180,25,45,0.55);
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.28);
+}
+
+
+/* ==================================================
+   PLAY / PAUSE IKONICA
+================================================== */
+
+.club-song-icon {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--red);
+
+    font-size: 9px;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   TEKST
+================================================== */
+
+.club-song-text {
+    white-space: nowrap;
+}
+
+
+/* ==================================================
+   EQUALIZER
+================================================== */
+
+.club-song-equalizer {
+    height: 20px;
+
+    display: flex;
+    align-items: flex-end;
+
+    gap: 3px;
+
+    margin-left: 3px;
+
+    opacity: 0.35;
+}
+
+.club-song-equalizer i {
+    width: 2px;
+    height: 6px;
+
+    display: block;
+
+    border-radius: 2px;
+
+    background: var(--red);
+
+    transform-origin: bottom;
+}
+
+
+/* ==================================================
+   ANIMACIJA DOK SVIRA
+================================================== */
+
+.club-song-button.is-playing
+.club-song-equalizer {
+    opacity: 1;
+}
+
+.club-song-button.is-playing
+.club-song-equalizer i:nth-child(1) {
+    animation:
+        clubSongBar 0.7s ease-in-out infinite alternate;
+}
+
+.club-song-button.is-playing
+.club-song-equalizer i:nth-child(2) {
+    animation:
+        clubSongBar 0.5s ease-in-out infinite alternate;
+}
+
+.club-song-button.is-playing
+.club-song-equalizer i:nth-child(3) {
+    animation:
+        clubSongBar 0.9s ease-in-out infinite alternate;
+}
+
+.club-song-button.is-playing
+.club-song-equalizer i:nth-child(4) {
+    animation:
+        clubSongBar 0.6s ease-in-out infinite alternate;
+}
+
+
+@keyframes clubSongBar {
+
+    from {
+        height: 5px;
+    }
+
+    to {
+        height: 18px;
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .club-song {
+        margin-top: 20px;
+    }
+
+    .club-song-button {
+        min-height: 43px;
+
+        padding: 10px 12px;
+
+        gap: 8px;
+
+        font-size: 9px;
+    }
+
+    .club-song-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .club-song-equalizer {
+        height: 17px;
+    }
+
+}

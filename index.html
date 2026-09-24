@@ -12,7 +12,7 @@
         content="Званични сајт ФК Обилић Нови Кнежевац. Вести, утакмице, резултати, табела, селекције и информације о клубу."
     >
 
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=25">
 </head>
 
 <body>
@@ -139,6 +139,48 @@
                         Један град. Један клуб.<br>
                         Једна породица.
                     </p>
+
+                    <div class="club-song">
+
+    <button
+        type="button"
+        id="club-song-button"
+        class="club-song-button"
+        aria-label="Пусти клупску песму"
+    >
+
+        <span class="club-song-icon">
+            ▶
+        </span>
+
+        <span class="club-song-text">
+            ПУСТИ КЛУПСКУ ПЕСМУ
+        </span>
+
+        <span
+            class="club-song-equalizer"
+            aria-hidden="true"
+        >
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </span>
+
+    </button>
+
+
+    <audio
+        id="club-song-audio"
+        preload="none"
+    >
+        <source
+            src="audio/obilic.mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+</div>
 
                 </div>
 
@@ -786,6 +828,7 @@
 
 
 <script src="js/footer.js?v=1"></script>
+<script src="js/pesma.js?v=1"></script>
 
 </body>
 </html>
