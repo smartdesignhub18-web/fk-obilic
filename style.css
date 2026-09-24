@@ -8009,3 +8009,153 @@ img {
     }
 
 }
+
+/* ==================================================
+   KONTAKT - IKONICE I KLIKABILNE KARTICE
+================================================== */
+
+.contact-clickable {
+    cursor: pointer;
+}
+
+
+/* ==================================================
+   IKONICA
+================================================== */
+
+.contact-detail-icon {
+    width: 46px;
+    height: 46px;
+
+    margin-bottom: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.contact-detail-icon svg {
+    width: 22px;
+    height: 22px;
+
+    fill: var(--red);
+
+    stroke: var(--red);
+
+    stroke-width: 1.5;
+}
+
+
+/* INSTAGRAM SVG */
+
+.contact-detail-icon svg rect,
+.contact-detail-icon svg circle {
+    fill: none;
+    stroke: var(--red);
+}
+
+.contact-detail-icon svg .icon-dot {
+    fill: var(--red);
+    stroke: none;
+}
+
+
+/* ==================================================
+   SADRŽAJ
+================================================== */
+
+.contact-detail-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-detail-content span {
+    margin-bottom: 7px;
+}
+
+.contact-detail-content strong {
+    margin-bottom: 12px;
+}
+
+.contact-detail-content small {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1.4px;
+
+    color:
+        rgba(255,255,255,0.42);
+
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+/* ==================================================
+   HOVER
+================================================== */
+
+.contact-clickable:hover
+.contact-detail-icon {
+    background:
+        rgba(180, 25, 45, 0.15);
+
+    border-color:
+        rgba(180, 25, 45, 0.35);
+
+    transform:
+        translateY(-2px);
+}
+
+.contact-clickable:hover
+.contact-detail-content small {
+    color: var(--red);
+
+    transform:
+        translateX(3px);
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .contact-detail-icon {
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 15px;
+    }
+
+    .contact-detail-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .contact-detail-content strong {
+        margin-bottom: 10px;
+    }
+
+    .contact-detail-content small {
+        font-size: 8px;
+    }
+
+}
