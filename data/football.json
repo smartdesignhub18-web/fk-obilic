@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-24T20:29:17.245Z",
+  "updatedAt": "2026-09-24T21:26:24.727Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,18 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889593,
-      "round": null,
-      "home": "Slavija",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889593-slavija-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889580,
       "round": null,
       "home": "Đala 1922",
@@ -476,18 +464,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889619,
       "round": null,
       "home": "Jedinstvo (SK)",
@@ -500,6 +476,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889606,
       "round": null,
       "home": "Potisje",
@@ -507,6 +495,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889606-potisje-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889593,
+      "round": null,
+      "home": "Slavija",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889593-slavija-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
