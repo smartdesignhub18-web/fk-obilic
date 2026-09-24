@@ -12,7 +12,7 @@
         content="Званични сајт ФК Обилић Нови Кнежевац. Вести, утакмице, резултати, табела, селекције и информације о клубу."
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=19">
 </head>
 
 <body>
@@ -675,30 +675,33 @@
                 </div>
 
 
-                <div class="partners-grid">
+                <div
+    id="home-partners-grid"
+    class="partners-grid"
+>
 
-                    <div class="partner">
-                        ВАШ ЛОГО
-                    </div>
+    <div class="home-partners-loading">
 
-                    <div class="partner">
-                        ВАШ ЛОГО
-                    </div>
+        <img
+            src="images/grb.png"
+            alt=""
+        >
 
-                    <div class="partner">
-                        ВАШ ЛОГО
-                    </div>
+        <span>
+            Учитавање партнера...
+        </span>
 
-                    <div class="partner">
-                        ВАШ ЛОГО
-                    </div>
+    </div>
 
-                    <div class="partner">
-                        ВАШ ЛОГО
-                    </div>
+</div>
 
-                </div>
+<div class="home-partners-more">
 
+    <a href="partneri.html">
+        СВИ ПАРТНЕРИ →
+    </a>
+
+</div>
             </div>
 
         </section>
@@ -791,6 +794,7 @@
     <script src="js/football.js"></script>
 
     <script src="js/vesti.js"></script>
+    <script src="js/partneri.js?v=2"></script>
 
 
 </body>

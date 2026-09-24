@@ -4,13 +4,19 @@
 ========================================================= */
 
 async function loadPartners() {
-    const container =
+
+    const pageContainer =
         document.querySelector("#partners-page-grid");
 
-    if (!container) return;
+    const homeContainer =
+        document.querySelector("#home-partners-grid");
+
+
+    if (!pageContainer && !homeContainer) return;
 
 
     try {
+
         const response = await fetch(
             "data/partneri.json",
             {
@@ -35,9 +41,45 @@ async function loadPartners() {
                 : [];
 
 
-        if (partners.length === 0) {
+        /* =====================================================
+           POSEBNA STRANICA PARTNERA
+        ===================================================== */
 
-            container.innerHTML = `
+        if (pageContainer) {
+
+            renderPartnersPage(
+                pageContainer,
+                partners
+            );
+
+        }
+
+
+        /* =====================================================
+           PARTNERI NA POČETNOJ
+        ===================================================== */
+
+        if (homeContainer) {
+
+            renderHomePartners(
+                homeContainer,
+                partners
+            );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Грешка при учитавању партнера:",
+            error
+        );
+
+
+        if (pageContainer) {
+
+            pageContainer.innerHTML = `
                 <div class="partners-page-empty">
 
                     <img
@@ -48,11 +90,11 @@ async function loadPartners() {
                     <div>
 
                         <strong>
-                            ПАРТНЕРИ КЛУБА
+                            ПАРТНЕРИ ТРЕНУТНО НИСУ ДОСТУПНИ
                         </strong>
 
                         <p>
-                            Подаци о партнерима биће додати ускоро.
+                            Није могуће учитати податке о партнерима.
                         </p>
 
                     </div>
@@ -60,25 +102,34 @@ async function loadPartners() {
                 </div>
             `;
 
-            return;
         }
 
 
-        container.innerHTML =
-            partners
-                .map(partner =>
-                    createPartnerCard(partner)
-                )
-                .join("");
+        if (homeContainer) {
+
+            homeContainer.innerHTML = `
+                <div class="home-partners-empty">
+                    Партнери тренутно нису доступни.
+                </div>
+            `;
+
+        }
+
+    }
+}
 
 
-    } catch (error) {
 
-        console.error(
-            "Грешка при учитавању партнера:",
-            error
-        );
+/* =========================================================
+   POSEBNA STRANICA PARTNERA
+========================================================= */
 
+function renderPartnersPage(
+    container,
+    partners
+) {
+
+    if (partners.length === 0) {
 
         container.innerHTML = `
             <div class="partners-page-empty">
@@ -91,27 +142,86 @@ async function loadPartners() {
                 <div>
 
                     <strong>
-                        ПАРТНЕРИ ТРЕНУТНО НИСУ ДОСТУПНИ
+                        ПАРТНЕРИ КЛУБА
                     </strong>
 
                     <p>
-                        Није могуће учитати податке о партнерима.
+                        Подаци о партнерима биће додати ускоро.
                     </p>
 
                 </div>
 
             </div>
         `;
+
+        return;
     }
+
+
+    container.innerHTML =
+        partners
+            .map(partner =>
+                createPartnerPageCard(partner)
+            )
+            .join("");
 }
 
 
 
 /* =========================================================
-   KARTICA PARTNERA
+   PARTNERI NA POČETNOJ
 ========================================================= */
 
-function createPartnerCard(partner) {
+function renderHomePartners(
+    container,
+    partners
+) {
+
+    if (partners.length === 0) {
+
+        container.innerHTML = `
+            <div class="home-partners-empty">
+
+                <img
+                    src="images/grb.png"
+                    alt=""
+                >
+
+                <span>
+                    Партнери клуба биће додати ускоро.
+                </span>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /*
+        Na početnoj prikazujemo prvih 5 partnera.
+        Svi partneri ostaju dostupni na partneri.html.
+    */
+
+    const homePartners =
+        partners.slice(0, 5);
+
+
+    container.innerHTML =
+        homePartners
+            .map(partner =>
+                createHomePartnerCard(partner)
+            )
+            .join("");
+}
+
+
+
+/* =========================================================
+   KARTICA NA STRANICI PARTNERA
+========================================================= */
+
+function createPartnerPageCard(partner) {
 
     const name =
         escapePartnerHtml(
@@ -206,7 +316,87 @@ function createPartnerCard(partner) {
 
 
 /* =========================================================
-   LINK
+   KARTICA PARTNERA NA POČETNOJ
+========================================================= */
+
+function createHomePartnerCard(partner) {
+
+    const name =
+        escapePartnerHtml(
+            partner.naziv || "Партнер клуба"
+        );
+
+
+    const logo =
+        escapePartnerHtml(
+            partner.logo || ""
+        );
+
+
+    const link =
+        sanitizePartnerLink(
+            partner.link || ""
+        );
+
+
+    const content = `
+        <div class="home-partner-card">
+
+            <div class="home-partner-logo">
+
+                ${
+                    logo
+                        ? `
+                            <img
+                                src="${logo}"
+                                alt="${name}"
+                                loading="lazy"
+                                onerror="
+                                    this.style.display='none';
+                                "
+                            >
+                        `
+                        : `
+                            <img
+                                src="images/grb.png"
+                                alt=""
+                                loading="lazy"
+                                class="home-partner-placeholder"
+                            >
+                        `
+                }
+
+            </div>
+
+            <strong>
+                ${name}
+            </strong>
+
+        </div>
+    `;
+
+
+    if (!link) {
+        return content;
+    }
+
+
+    return `
+        <a
+            href="${link}"
+            class="home-partner-link"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            ${content}
+        </a>
+    `;
+}
+
+
+
+/* =========================================================
+   LINK PARTNERA
 ========================================================= */
 
 function sanitizePartnerLink(value = "") {
@@ -221,6 +411,7 @@ function sanitizePartnerLink(value = "") {
 
 
     try {
+
         const url =
             new URL(link);
 
@@ -233,10 +424,15 @@ function sanitizePartnerLink(value = "") {
         }
 
 
-        return escapePartnerHtml(url.href);
+        return escapePartnerHtml(
+            url.href
+        );
+
 
     } catch {
+
         return "";
+
     }
 }
 
