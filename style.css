@@ -7533,3 +7533,250 @@ img {
     }
 
 }
+
+/* ==================================================
+   KONTAKT - STRANICA
+================================================== */
+
+.contact-page {
+    padding: 85px 0 105px;
+    background: #f4f4f4;
+}
+
+
+/* ==================================================
+   GRID KONTAKTA
+================================================== */
+
+.contact-page-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+
+    margin-top: 38px;
+}
+
+
+/* ==================================================
+   KONTAKT KARTICA
+================================================== */
+
+.contact-info-card {
+    position: relative;
+
+    min-height: 260px;
+
+    padding: 32px 26px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1d1d1d,
+            #111111
+        );
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,0.16);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.contact-info-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: var(--red);
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,0.23);
+}
+
+
+/* ==================================================
+   BROJ U POZADINI
+================================================== */
+
+.contact-card-number {
+    position: absolute;
+
+    top: 20px;
+    right: 22px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 58px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    color: rgba(255,255,255,0.06);
+}
+
+
+/* ==================================================
+   MALI NASLOV
+================================================== */
+
+.contact-card-label {
+    display: block;
+
+    margin-bottom: 12px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    color: var(--red);
+}
+
+
+/* ==================================================
+   GLAVNI NASLOV
+================================================== */
+
+.contact-info-card h3 {
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0 0 18px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 24px;
+    line-height: 1.15;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   TEKST
+================================================== */
+
+.contact-info-card p {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 320px;
+
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.8;
+
+    color: rgba(255,255,255,0.58);
+}
+
+
+/* ==================================================
+   LINKOVI KOJE ĆEMO KASNIJE DODATI
+================================================== */
+
+.contact-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 18px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    color: var(--red);
+
+    text-decoration: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.contact-link:hover {
+    opacity: 0.8;
+
+    transform: translateX(3px);
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .contact-page-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .contact-page {
+        padding: 60px 0 75px;
+    }
+
+    .contact-page-grid {
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+    }
+
+    .contact-info-card {
+        min-height: 210px;
+
+        padding: 28px 22px;
+    }
+
+    .contact-card-number {
+        font-size: 48px;
+    }
+
+    .contact-info-card h3 {
+        font-size: 21px;
+    }
+
+    .contact-info-card p {
+        font-size: 12px;
+    }
+
+}
