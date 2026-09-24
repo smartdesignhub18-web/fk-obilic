@@ -9614,3 +9614,49 @@ img {
     }
 
 }
+
+/* ==================================================
+   CRVENO-BELA LOPTA - KARTICE EKIPA
+================================================== */
+
+.team-card .team-ball {
+    width: 52px;
+    height: 52px;
+
+    display: block;
+
+    margin-bottom: 18px;
+
+    border-radius: 50%;
+
+    border: 3px solid #ffffff;
+
+    background:
+        conic-gradient(
+            from 45deg,
+            var(--red) 0deg 90deg,
+            #ffffff 90deg 180deg,
+            var(--red) 180deg 270deg,
+            #ffffff 270deg 360deg
+        );
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.20),
+        inset 0 0 0 2px rgba(0,0,0,0.08);
+
+    transition:
+        transform 0.25s ease;
+}
+
+.team-card:hover .team-ball {
+    transform: rotate(12deg) scale(1.06);
+}
+
+@media (max-width: 620px) {
+
+    .team-card .team-ball {
+        width: 46px;
+        height: 46px;
+    }
+
+}
