@@ -12,7 +12,7 @@
         content="Званични сајт ФК Обилић Нови Кнежевац. Вести, утакмице, резултати, табела, селекције и информације о клубу."
     >
 
-    <link rel="stylesheet" href="style.css?v=27">
+    <link rel="stylesheet" href="style.css?v=29">
 </head>
 
 <body>
@@ -128,55 +128,58 @@
                         ТРАДИЦИЈА • ЗАЈЕДНИШТВО • БУДУЋНОСТ
                     </span>
 
-<h1>
-    ФК <span>Обилић</span>
-</h1>
+                    <h1>
+                        ФК <span>Обилић</span>
+                    </h1>
 
-<p>
-    Основан 1930. године.
-</p>
+                    <p>
+                        Основан 1930. године.
+                    </p>
+
+
+                    <!-- KLUPSKA PESMA -->
 
                     <div class="club-song">
 
-    <button
-        type="button"
-        id="club-song-button"
-        class="club-song-button"
-        aria-label="Пусти клупску песму"
-    >
+                        <button
+                            type="button"
+                            id="club-song-button"
+                            class="club-song-button"
+                            aria-label="Пусти клупску песму"
+                        >
 
-        <span class="club-song-icon">
-            ▶
-        </span>
+                            <span class="club-song-icon">
+                                ▶
+                            </span>
 
-        <span class="club-song-text">
-            ПУСТИ КЛУПСКУ ПЕСМУ
-        </span>
+                            <span class="club-song-text">
+                                ПУСТИ КЛУПСКУ ПЕСМУ
+                            </span>
 
-        <span
-            class="club-song-equalizer"
-            aria-hidden="true"
-        >
-            <i></i>
-            <i></i>
-            <i></i>
-            <i></i>
-        </span>
+                            <span
+                                class="club-song-equalizer"
+                                aria-hidden="true"
+                            >
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </span>
 
-    </button>
+                        </button>
 
 
-    <audio
-        id="club-song-audio"
-        preload="none"
-    >
-        <source
-            src="audio/obilic.mp3"
-            type="audio/mpeg"
-        >
-    </audio>
+                        <audio
+                            id="club-song-audio"
+                            preload="none"
+                        >
+                            <source
+                                src="audio/obilic.mp3"
+                                type="audio/mpeg"
+                            >
+                        </audio>
 
-</div>
+                    </div>
 
                 </div>
 
@@ -313,22 +316,24 @@
 
                     </div>
 
-<div
-    id="home-news-list"
-    class="news-list"
->
 
-    <div class="news-loading">
+                    <div
+                        id="home-news-list"
+                        class="news-list"
+                    >
 
-        <div class="loader"></div>
+                        <div class="news-loading">
 
-        <span>
-            Учитавање вести...
-        </span>
+                            <div class="loader"></div>
 
-    </div>
+                            <span>
+                                Учитавање вести...
+                            </span>
 
-</div>
+                        </div>
+
+                    </div>
+
                 </article>
 
 
@@ -340,147 +345,148 @@
                 <div class="quick-links">
 
 
-                    <a href="ekipe.html" class="quick-card">
+                    <!-- EKIPE -->
 
-                        <svg class="home-menu-icon football-svg"
-     viewBox="0 0 64 64"
-     aria-hidden="true">
+                    <a
+                        href="ekipe.html"
+                        class="quick-card team-card"
+                    >
 
-    <circle
-        cx="32"
-        cy="32"
-        r="27"
-        fill="#ffffff"
-        stroke="currentColor"
-        stroke-width="3"
-    />
+                        <span
+                            aria-hidden="true"
+                            style="
+                                filter:
+                                    hue-rotate(150deg)
+                                    saturate(1.6);
+                            "
+                        >
+                            ⚽
+                        </span>
 
-    <path
-        d="M32 19
-           L42 26
-           L38 38
-           L26 38
-           L22 26
-           Z"
-        fill="currentColor"
-    />
-
-    <path
-        d="M32 19 L32 6
-           M42 26 L55 22
-           M38 38 L46 51
-           M26 38 L18 51
-           M22 26 L9 22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-    />
-
-</svg>
-
-                        <strong>
+                        <h3>
                             ЕКИПЕ
-                        </strong>
+                        </h3>
 
-                        <small>
+                        <p>
                             Први тим и млађе селекције
-                        </small>
+                        </p>
 
                     </a>
 
+
+
+                    <!-- RASPORED -->
 
                     <a
                         href="utakmice.html"
-                        class="quick-card"
+                        class="quick-card team-card"
                     >
 
-                        <span class="icon">
+                        <span aria-hidden="true">
                             📅
                         </span>
 
-                        <strong>
+                        <h3>
                             РАСПОРЕД
-                        </strong>
+                        </h3>
 
-                        <small>
+                        <p>
                             Све утакмице клуба
-                        </small>
+                        </p>
 
                     </a>
 
+
+
+                    <!-- TABELA -->
 
                     <a
                         href="tabela.html"
-                        class="quick-card"
+                        class="quick-card team-card"
                     >
 
-                        <span class="icon">
+                        <span aria-hidden="true">
                             🏆
                         </span>
 
-                        <strong>
+                        <h3>
                             ТАБЕЛА
-                        </strong>
+                        </h3>
 
-                        <small>
+                        <p>
                             Пласман првог тима
-                        </small>
+                        </p>
 
                     </a>
 
+
+
+                    <!-- GALERIJA -->
 
                     <a
                         href="galerija.html"
-                        class="quick-card"
+                        class="quick-card team-card"
                     >
 
-                        <svg class="home-menu-icon gallery-svg"
-     viewBox="0 0 64 64"
-     aria-hidden="true">
+                        <span aria-hidden="true">
 
-    <rect
-        x="8"
-        y="11"
-        width="48"
-        height="42"
-        rx="5"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-    />
+                            <svg
+                                viewBox="0 0 64 64"
+                                width="42"
+                                height="42"
+                                style="
+                                    display: block;
+                                    color: var(--red);
+                                "
+                            >
 
-    <circle
-        cx="43"
-        cy="23"
-        r="5"
-        fill="currentColor"
-    />
+                                <rect
+                                    x="8"
+                                    y="11"
+                                    width="48"
+                                    height="42"
+                                    rx="5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                />
 
-    <path
-        d="M13 46
-           L25 33
-           L33 40
-           L39 34
-           L52 46"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-    />
+                                <circle
+                                    cx="43"
+                                    cy="23"
+                                    r="5"
+                                    fill="currentColor"
+                                />
 
-</svg>
+                                <path
+                                    d="
+                                        M13 46
+                                        L25 33
+                                        L33 40
+                                        L39 34
+                                        L52 46
+                                    "
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
 
-                        <strong>
+                            </svg>
+
+                        </span>
+
+                        <h3>
                             ГАЛЕРИЈА
-                        </strong>
+                        </h3>
 
-                        <small>
+                        <p>
                             Фотографије клуба
-                        </small>
+                        </p>
 
                     </a>
+
 
                 </div>
 
@@ -494,7 +500,10 @@
              EKIPE
         ================================================== -->
 
-        <section class="section" id="ekipe">
+        <section
+            class="section"
+            id="ekipe"
+        >
 
             <div class="container">
 
@@ -521,42 +530,16 @@
                         class="team-card"
                     >
 
-                       <svg class="team-football-icon"
-     viewBox="0 0 64 64"
-     aria-hidden="true">
-
-    <circle
-        cx="32"
-        cy="32"
-        r="27"
-        fill="#ffffff"
-        stroke="currentColor"
-        stroke-width="3"
-    />
-
-    <path
-        d="M32 19
-           L42 26
-           L38 38
-           L26 38
-           L22 26
-           Z"
-        fill="currentColor"
-    />
-
-    <path
-        d="M32 19 L32 6
-           M42 26 L55 22
-           M38 38 L46 51
-           M26 38 L18 51
-           M22 26 L9 22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-    />
-
-</svg>
+                        <span
+                            aria-hidden="true"
+                            style="
+                                filter:
+                                    hue-rotate(150deg)
+                                    saturate(1.6);
+                            "
+                        >
+                            ⚽
+                        </span>
 
                         <h3>
                             ПРВИ ТИМ
@@ -577,42 +560,16 @@
                         class="team-card"
                     >
 
-                        <svg class="team-football-icon"
-     viewBox="0 0 64 64"
-     aria-hidden="true">
-
-    <circle
-        cx="32"
-        cy="32"
-        r="27"
-        fill="#ffffff"
-        stroke="currentColor"
-        stroke-width="3"
-    />
-
-    <path
-        d="M32 19
-           L42 26
-           L38 38
-           L26 38
-           L22 26
-           Z"
-        fill="currentColor"
-    />
-
-    <path
-        d="M32 19 L32 6
-           M42 26 L55 22
-           M38 38 L46 51
-           M26 38 L18 51
-           M22 26 L9 22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-    />
-
-</svg>
+                        <span
+                            aria-hidden="true"
+                            style="
+                                filter:
+                                    hue-rotate(150deg)
+                                    saturate(1.6);
+                            "
+                        >
+                            ⚽
+                        </span>
 
                         <h3>
                             ПИОНИРИ
@@ -633,42 +590,16 @@
                         class="team-card"
                     >
 
-                        <svg class="team-football-icon"
-     viewBox="0 0 64 64"
-     aria-hidden="true">
-
-    <circle
-        cx="32"
-        cy="32"
-        r="27"
-        fill="#ffffff"
-        stroke="currentColor"
-        stroke-width="3"
-    />
-
-    <path
-        d="M32 19
-           L42 26
-           L38 38
-           L26 38
-           L22 26
-           Z"
-        fill="currentColor"
-    />
-
-    <path
-        d="M32 19 L32 6
-           M42 26 L55 22
-           M38 38 L46 51
-           M26 38 L18 51
-           M22 26 L9 22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-    />
-
-</svg>
+                        <span
+                            aria-hidden="true"
+                            style="
+                                filter:
+                                    hue-rotate(150deg)
+                                    saturate(1.6);
+                            "
+                        >
+                            ⚽
+                        </span>
 
                         <h3>
                             ПЕТЛИЋИ
@@ -767,6 +698,7 @@
 
                     </a>
 
+
                 </div>
 
             </div>
@@ -778,67 +710,64 @@
         <!-- =================================================
              GALERIJA
         ================================================== -->
-<!-- =================================================
-     GALERIJA
-================================================== -->
 
-<section
-    class="section"
-    id="galerija"
->
-
-    <div class="container">
-
-        <div class="section-heading">
-
-            <span>
-                ФК ОБИЛИЋ
-            </span>
-
-            <h2>
-                ГАЛЕРИЈА
-            </h2>
-
-            <p>
-                Фотографије са утакмица,
-                тренинга и дешавања у клубу.
-            </p>
-
-        </div>
-
-
-        <div
-            id="home-gallery-grid"
-            class="home-gallery-grid"
+        <section
+            class="section"
+            id="galerija"
         >
 
-            <div class="home-gallery-empty">
+            <div class="container">
 
-                <img
-                    src="images/grb.png"
-                    alt=""
+                <div class="section-heading">
+
+                    <span>
+                        ФК ОБИЛИЋ
+                    </span>
+
+                    <h2>
+                        ГАЛЕРИЈА
+                    </h2>
+
+                    <p>
+                        Фотографије са утакмица,
+                        тренинга и дешавања у клубу.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="home-gallery-grid"
+                    class="home-gallery-grid"
                 >
 
-                <span>
-                    Фотографије ће бити додате ускоро.
-                </span>
+                    <div class="home-gallery-empty">
+
+                        <img
+                            src="images/grb.png"
+                            alt=""
+                        >
+
+                        <span>
+                            Фотографије ће бити додате ускоро.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="home-gallery-more">
+
+                    <a href="galerija.html">
+                        ПОГЛЕДАЈ ЦЕЛУ ГАЛЕРИЈУ →
+                    </a>
+
+                </div>
 
             </div>
 
-        </div>
-
-
-        <div class="home-gallery-more">
-
-            <a href="galerija.html">
-                ПОГЛЕДАЈ ЦЕЛУ ГАЛЕРИЈУ →
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
+        </section>
 
 
 
@@ -872,32 +801,34 @@
 
 
                 <div
-    id="home-partners-grid"
-    class="partners-grid"
->
+                    id="home-partners-grid"
+                    class="partners-grid"
+                >
 
-    <div class="home-partners-loading">
+                    <div class="home-partners-loading">
 
-        <img
-            src="images/grb.png"
-            alt=""
-        >
+                        <img
+                            src="images/grb.png"
+                            alt=""
+                        >
 
-        <span>
-            Учитавање партнера...
-        </span>
+                        <span>
+                            Учитавање партнера...
+                        </span>
 
-    </div>
+                    </div>
 
-</div>
+                </div>
 
-<div class="home-partners-more">
 
-    <a href="partneri.html">
-        СВИ ПАРТНЕРИ →
-    </a>
+                <div class="home-partners-more">
 
-</div>
+                    <a href="partneri.html">
+                        СВИ ПАРТНЕРИ →
+                    </a>
+
+                </div>
+
             </div>
 
         </section>
@@ -967,6 +898,7 @@
                 <p class="smart-design">
 
                     Сајт израдио и дизајнирао
+
                     <strong>
                         Smart Design Hub
                     </strong>
@@ -981,21 +913,24 @@
 
 
 
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
     <script src="script.js"></script>
 
-    <!--
-        Isti JS koji koristi stranica utakmica i tabela.
-        Automatski učitava sledeću i poslednju utakmicu.
-    -->
     <script src="js/football.js"></script>
 
     <script src="js/vesti.js?v=2"></script>
+
     <script src="js/partneri.js?v=2"></script>
+
     <script src="js/galerija.js?v=2"></script>
 
+    <script src="js/footer.js?v=1"></script>
 
-<script src="js/footer.js?v=1"></script>
-<script src="js/pesma.js?v=1"></script>
+    <script src="js/pesma.js?v=1"></script>
+
 
 </body>
 </html>
