@@ -8672,3 +8672,158 @@ img {
     }
 
 }
+
+/* ==================================================
+   FOOTER - KONTAKT I DRUŠTVENE MREŽE
+================================================== */
+
+.footer-socials {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* NASLOV */
+
+.footer-socials-title {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    color: rgba(255,255,255,0.45);
+}
+
+
+/* LINKOVI */
+
+.footer-social-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+}
+
+
+/* POJEDINAČNI LINK */
+
+.footer-social-link {
+    min-height: 38px;
+
+    padding: 9px 12px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    border-radius: 5px;
+
+    border:
+        1px solid rgba(255,255,255,0.10);
+
+    background:
+        rgba(255,255,255,0.04);
+
+    color: rgba(255,255,255,0.68);
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* IKONICA */
+
+.footer-social-link svg {
+    width: 16px;
+    height: 16px;
+
+    fill: var(--red);
+
+    stroke: var(--red);
+
+    stroke-width: 1.5;
+
+    flex-shrink: 0;
+}
+
+
+/* INSTAGRAM */
+
+.footer-instagram-icon rect,
+.footer-instagram-icon circle {
+    fill: none;
+    stroke: var(--red);
+}
+
+.footer-instagram-icon .footer-icon-dot {
+    fill: var(--red);
+    stroke: none;
+}
+
+
+/* TEKST */
+
+.footer-social-link span {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+}
+
+
+/* HOVER */
+
+.footer-social-link:hover {
+    transform: translateY(-2px);
+
+    color: #ffffff;
+
+    border-color:
+        rgba(180,25,45,0.35);
+
+    background:
+        rgba(180,25,45,0.10);
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 700px) {
+
+    .footer-socials {
+        width: 100%;
+
+        margin: 8px 0;
+    }
+
+    .footer-social-links {
+        gap: 7px;
+    }
+
+    .footer-social-link {
+        padding: 8px 10px;
+    }
+
+    .footer-social-link span {
+        font-size: 8px;
+    }
+
+}
