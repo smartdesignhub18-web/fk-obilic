@@ -6890,3 +6890,337 @@ img {
     }
 
 }
+
+/* ==================================================
+   GALERIJA - STRANICA
+================================================== */
+
+.gallery-page {
+    padding: 85px 0 105px;
+    background: #f4f4f4;
+}
+
+
+/* ==================================================
+   FILTERI
+================================================== */
+
+.gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin: 35px 0 32px;
+}
+
+.gallery-filter {
+    padding: 11px 18px;
+
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+
+    background: #ffffff;
+
+    font-family: "Oswald", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.3px;
+
+    color: #555555;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.gallery-filter:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--red);
+
+    color: var(--red);
+}
+
+.gallery-filter.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   GRID GALERIJE
+================================================== */
+
+.gallery-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    width: 100%;
+}
+
+
+/* ==================================================
+   FOTOGRAFIJA
+   spremno za kasnije automatsko učitavanje
+================================================== */
+
+.gallery-item {
+    position: relative;
+
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background: #171717;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,0.13);
+
+    cursor: pointer;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+
+/* TAMNI PRELIV */
+
+.gallery-item::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 45%,
+            rgba(0,0,0,0.78) 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* PODACI PREKO SLIKE */
+
+.gallery-item-info {
+    position: absolute;
+
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+
+    z-index: 2;
+
+    color: #ffffff;
+}
+
+.gallery-item-info span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1.7px;
+
+    color: var(--red);
+}
+
+.gallery-item-info strong {
+    display: block;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 17px;
+    line-height: 1.25;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   PRAZNA GALERIJA
+================================================== */
+
+.gallery-empty {
+    grid-column: 1 / -1;
+
+    min-height: 280px;
+
+    padding: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 35px;
+
+    border-radius: 10px;
+
+    border: 1px dashed #d0d0d0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #eeeeee
+        );
+}
+
+.gallery-empty img {
+    width: 115px;
+    max-height: 135px;
+
+    object-fit: contain;
+
+    opacity: 0.22;
+
+    filter: grayscale(1);
+}
+
+.gallery-empty strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 22px;
+
+    color: #222222;
+}
+
+.gallery-empty p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: #777777;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .gallery-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .gallery-page {
+        padding: 60px 0 75px;
+    }
+
+    .gallery-filters {
+        margin: 27px 0 24px;
+
+        gap: 7px;
+    }
+
+    .gallery-filter {
+        padding: 9px 13px;
+
+        font-size: 9px;
+    }
+
+    .gallery-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+    .gallery-item {
+        border-radius: 6px;
+    }
+
+    .gallery-item-info {
+        left: 11px;
+        right: 11px;
+        bottom: 10px;
+    }
+
+    .gallery-item-info span {
+        font-size: 7px;
+    }
+
+    .gallery-item-info strong {
+        font-size: 13px;
+    }
+
+    .gallery-empty {
+        min-height: 230px;
+
+        padding: 30px 20px;
+
+        flex-direction: column;
+
+        gap: 18px;
+
+        text-align: center;
+    }
+
+    .gallery-empty img {
+        width: 85px;
+    }
+
+    .gallery-empty strong {
+        font-size: 19px;
+    }
+
+}
+
+
+/* ==================================================
+   VEOMA MALI EKRANI
+================================================== */
+
+@media (max-width: 380px) {
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
