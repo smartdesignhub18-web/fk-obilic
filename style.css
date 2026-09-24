@@ -7780,3 +7780,232 @@ img {
     }
 
 }
+
+/* ==================================================
+   KONTAKT - DINAMIČKI PODACI
+================================================== */
+
+.contact-details-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 38px;
+}
+
+
+/* ==================================================
+   POJEDINAČNI KONTAKT PODATAK
+================================================== */
+
+.contact-detail-item {
+    min-height: 150px;
+
+    padding: 25px 22px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1d1d1d,
+            #111111
+        );
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,0.16);
+
+    text-decoration: none;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.contact-detail-item:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,0.23);
+}
+
+
+/* CRVENA OZNAKA */
+
+.contact-detail-item::before {
+    content: "";
+
+    width: 38px;
+    height: 3px;
+
+    margin-bottom: 17px;
+
+    border-radius: 3px;
+
+    background: var(--red);
+}
+
+
+/* MALI NASLOV */
+
+.contact-detail-item span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1.8px;
+
+    color: var(--red);
+}
+
+
+/* GLAVNI PODATAK */
+
+.contact-detail-item strong {
+    display: block;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 19px;
+    line-height: 1.35;
+
+    color: #ffffff;
+
+    word-break: break-word;
+}
+
+
+/* ==================================================
+   PRAZNO STANJE
+================================================== */
+
+.contact-data-empty {
+    grid-column: 1 / -1;
+
+    min-height: 260px;
+
+    padding: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 30px;
+
+    border-radius: 10px;
+
+    border: 1px dashed #d0d0d0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #eeeeee
+        );
+}
+
+.contact-data-empty img {
+    width: 105px;
+    max-height: 125px;
+
+    object-fit: contain;
+
+    opacity: 0.22;
+
+    filter: grayscale(1);
+}
+
+.contact-data-empty strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 21px;
+
+    color: #222222;
+}
+
+.contact-data-empty p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: #777777;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .contact-details-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .contact-details-grid {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+
+        margin-top: 28px;
+    }
+
+    .contact-detail-item {
+        min-height: 125px;
+
+        padding: 22px 18px;
+    }
+
+    .contact-detail-item strong {
+        font-size: 17px;
+    }
+
+    .contact-data-empty {
+        min-height: 220px;
+
+        padding: 30px 20px;
+
+        flex-direction: column;
+
+        gap: 18px;
+
+        text-align: center;
+    }
+
+    .contact-data-empty img {
+        width: 80px;
+    }
+
+    .contact-data-empty strong {
+        font-size: 18px;
+    }
+
+}
