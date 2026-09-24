@@ -8827,3 +8827,232 @@ img {
     }
 
 }
+
+/* ==================================================
+   404 STRANICA
+================================================== */
+
+.error-page {
+    position: relative;
+
+    min-height: 72vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    padding: 90px 0;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #2a171c 0%,
+            #151515 55%,
+            #0d0d0d 100%
+        );
+}
+
+
+/* ==================================================
+   VELIKI 404 U POZADINI
+================================================== */
+
+.error-background-number {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: clamp(190px, 32vw, 520px);
+    font-weight: 700;
+
+    line-height: 0.8;
+
+    letter-spacing: -20px;
+
+    color: rgba(255,255,255,0.025);
+
+    user-select: none;
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   SADRŽAJ
+================================================== */
+
+.error-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+
+/* GRB */
+
+.error-crest {
+    width: 145px;
+    max-height: 170px;
+
+    object-fit: contain;
+
+    margin-bottom: 25px;
+
+    filter:
+        drop-shadow(
+            0 12px 25px rgba(0,0,0,0.4)
+        );
+}
+
+
+/* MALI NASLOV */
+
+.error-small-title {
+    margin-bottom: 12px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 2.7px;
+
+    color: var(--red);
+}
+
+
+/* GLAVNI NASLOV */
+
+.error-content h1 {
+    max-width: 760px;
+
+    margin: 0;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: clamp(34px, 5vw, 64px);
+    font-weight: 700;
+
+    line-height: 1.05;
+
+    color: #ffffff;
+}
+
+
+/* TEKST */
+
+.error-content p {
+    max-width: 520px;
+
+    margin: 18px 0 28px;
+
+    font-size: 14px;
+    line-height: 1.8;
+
+    color: rgba(255,255,255,0.58);
+}
+
+
+/* ==================================================
+   DUGME
+================================================== */
+
+.error-home-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 46px;
+
+    padding: 13px 20px;
+
+    border-radius: 5px;
+
+    background: var(--red);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,0.25);
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.error-home-button:hover {
+    transform: translateY(-3px);
+
+    opacity: 0.92;
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.32);
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .error-page {
+        min-height: 68vh;
+
+        padding: 70px 0;
+    }
+
+    .error-background-number {
+        font-size: 220px;
+
+        letter-spacing: -10px;
+    }
+
+    .error-crest {
+        width: 110px;
+
+        margin-bottom: 20px;
+    }
+
+    .error-content h1 {
+        font-size: 34px;
+    }
+
+    .error-content p {
+        margin: 15px 0 24px;
+
+        padding: 0 15px;
+
+        font-size: 12px;
+    }
+
+    .error-home-button {
+        min-height: 43px;
+
+        padding: 12px 17px;
+
+        font-size: 10px;
+    }
+
+}
