@@ -1,5 +1,5 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEŽEVAC
+   FK OBILIĆ NOVI KNEZEVAC
    VESTI
 ========================================================= */
 
@@ -25,6 +25,7 @@ async function loadNews() {
                 }
             );
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -32,6 +33,7 @@ async function loadNews() {
             );
 
         }
+
 
         const data =
             await response.json();
@@ -96,13 +98,9 @@ async function loadNews() {
 
 function renderHomeNews(news) {
 
-    /*
-        Ovaj selektor postoji samo na index.html.
-    */
-
     const container =
         document.querySelector(
-            "#vesti .news-list"
+            "#home-news-list"
         );
 
 
@@ -114,11 +112,9 @@ function renderHomeNews(news) {
     if (!news.length) {
 
         container.innerHTML = `
-
             <div class="football-error">
                 Тренутно нема објављених вести.
             </div>
-
         `;
 
         return;
@@ -137,15 +133,21 @@ function renderHomeNews(news) {
                     article.image ||
                     "images/grb.png";
 
+
                 const date =
                     article.dateDisplay ||
                     formatNewsDate(article.date);
 
-                return `
 
+                const category =
+                    article.category ||
+                    "ВЕСТ";
+
+
+                return `
                     <a
                         href="vest.html?id=${encodeURIComponent(article.slug)}"
-                        class="news-item"
+                        class="news-item home-news-item"
                     >
 
                         <div class="news-placeholder news-thumb">
@@ -159,20 +161,44 @@ function renderHomeNews(news) {
                         </div>
 
 
-                        <div>
+                        <div class="home-news-content">
 
-                            <span>
-                                ${escapeHtml(date)}
-                            </span>
+                            <div class="home-news-meta">
+
+                                <span class="home-news-category">
+                                    ${escapeHtml(category)}
+                                </span>
+
+                                <span class="home-news-date">
+                                    ${escapeHtml(date)}
+                                </span>
+
+                            </div>
+
 
                             <h3>
                                 ${escapeHtml(article.title || "")}
                             </h3>
 
+
+                            ${
+                                article.excerpt
+                                    ? `
+                                        <p>
+                                            ${escapeHtml(article.excerpt)}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+
+                            <span class="home-news-read">
+                                ПРОЧИТАЈ ВЕСТ →
+                            </span>
+
                         </div>
 
                     </a>
-
                 `;
 
             })
@@ -196,19 +222,21 @@ function renderNewsPage(news) {
             ".news-page-grid"
         );
 
-        const loading =
-    document.querySelector(
-        "#news-page-loading"
-    );
+
+    const loading =
+        document.querySelector(
+            "#news-page-loading"
+        );
 
 
     if (!container) {
         return;
     }
 
+
     if (loading) {
-    loading.remove();
-}
+        loading.remove();
+    }
 
 
     if (!news.length) {
@@ -269,6 +297,7 @@ function renderFeaturedNews(article) {
     const image =
         article.image ||
         "images/grb.png";
+
 
     const date =
         article.dateDisplay ||
@@ -356,6 +385,7 @@ function renderNewsCard(article) {
     const image =
         article.image ||
         "images/grb.png";
+
 
     const date =
         article.dateDisplay ||
