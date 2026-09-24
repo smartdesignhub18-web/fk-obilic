@@ -9,7 +9,6 @@ async function loadContactData() {
 
     if (!container) return;
 
-
     try {
         const response = await fetch(
             "data/kontakt.json",
@@ -18,19 +17,16 @@ async function loadContactData() {
             }
         );
 
-
         if (!response.ok) {
             throw new Error(
                 `HTTP ${response.status}`
             );
         }
 
-
         const data = await response.json();
 
         const contact =
             data?.kontakt || {};
-
 
         const items = [];
 
@@ -49,7 +45,6 @@ async function loadContactData() {
             const phoneHref =
                 String(contact.telefon)
                     .replace(/[^\d+]/g, "");
-
 
             items.push(`
                 <a
@@ -91,7 +86,6 @@ async function loadContactData() {
         }
 
 
-
         /* =====================================================
            EMAIL
         ===================================================== */
@@ -102,7 +96,6 @@ async function loadContactData() {
                 escapeContactHtml(
                     contact.email
                 );
-
 
             items.push(`
                 <a
@@ -144,9 +137,8 @@ async function loadContactData() {
         }
 
 
-
         /* =====================================================
-           ADRESA
+           ADRESA / GOOGLE MAPS
         ===================================================== */
 
         if (contact.adresa) {
@@ -156,13 +148,28 @@ async function loadContactData() {
                     contact.adresa
                 );
 
+            let mapsUrl = "";
 
-            const mapsUrl =
-                "https://www.google.com/maps/search/?api=1&query=" +
-                encodeURIComponent(
-                    contact.adresa
-                );
+            if (contact.mapa) {
+                mapsUrl =
+                    sanitizeContactUrl(
+                        contact.mapa
+                    );
+            }
 
+            /*
+                Rezervna varijanta:
+                ako kasnije nema "mapa" linka,
+                napravi Google Maps pretragu iz adrese.
+            */
+
+            if (!mapsUrl) {
+                mapsUrl =
+                    "https://www.google.com/maps/search/?api=1&query=" +
+                    encodeURIComponent(
+                        contact.adresa
+                    );
+            }
 
             items.push(`
                 <a
@@ -188,7 +195,7 @@ async function loadContactData() {
                     <div class="contact-detail-content">
 
                         <span>
-                            АДРЕСА
+                            ЛОКАЦИЈА
                         </span>
 
                         <strong>
@@ -196,7 +203,7 @@ async function loadContactData() {
                         </strong>
 
                         <small>
-                            ОТВОРИ МАПУ →
+                            ОТВОРИ GOOGLE MAPS →
                         </small>
 
                     </div>
@@ -204,7 +211,6 @@ async function loadContactData() {
                 </a>
             `);
         }
-
 
 
         /* =====================================================
@@ -217,7 +223,6 @@ async function loadContactData() {
                 sanitizeContactUrl(
                     contact.instagram
                 );
-
 
             if (instagram) {
 
@@ -282,7 +287,6 @@ async function loadContactData() {
         }
 
 
-
         /* =====================================================
            FACEBOOK
         ===================================================== */
@@ -293,7 +297,6 @@ async function loadContactData() {
                 sanitizeContactUrl(
                     contact.facebook
                 );
-
 
             if (facebook) {
 
@@ -338,7 +341,6 @@ async function loadContactData() {
                 `);
             }
         }
-
 
 
         /* =====================================================
@@ -386,7 +388,6 @@ async function loadContactData() {
             error
         );
 
-
         container.innerHTML = `
             <div class="contact-data-empty">
 
@@ -402,7 +403,7 @@ async function loadContactData() {
 
 
 /* =========================================================
-   URL PROVERA
+   PROVERA LINKA
 ========================================================= */
 
 function sanitizeContactUrl(value = "") {
@@ -410,17 +411,14 @@ function sanitizeContactUrl(value = "") {
     const link =
         String(value).trim();
 
-
     if (!link) {
         return "";
     }
-
 
     try {
 
         const url =
             new URL(link);
-
 
         if (
             url.protocol !== "http:" &&
@@ -429,11 +427,9 @@ function sanitizeContactUrl(value = "") {
             return "";
         }
 
-
         return escapeContactAttribute(
             url.href
         );
-
 
     } catch {
 
