@@ -8387,3 +8387,288 @@ img {
     }
 
 }
+
+/* ==================================================
+   GALERIJA NA POČETNOJ
+================================================== */
+
+.home-gallery-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-top: 34px;
+}
+
+
+/* ==================================================
+   POJEDINAČNA FOTOGRAFIJA
+================================================== */
+
+.home-gallery-item {
+    position: relative;
+
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background: #151515;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,0.13);
+
+    text-decoration: none;
+}
+
+.home-gallery-item img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.4s ease;
+}
+
+.home-gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+
+/* ==================================================
+   PRELIV
+================================================== */
+
+.home-gallery-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 40%,
+            rgba(0,0,0,0.82) 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   TEKST PREKO SLIKE
+================================================== */
+
+.home-gallery-info {
+    position: absolute;
+
+    left: 17px;
+    right: 17px;
+    bottom: 15px;
+
+    z-index: 2;
+}
+
+.home-gallery-info span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 1.7px;
+
+    color: var(--red);
+}
+
+.home-gallery-info strong {
+    display: block;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 16px;
+    line-height: 1.25;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   PRAZNO STANJE
+================================================== */
+
+.home-gallery-empty {
+    grid-column: 1 / -1;
+
+    min-height: 190px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    border: 1px dashed #d1d1d1;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #eeeeee
+        );
+}
+
+.home-gallery-empty img {
+    width: 70px;
+    max-height: 85px;
+
+    object-fit: contain;
+
+    opacity: 0.18;
+
+    filter: grayscale(1);
+}
+
+.home-gallery-empty span {
+    font-family: "Oswald", sans-serif;
+
+    font-size: 14px;
+
+    color: #777777;
+}
+
+
+/* ==================================================
+   DUGME KA CELOJ GALERIJI
+================================================== */
+
+.home-gallery-more {
+    margin-top: 25px;
+
+    text-align: center;
+}
+
+.home-gallery-more a {
+    display: inline-block;
+
+    padding: 11px 18px;
+
+    border-radius: 5px;
+
+    background: var(--red);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 1.3px;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.home-gallery-more a:hover {
+    transform: translateY(-2px);
+
+    opacity: 0.9;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .home-gallery-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 620px) {
+
+    .home-gallery-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+
+        margin-top: 25px;
+    }
+
+    .home-gallery-item {
+        border-radius: 6px;
+    }
+
+    .home-gallery-info {
+        left: 10px;
+        right: 10px;
+        bottom: 9px;
+    }
+
+    .home-gallery-info span {
+        font-size: 7px;
+    }
+
+    .home-gallery-info strong {
+        font-size: 12px;
+    }
+
+    .home-gallery-empty {
+        min-height: 150px;
+
+        padding: 25px 18px;
+
+        flex-direction: column;
+
+        gap: 14px;
+
+        text-align: center;
+    }
+
+    .home-gallery-empty img {
+        width: 60px;
+    }
+
+    .home-gallery-empty span {
+        font-size: 12px;
+    }
+
+}
+
+
+/* ==================================================
+   VEOMA MALI EKRANI
+================================================== */
+
+@media (max-width: 380px) {
+
+    .home-gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

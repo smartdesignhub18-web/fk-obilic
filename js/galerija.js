@@ -8,13 +8,19 @@ let currentGalleryFilter = "sve";
 
 
 async function loadGallery() {
-    const container =
+
+    const pageContainer =
         document.querySelector("#gallery-grid");
 
-    if (!container) return;
+    const homeContainer =
+        document.querySelector("#home-gallery-grid");
+
+
+    if (!pageContainer && !homeContainer) return;
 
 
     try {
+
         const response = await fetch(
             "data/galerija.json",
             {
@@ -39,7 +45,26 @@ async function loadGallery() {
                 : [];
 
 
-        renderGallery();
+        /* =====================================================
+           GLAVNA GALERIJA
+        ===================================================== */
+
+        if (pageContainer) {
+            renderGalleryPage(
+                pageContainer
+            );
+        }
+
+
+        /* =====================================================
+           GALERIJA NA POČETNOJ
+        ===================================================== */
+
+        if (homeContainer) {
+            renderHomeGallery(
+                homeContainer
+            );
+        }
 
 
     } catch (error) {
@@ -50,44 +75,61 @@ async function loadGallery() {
         );
 
 
-        container.innerHTML = `
-            <div class="gallery-empty">
+        if (pageContainer) {
 
-                <img
-                    src="images/grb.png"
-                    alt=""
-                >
+            pageContainer.innerHTML = `
+                <div class="gallery-empty">
 
-                <div>
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
 
-                    <strong>
-                        ГАЛЕРИЈА ТРЕНУТНО НИЈЕ ДОСТУПНА
-                    </strong>
+                    <div>
 
-                    <p>
-                        Није могуће учитати фотографије.
-                    </p>
+                        <strong>
+                            ГАЛЕРИЈА ТРЕНУТНО НИЈЕ ДОСТУПНА
+                        </strong>
+
+                        <p>
+                            Није могуће учитати фотографије.
+                        </p>
+
+                    </div>
 
                 </div>
+            `;
+        }
 
-            </div>
-        `;
+
+        if (homeContainer) {
+
+            homeContainer.innerHTML = `
+                <div class="home-gallery-empty">
+
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
+
+                    <span>
+                        Галерија тренутно није доступна.
+                    </span>
+
+                </div>
+            `;
+        }
+
     }
 }
 
 
 
 /* =========================================================
-   PRIKAZ GALERIJE
+   GLAVNA GALERIJA
 ========================================================= */
 
-function renderGallery() {
-
-    const container =
-        document.querySelector("#gallery-grid");
-
-    if (!container) return;
-
+function renderGalleryPage(container) {
 
     const filteredItems =
         currentGalleryFilter === "sve"
@@ -147,7 +189,52 @@ function renderGallery() {
 
 
 /* =========================================================
-   POJEDINAČNA FOTOGRAFIJA
+   GALERIJA NA POČETNOJ
+========================================================= */
+
+function renderHomeGallery(container) {
+
+    if (galleryItems.length === 0) {
+
+        container.innerHTML = `
+            <div class="home-gallery-empty">
+
+                <img
+                    src="images/grb.png"
+                    alt=""
+                >
+
+                <span>
+                    Фотографије ће бити додате ускоро.
+                </span>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /*
+        Na početnoj prikazujemo prvih 6 fotografija.
+    */
+
+    const homeItems =
+        galleryItems.slice(0, 6);
+
+
+    container.innerHTML =
+        homeItems
+            .map(item =>
+                createHomeGalleryItem(item)
+            )
+            .join("");
+}
+
+
+
+/* =========================================================
+   POJEDINAČNA FOTOGRAFIJA - GLAVNA GALERIJA
 ========================================================= */
 
 function createGalleryItem(item) {
@@ -227,6 +314,76 @@ function createGalleryItem(item) {
 
 
 /* =========================================================
+   POJEDINAČNA FOTOGRAFIJA - POČETNA
+========================================================= */
+
+function createHomeGalleryItem(item) {
+
+    const title =
+        escapeGalleryHtml(
+            item.naslov || "ФК Обилић"
+        );
+
+
+    const image =
+        escapeGalleryHtml(
+            item.slika || ""
+        );
+
+
+    const category =
+        normalizeGalleryCategory(
+            item.kategorija
+        );
+
+
+    const categoryLabel =
+        getGalleryCategoryLabel(
+            category
+        );
+
+
+    if (!image) {
+        return "";
+    }
+
+
+    return `
+        <a
+            href="galerija.html"
+            class="home-gallery-item"
+        >
+
+            <img
+                src="${image}"
+                alt="${title}"
+                loading="lazy"
+                onerror="
+                    this.closest('.home-gallery-item').style.display='none';
+                "
+            >
+
+            <div class="home-gallery-overlay"></div>
+
+            <div class="home-gallery-info">
+
+                <span>
+                    ${categoryLabel}
+                </span>
+
+                <strong>
+                    ${title}
+                </strong>
+
+            </div>
+
+        </a>
+    `;
+}
+
+
+
+/* =========================================================
    FILTERI
 ========================================================= */
 
@@ -252,18 +409,34 @@ function setupGalleryFilters() {
 
 
                 currentGalleryFilter =
-                    normalizeGalleryCategory(filter);
+                    normalizeGalleryCategory(
+                        filter
+                    );
 
 
                 buttons.forEach(btn =>
-                    btn.classList.remove("active")
+                    btn.classList.remove(
+                        "active"
+                    )
                 );
 
 
-                button.classList.add("active");
+                button.classList.add(
+                    "active"
+                );
 
 
-                renderGallery();
+                const pageContainer =
+                    document.querySelector(
+                        "#gallery-grid"
+                    );
+
+
+                if (pageContainer) {
+                    renderGalleryPage(
+                        pageContainer
+                    );
+                }
             }
         );
 
@@ -285,7 +458,8 @@ function getGalleryCategoryLabel(category) {
     };
 
 
-    return labels[category] || "ФК ОБИЛИЋ";
+    return labels[category]
+        || "ФК ОБИЛИЋ";
 }
 
 
