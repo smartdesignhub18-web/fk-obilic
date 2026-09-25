@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-25T11:27:49.141Z",
+  "updatedAt": "2026-09-25T12:33:47.273Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889553,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jadran",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889553-obilic-jadran",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889584,
       "round": null,
       "home": "Obilić",
@@ -392,18 +404,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889614,
-      "round": null,
-      "home": "Obilić",
-      "away": "Šampion",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889614-obilic-sampion",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889569,
       "round": null,
       "home": "Obilić",
@@ -411,6 +411,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889569-obilic-tromedja",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889614,
+      "round": null,
+      "home": "Obilić",
+      "away": "Šampion",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889614-obilic-sampion",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889553,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jadran",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889553-obilic-jadran",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
