@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-25T05:26:47.613Z",
+  "updatedAt": "2026-09-25T06:34:02.856Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,18 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889584,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jedinstvo (M)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889629,
       "round": null,
       "home": "Obilić",
@@ -387,6 +375,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889584,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jedinstvo (M)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -428,18 +428,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889619,
       "round": null,
       "home": "Jedinstvo (SK)",
@@ -447,6 +435,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
