@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-25T09:28:55.119Z",
+  "updatedAt": "2026-09-25T10:28:27.508Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -440,18 +440,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889619,
       "round": null,
       "home": "Jedinstvo (SK)",
@@ -459,6 +447,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
