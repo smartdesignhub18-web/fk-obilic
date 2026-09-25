@@ -9735,3 +9735,1724 @@ img {
     }
 
 }
+
+/* ==================================================
+   POČETNA - NAJNOVIJE VESTI
+   NOVI TAMNI DIZAJN
+================================================== */
+
+
+/* GLAVNA KARTICA SEKCIJE */
+
+.home-news-card {
+    padding: 0 !important;
+
+    overflow: hidden;
+
+    border-radius: 12px !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b1c1f 0%,
+            #121315 100%
+        ) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.05) !important;
+
+    box-shadow:
+        0 18px 42px rgba(0,0,0,0.16) !important;
+}
+
+
+/* ==================================================
+   NASLOV SEKCIJE
+================================================== */
+
+.home-news-card .card-heading {
+    min-height: 78px;
+
+    padding: 0 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+}
+
+
+.home-news-card .card-heading h2 {
+    position: relative;
+
+    margin: 0;
+
+    padding-left: 19px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 27px;
+
+    color: #ffffff;
+}
+
+
+.home-news-card .card-heading h2::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 5px;
+    height: 34px;
+
+    transform:
+        translateY(-50%);
+
+    background: var(--red);
+}
+
+
+.home-news-card .card-heading a {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    letter-spacing: 0.5px;
+
+    color:
+        rgba(255,255,255,0.68);
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.home-news-card .card-heading a:hover {
+    color: #ffffff;
+
+    transform:
+        translateX(3px);
+}
+
+
+/* ==================================================
+   LISTA
+================================================== */
+
+#home-news-list {
+    display: grid;
+
+    gap: 0;
+
+    padding: 26px 28px 28px;
+
+    margin: 0;
+}
+
+
+/* ==================================================
+   VEST
+================================================== */
+
+.home-news-card .home-news-item {
+    display: grid;
+
+    grid-template-columns:
+        260px minmax(0, 1fr);
+
+    min-height: 220px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    background:
+        linear-gradient(
+            120deg,
+            #202124 0%,
+            #18191b 100%
+        );
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.23);
+
+    text-decoration: none;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.home-news-card .home-news-item:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(183,25,45,0.38);
+
+    box-shadow:
+        0 18px 34px rgba(0,0,0,0.32);
+}
+
+
+/* ==================================================
+   SLIKA
+================================================== */
+
+.home-news-card .news-thumb {
+    min-height: 220px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #292b2f,
+            #151618
+        );
+}
+
+
+.home-news-card .news-thumb img {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    inset: 0;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+.home-news-card .home-news-item:hover
+.news-thumb img {
+    transform:
+        scale(1.04);
+}
+
+
+/* AKO JE SLIKA GRB */
+
+.home-news-card
+.news-thumb
+img[src$="grb.png"] {
+
+    object-fit: contain;
+
+    padding: 27px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #24262a,
+            #141517
+        );
+}
+
+
+/* ==================================================
+   SADRŽAJ VESTI
+================================================== */
+
+.home-news-card .home-news-content {
+    position: relative;
+
+    padding:
+        31px 34px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+/* CRVENA VERTIKALNA LINIJA */
+
+.home-news-card
+.home-news-content::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 22px;
+    bottom: 22px;
+
+    width: 3px;
+
+    border-radius: 3px;
+
+    background: var(--red);
+}
+
+
+/* ==================================================
+   KATEGORIJA + DATUM
+================================================== */
+
+.home-news-card .home-news-meta {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-bottom: 13px;
+}
+
+
+.home-news-card .home-news-category {
+    padding:
+        5px 9px;
+
+    border-radius: 4px;
+
+    background:
+        rgba(183,25,45,0.13);
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    color: #e4586b;
+}
+
+
+.home-news-card .home-news-date {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    color:
+        rgba(255,255,255,0.36);
+}
+
+
+/* ==================================================
+   NASLOV VESTI
+================================================== */
+
+.home-news-card .home-news-content h3 {
+    max-width: 750px;
+
+    margin:
+        0 0 12px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 27px;
+
+    line-height: 1.22;
+
+    color: #ffffff;
+}
+
+
+/* ==================================================
+   OPIS
+================================================== */
+
+.home-news-card .home-news-content p {
+    max-width: 720px;
+
+    margin:
+        0 0 18px;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    color:
+        rgba(255,255,255,0.54);
+}
+
+
+/* ==================================================
+   PROČITAJ VEST
+================================================== */
+
+.home-news-card .home-news-read {
+    display: inline-flex;
+
+    align-items: center;
+
+    width: max-content;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    color: #e24b60;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.home-news-card .home-news-item:hover
+.home-news-read {
+
+    transform:
+        translateX(4px);
+
+    color: #ff6075;
+}
+
+
+/* ==================================================
+   AKO BUDE VIŠE VESTI
+================================================== */
+
+#home-news-list
+.home-news-item
++ .home-news-item {
+
+    margin-top: 16px;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .home-news-card .home-news-item {
+
+        grid-template-columns:
+            210px minmax(0, 1fr);
+    }
+
+
+    .home-news-card .home-news-content {
+
+        padding:
+            26px 27px;
+    }
+
+
+    .home-news-card
+    .home-news-content h3 {
+
+        font-size: 23px;
+    }
+
+}
+
+
+/* ==================================================
+   MOBILNI
+================================================== */
+
+@media (max-width: 650px) {
+
+    .home-news-card .card-heading {
+
+        min-height: 70px;
+
+        padding:
+            0 18px;
+    }
+
+
+    .home-news-card
+    .card-heading h2 {
+
+        font-size: 22px;
+
+        padding-left: 14px;
+    }
+
+
+    .home-news-card
+    .card-heading h2::before {
+
+        width: 4px;
+        height: 28px;
+    }
+
+
+    #home-news-list {
+
+        padding:
+            16px;
+    }
+
+
+    .home-news-card
+    .home-news-item {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .home-news-card
+    .news-thumb {
+
+        min-height: 220px;
+
+        height: 220px;
+    }
+
+
+    .home-news-card
+    .news-thumb
+    img[src$="grb.png"] {
+
+        padding: 34px;
+    }
+
+
+    .home-news-card
+    .home-news-content {
+
+        padding:
+            23px 20px 24px;
+    }
+
+
+    .home-news-card
+    .home-news-content::before {
+
+        left: 0;
+        top: 0;
+        bottom: auto;
+
+        width: 100%;
+        height: 3px;
+    }
+
+
+    .home-news-card
+    .home-news-content h3 {
+
+        font-size: 21px;
+    }
+
+
+    .home-news-card
+    .home-news-content p {
+
+        font-size: 12px;
+    }
+
+}
+
+/* =========================================================
+   POČETNA - VESTI
+   FEATURED SPORTS DIZAJN
+========================================================= */
+
+.home-news-card {
+    padding: 0 !important;
+    overflow: hidden;
+
+    border-radius: 12px !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b1c1f,
+            #111214
+        ) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.05) !important;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.18) !important;
+}
+
+
+/* =========================================================
+   NASLOV SEKCIJE
+========================================================= */
+
+.home-news-card .card-heading {
+    min-height: 76px;
+
+    padding:
+        0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+}
+
+
+.home-news-card .card-heading h2 {
+    position: relative;
+
+    margin: 0;
+
+    padding-left: 18px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 26px;
+
+    color: #ffffff;
+}
+
+
+.home-news-card .card-heading h2::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 5px;
+    height: 34px;
+
+    transform:
+        translateY(-50%);
+
+    background:
+        var(--red);
+}
+
+
+.home-news-card .card-heading a {
+    color:
+        rgba(255,255,255,0.65);
+
+    text-decoration: none;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 0.7px;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.home-news-card .card-heading a:hover {
+    color: #ffffff;
+
+    transform:
+        translateX(3px);
+}
+
+
+/* =========================================================
+   LISTA VESTI
+========================================================= */
+
+#home-news-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+
+    padding:
+        22px;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   OSNOVNA KARTICA
+========================================================= */
+
+.home-news-card .home-news-item {
+    min-height: 290px;
+
+    position: relative;
+
+    display: block;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #17181a;
+
+    border:
+        1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.22);
+
+    text-decoration: none;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.home-news-card .home-news-item:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(183,25,45,0.40);
+
+    box-shadow:
+        0 18px 36px rgba(0,0,0,0.32);
+}
+
+
+/* =========================================================
+   PRVA / GLAVNA VEST
+========================================================= */
+
+.home-news-card
+.home-news-item:first-child {
+
+    grid-column:
+        1 / -1;
+
+    min-height: 390px;
+}
+
+
+/* =========================================================
+   SLIKA PREKO CELE KARTICE
+========================================================= */
+
+.home-news-card .news-thumb {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    overflow: hidden;
+
+    background: #17181a;
+}
+
+
+.home-news-card .news-thumb::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(12,13,15,0.94) 0%,
+            rgba(12,13,15,0.80) 35%,
+            rgba(12,13,15,0.35) 70%,
+            rgba(12,13,15,0.15) 100%
+        );
+
+    z-index: 1;
+}
+
+
+.home-news-card .news-thumb img {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    inset: 0;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.45s ease;
+}
+
+
+.home-news-card
+.home-news-item:hover
+.news-thumb img {
+
+    transform:
+        scale(1.045);
+}
+
+
+/* =========================================================
+   AKO JE UMESTO FOTOGRAFIJE GRB
+========================================================= */
+
+.home-news-card
+.news-thumb
+img[src$="grb.png"] {
+
+    object-fit: contain;
+
+    padding: 55px;
+
+    opacity: 0.45;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #292b2f,
+            #111214
+        );
+}
+
+
+/* =========================================================
+   TEKST PREKO SLIKE
+========================================================= */
+
+.home-news-card .home-news-content {
+    width: 62%;
+
+    min-height: 100%;
+
+    position: relative;
+
+    z-index: 2;
+
+    padding:
+        34px 36px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    background: transparent !important;
+}
+
+
+/* UKLANJAMO STARU CRVENU LINIJU */
+
+.home-news-card
+.home-news-content::before {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.home-news-card .home-news-meta {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 11px;
+
+    margin-bottom: 11px;
+}
+
+
+.home-news-card .home-news-category {
+    padding:
+        5px 9px;
+
+    border-radius: 4px;
+
+    background:
+        var(--red);
+
+    color: #ffffff;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+}
+
+
+.home-news-card .home-news-date {
+    color:
+        rgba(255,255,255,0.58);
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   NASLOV
+========================================================= */
+
+.home-news-card
+.home-news-content h3 {
+
+    max-width: 700px;
+
+    margin:
+        0 0 11px;
+
+    color: #ffffff;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 30px;
+    line-height: 1.18;
+
+    text-shadow:
+        0 3px 15px rgba(0,0,0,0.35);
+}
+
+
+/* =========================================================
+   KRATAK OPIS
+========================================================= */
+
+.home-news-card
+.home-news-content p {
+
+    max-width: 650px;
+
+    margin:
+        0 0 17px;
+
+    color:
+        rgba(255,255,255,0.72);
+
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   PROČITAJ VEST
+========================================================= */
+
+.home-news-card
+.home-news-read {
+
+    width: max-content;
+
+    color: #ff5168;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.home-news-card
+.home-news-item:hover
+.home-news-read {
+
+    transform:
+        translateX(5px);
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   DRUGA I TREĆA VEST
+========================================================= */
+
+.home-news-card
+.home-news-item:not(:first-child) {
+
+    min-height: 300px;
+}
+
+
+.home-news-card
+.home-news-item:not(:first-child)
+.home-news-content {
+
+    width: 100%;
+
+    padding:
+        27px 26px;
+}
+
+
+.home-news-card
+.home-news-item:not(:first-child)
+.news-thumb::after {
+
+    background:
+        linear-gradient(
+            0deg,
+            rgba(10,11,12,0.96) 0%,
+            rgba(10,11,12,0.70) 48%,
+            rgba(10,11,12,0.15) 100%
+        );
+}
+
+
+.home-news-card
+.home-news-item:not(:first-child)
+.home-news-content h3 {
+
+    font-size: 23px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    #home-news-list {
+        grid-template-columns: 1fr;
+    }
+
+
+    .home-news-card
+    .home-news-item:first-child {
+
+        grid-column: auto;
+
+        min-height: 350px;
+    }
+
+
+    .home-news-card
+    .home-news-content {
+
+        width: 80%;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILNI
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .home-news-card
+    .card-heading {
+
+        min-height: 68px;
+
+        padding:
+            0 17px;
+    }
+
+
+    .home-news-card
+    .card-heading h2 {
+
+        font-size: 21px;
+
+        padding-left: 14px;
+    }
+
+
+    .home-news-card
+    .card-heading h2::before {
+
+        width: 4px;
+        height: 27px;
+    }
+
+
+    #home-news-list {
+
+        padding:
+            14px;
+
+        gap: 13px;
+    }
+
+
+    .home-news-card
+    .home-news-item,
+    .home-news-card
+    .home-news-item:first-child,
+    .home-news-card
+    .home-news-item:not(:first-child) {
+
+        min-height: 330px;
+    }
+
+
+    .home-news-card
+    .news-thumb::after,
+    .home-news-card
+    .home-news-item:not(:first-child)
+    .news-thumb::after {
+
+        background:
+            linear-gradient(
+                0deg,
+                rgba(9,10,11,0.97) 0%,
+                rgba(9,10,11,0.77) 50%,
+                rgba(9,10,11,0.15) 100%
+            );
+    }
+
+
+    .home-news-card
+    .home-news-content,
+    .home-news-card
+    .home-news-item:not(:first-child)
+    .home-news-content {
+
+        width: 100%;
+
+        padding:
+            23px 20px;
+    }
+
+
+    .home-news-card
+    .home-news-content h3,
+    .home-news-card
+    .home-news-item:not(:first-child)
+    .home-news-content h3 {
+
+        font-size: 21px;
+    }
+
+
+    .home-news-card
+    .home-news-content p {
+
+        font-size: 12px;
+
+        line-height: 1.55;
+    }
+
+}
+
+/* =========================================================
+   POJEDINAČNA VEST - NOVI PRIKAZ FOTOGRAFIJE
+========================================================= */
+
+.article-image-wrap {
+    width: 100%;
+
+    margin-top: 35px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    background: transparent;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.10);
+}
+
+
+.article-image {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    min-height: 0;
+    max-height: none;
+
+    padding: 0;
+
+    object-fit: initial;
+
+    background: transparent;
+}
+
+
+/* BLAGI HOVER SAMO NA RAČUNARU */
+
+@media (hover: hover) {
+
+    .article-image {
+        transition:
+            transform 0.35s ease;
+    }
+
+    .article-image-wrap:hover
+    .article-image {
+
+        transform:
+            scale(1.015);
+    }
+
+}
+
+
+/* =========================================================
+   IZVOR VESTI
+========================================================= */
+
+.article-body .article-source {
+    margin-top: 32px;
+    margin-bottom: 0;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid #dddddd;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    color: #888;
+}
+
+
+.article-body .article-source a {
+    margin-left: 4px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-weight: 600;
+
+    color: var(--red);
+
+    transition:
+        color 0.2s ease;
+}
+
+
+.article-body .article-source a:hover {
+    color: var(--red-dark);
+}
+
+
+/* DA IZVOR NE DOBIJE VELIKO PRVO SLOVO */
+
+.article-body
+.article-source::first-letter {
+
+    float: none;
+
+    margin: 0;
+
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+
+    color: inherit;
+}
+
+
+/* MOBILNI */
+
+@media (max-width: 520px) {
+
+    .article-image-wrap {
+        margin-top: 25px;
+
+        border-radius: 9px;
+    }
+
+    .article-body .article-source {
+        margin-top: 26px;
+
+        font-size: 12px;
+    }
+
+}
+
+/* ==================================================
+   UNUTRAŠNJE STRANICE - VEĆA HERO FOTOGRAFIJA
+================================================== */
+
+.page-hero {
+    height: 540px;
+
+    padding-bottom: 70px;
+
+    background-size: cover;
+
+    background-position: center 55%;
+}
+
+
+/* TABLET */
+
+@media (max-width: 800px) {
+
+    .page-hero {
+        height: 440px;
+
+        padding-bottom: 50px;
+
+        background-position: center 55%;
+    }
+
+}
+
+
+/* TELEFON */
+
+@media (max-width: 520px) {
+
+    .page-hero {
+        height: 390px;
+
+        padding-bottom: 42px;
+
+        background-position: center 55%;
+    }
+
+}
+
+/* ==================================================
+   UNUTRAŠNJE STRANICE - HERO SLIKA
+================================================== */
+
+.page-hero {
+    height: 540px;
+    padding-bottom: 70px;
+    background-size: cover;
+    background-position: center 30%;
+}
+
+
+/* TABLET */
+@media (max-width: 800px) {
+    .page-hero {
+        height: 440px;
+        padding-bottom: 50px;
+        background-position: center 28%;
+    }
+}
+
+
+/* TELEFON */
+@media (max-width: 520px) {
+    .page-hero {
+        height: 390px;
+        padding-bottom: 42px;
+        background-position: center 25%;
+    }
+}
+
+/* =========================================================
+   STRANICA VESTI - MODERNI SPORTS NEWS DIZAJN
+========================================================= */
+
+
+/* =========================================================
+   GLAVNA VEST
+========================================================= */
+
+.news-feature-card {
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(360px, 0.85fr);
+
+    min-height: 500px;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.10);
+}
+
+
+/* =========================================================
+   GLAVNA FOTOGRAFIJA
+========================================================= */
+
+.news-feature-image {
+    min-height: 500px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #e9e9e9;
+}
+
+
+.news-image-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+
+    display: block;
+
+    position: relative;
+
+    background: #e9e9e9;
+}
+
+
+/* UKLANJAMO STARI KRUG */
+
+.news-image-placeholder::before {
+    display: none;
+}
+
+
+/* PRAVA FOTOGRAFIJA */
+
+.news-image-placeholder img {
+    width: 100%;
+    height: 100%;
+
+    max-height: none;
+
+    position: absolute;
+
+    inset: 0;
+
+    object-fit: cover;
+
+    filter: none;
+
+    transition:
+        transform 0.4s ease;
+}
+
+
+.news-feature-image:hover
+.news-image-placeholder img {
+
+    transform:
+        scale(1.035);
+}
+
+
+/* AKO JE SAMO GRB */
+
+.news-image-placeholder
+img[src$="grb.png"] {
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 90px;
+
+    object-fit: contain;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #292929,
+            #111111
+        );
+
+    filter:
+        drop-shadow(
+            0 15px 25px rgba(0,0,0,0.30)
+        );
+}
+
+
+/* =========================================================
+   TEKST GLAVNE VESTI
+========================================================= */
+
+.news-feature-content {
+    padding:
+        48px 46px;
+
+    justify-content: center;
+}
+
+
+.news-feature-content h2 {
+    margin-top: 18px;
+
+    font-size: 38px;
+
+    line-height: 1.13;
+}
+
+
+.news-feature-content p {
+    margin-top: 20px;
+
+    max-width: 480px;
+
+    font-size: 14px;
+    line-height: 1.75;
+
+    color: #666666;
+}
+
+
+/* =========================================================
+   MALE VESTI
+========================================================= */
+
+.news-list-card {
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.news-list-card:hover {
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 16px 36px rgba(0,0,0,0.13);
+}
+
+
+/* =========================================================
+   FOTOGRAFIJE MALIH VESTI
+========================================================= */
+
+.news-list-image {
+    height: 230px;
+
+    display: block;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #e8e8e8;
+}
+
+
+.news-list-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    filter: none;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+.news-list-card:hover
+.news-list-image img {
+
+    transform:
+        scale(1.04);
+}
+
+
+/* AKO JE GRB UMESTO FOTOGRAFIJE */
+
+.news-list-image
+img[src$="grb.png"] {
+
+    padding: 45px;
+
+    object-fit: contain;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #292929,
+            #111111
+        );
+
+    filter:
+        drop-shadow(
+            0 10px 18px rgba(0,0,0,0.30)
+        );
+}
+
+
+/* =========================================================
+   SADRŽAJ MALIH VESTI
+========================================================= */
+
+.news-list-content {
+    padding:
+        23px 23px 27px;
+}
+
+
+.news-list-content h3 {
+    margin-top: 13px;
+
+    font-size: 21px;
+
+    line-height: 1.25;
+}
+
+
+.news-list-content p {
+    margin-top: 12px;
+
+    font-size: 12px;
+    line-height: 1.65;
+
+    color: #777777;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .news-feature-card {
+        grid-template-columns: 1fr;
+    }
+
+
+    .news-feature-image,
+    .news-image-placeholder {
+
+        min-height: 420px;
+    }
+
+
+    .news-feature-content {
+        padding:
+            34px 30px 38px;
+    }
+
+
+    .news-feature-content h2 {
+        font-size: 31px;
+    }
+
+}
+
+
+/* =========================================================
+   TELEFON
+========================================================= */
+
+@media (max-width: 620px) {
+
+    .news-feature-card {
+        min-height: 0;
+    }
+
+
+    .news-feature-image,
+    .news-image-placeholder {
+
+        min-height: 290px;
+        height: 290px;
+    }
+
+
+    .news-image-placeholder
+    img[src$="grb.png"] {
+
+        padding: 55px;
+    }
+
+
+    .news-feature-content {
+        padding:
+            26px 21px 30px;
+    }
+
+
+    .news-feature-content h2 {
+        font-size: 25px;
+    }
+
+
+    .news-list-image {
+        height: 210px;
+    }
+
+
+    .news-list-image
+    img[src$="grb.png"] {
+
+        padding: 42px;
+    }
+
+}

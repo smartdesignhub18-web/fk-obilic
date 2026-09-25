@@ -35,12 +35,6 @@ async function loadArticle() {
 
     try {
 
-        /*
-            Uzimamo slug iz URL-a:
-
-            vest.html?id=tromedja-obilic
-        */
-
         const params =
             new URLSearchParams(
                 window.location.search
@@ -58,11 +52,6 @@ async function loadArticle() {
 
         }
 
-
-
-        /*
-            Učitavanje svih vesti
-        */
 
         const response =
             await fetch(
@@ -95,11 +84,6 @@ async function loadArticle() {
         }
 
 
-
-        /*
-            Pronalazimo vest
-        */
-
         const article =
             news.find(
                 item =>
@@ -116,11 +100,6 @@ async function loadArticle() {
 
         }
 
-
-
-        /*
-            Prikaz vesti
-        */
 
         renderArticle(article);
 
@@ -170,13 +149,8 @@ async function loadArticle() {
 
 function renderArticle(article) {
 
-    /*
-        Naslov stranice u browseru
-    */
-
     document.title =
         `${article.title} | ФК Обилић Нови Кнежевац`;
-
 
 
     /* KATEGORIJA */
@@ -185,7 +159,6 @@ function renderArticle(article) {
         "#article-category",
         article.category || "ВЕСТ"
     );
-
 
 
     /* DATUM */
@@ -197,7 +170,6 @@ function renderArticle(article) {
     );
 
 
-
     /* NASLOV */
 
     setText(
@@ -206,14 +178,12 @@ function renderArticle(article) {
     );
 
 
-
     /* KRATAK UVOD */
 
     setText(
         "#article-excerpt",
         article.excerpt || ""
     );
-
 
 
     /* SLIKA */
@@ -246,24 +216,18 @@ function renderArticle(article) {
     }
 
 
-
-    /*
-        Rezultat utakmice,
-        ako postoji u toj vesti.
-    */
+    /* REZULTAT */
 
     renderArticleMatch(
         article.match
     );
 
 
-
-    /*
-        Glavni tekst vesti
-    */
+    /* TEKST + IZVOR */
 
     renderArticleBody(
-        article.content
+        article.content,
+        article.source
     );
 
 }
@@ -321,7 +285,6 @@ function renderArticleMatch(match) {
     );
 
 
-
     /* DOMAĆIN GRB */
 
     const homeLogo =
@@ -334,7 +297,7 @@ function renderArticleMatch(match) {
 
         homeLogo.src =
             match.homeLogo ||
-            "images/grbovi/default.webp";
+            "images/grb.png";
 
         homeLogo.alt =
             match.home || "";
@@ -351,7 +314,6 @@ function renderArticleMatch(match) {
     }
 
 
-
     /* GOST GRB */
 
     const awayLogo =
@@ -364,7 +326,7 @@ function renderArticleMatch(match) {
 
         awayLogo.src =
             match.awayLogo ||
-            "images/grbovi/default.webp";
+            "images/grb.png";
 
         awayLogo.alt =
             match.away || "";
@@ -388,7 +350,10 @@ function renderArticleMatch(match) {
    TEKST VESTI
 ========================================================= */
 
-function renderArticleBody(content) {
+function renderArticleBody(
+    content,
+    source
+) {
 
     const container =
         document.querySelector(
@@ -401,38 +366,93 @@ function renderArticleBody(content) {
     }
 
 
+    let html = "";
+
+
     if (
-        !Array.isArray(content) ||
-        content.length === 0
+        Array.isArray(content) &&
+        content.length > 0
     ) {
 
-        container.innerHTML = `
+        html =
+            content
+                .map(paragraph => {
 
+                    return `
+                        <p>
+                            ${escapeHtml(paragraph)}
+                        </p>
+                    `;
+
+                })
+                .join("");
+
+    }
+
+    else {
+
+        html = `
             <p>
                 Текст вести тренутно није доступан.
             </p>
-
         `;
 
-        return;
+    }
+
+
+    /* IZVOR */
+
+    if (
+        source &&
+        source.name
+    ) {
+
+        const sourceName =
+            escapeHtml(
+                source.name
+            );
+
+        const sourceUrl =
+            sanitizeUrl(
+                source.url
+            );
+
+
+        if (sourceUrl) {
+
+            html += `
+                <p class="article-source">
+                    Извор:
+                    <a
+                        href="${escapeAttribute(sourceUrl)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        ${sourceName} →
+                    </a>
+                </p>
+            `;
+
+        }
+
+        else {
+
+            html += `
+                <p class="article-source">
+                    Извор:
+                    <strong>
+                        ${sourceName}
+                    </strong>
+                </p>
+            `;
+
+        }
 
     }
 
 
     container.innerHTML =
-        content
-            .map(paragraph => {
-
-                return `
-
-                    <p>
-                        ${escapeHtml(paragraph)}
-                    </p>
-
-                `;
-
-            })
-            .join("");
+        html;
 
 }
 
@@ -475,6 +495,44 @@ function formatArticleDate(dateString) {
             timeZone: "Europe/Belgrade"
         }
     ).format(date);
+
+}
+
+
+
+/* =========================================================
+   SIGURNI LINKOVI
+========================================================= */
+
+function sanitizeUrl(value = "") {
+
+    try {
+
+        const url =
+            new URL(
+                String(value)
+            );
+
+
+        if (
+            url.protocol !== "http:" &&
+            url.protocol !== "https:"
+        ) {
+
+            return "";
+
+        }
+
+
+        return url.href;
+
+    }
+
+    catch {
+
+        return "";
+
+    }
 
 }
 
@@ -535,5 +593,13 @@ function escapeHtml(value = "") {
             "'",
             "&#039;"
         );
+
+}
+
+
+
+function escapeAttribute(value = "") {
+
+    return escapeHtml(value);
 
 }

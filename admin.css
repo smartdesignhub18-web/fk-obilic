@@ -1,0 +1,1347 @@
+/* =========================================================
+   FK OBILIĆ NOVI KNEŽEVAC
+   ADMIN PANEL
+========================================================= */
+
+
+/* =========================================================
+   OSNOVNO
+========================================================= */
+
+:root {
+    --admin-red: #b7192d;
+    --admin-red-dark: #8f1020;
+
+    --admin-dark: #111214;
+    --admin-dark-2: #181a1d;
+    --admin-dark-3: #202226;
+
+    --admin-bg: #f3f4f6;
+
+    --admin-border: #e2e4e8;
+
+    --admin-text: #17181a;
+    --admin-muted: #777b82;
+
+    --admin-white: #ffffff;
+
+    --admin-radius: 12px;
+
+    --admin-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+body.admin-body {
+    min-height: 100vh;
+
+    background: var(--admin-bg);
+
+    color: var(--admin-text);
+
+    font-family:
+        "Poppins",
+        Arial,
+        sans-serif;
+}
+
+
+button,
+input {
+    font: inherit;
+}
+
+
+button {
+    border: 0;
+}
+
+
+[hidden] {
+    display: none !important;
+}
+
+
+
+/* =========================================================
+   LOGIN EKRAN
+========================================================= */
+
+.admin-login-screen {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(183, 25, 45, 0.18),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 10% 90%,
+            rgba(183, 25, 45, 0.10),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #111214 0%,
+            #18191c 48%,
+            #0c0d0f 100%
+        );
+}
+
+
+.admin-login-screen::before {
+    content: "";
+
+    position: absolute;
+
+    width: 520px;
+    height: 520px;
+
+    right: -180px;
+    top: -180px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.04);
+}
+
+
+.admin-login-screen::after {
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    left: -180px;
+    bottom: -200px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.04);
+}
+
+
+
+/* =========================================================
+   LOGIN KARTICA
+========================================================= */
+
+.admin-login-card {
+    width: 100%;
+    max-width: 460px;
+
+    position: relative;
+    z-index: 2;
+
+    padding: 36px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, 0.98);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+
+
+/* =========================================================
+   LOGIN - KLUB
+========================================================= */
+
+.admin-login-club {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding-bottom: 25px;
+
+    margin-bottom: 28px;
+
+    border-bottom:
+        1px solid #ececef;
+}
+
+
+.admin-login-club img {
+    width: 54px;
+    height: 64px;
+
+    object-fit: contain;
+}
+
+
+.admin-login-club div {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.admin-login-club span {
+    margin-bottom: 2px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-login-club strong {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+
+    color: #18191b;
+}
+
+
+
+/* =========================================================
+   LOGIN NASLOV
+========================================================= */
+
+.admin-login-heading {
+    margin-bottom: 28px;
+}
+
+
+.admin-login-heading > span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-login-heading h1 {
+    margin: 0 0 10px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 34px;
+    line-height: 1.1;
+
+    color: #161719;
+}
+
+
+.admin-login-heading p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: var(--admin-muted);
+}
+
+
+
+/* =========================================================
+   LOGIN FORMA
+========================================================= */
+
+.admin-login-form {
+    display: grid;
+
+    gap: 18px;
+}
+
+
+.admin-form-group {
+    display: grid;
+
+    gap: 7px;
+}
+
+
+.admin-form-group label {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    color: #575a60;
+}
+
+
+.admin-form-group input {
+    width: 100%;
+    height: 48px;
+
+    padding: 0 14px;
+
+    border:
+        1px solid #dfe1e5;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    background: #fafafa;
+
+    color: #202124;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.admin-form-group input::placeholder {
+    color: #a0a3a9;
+}
+
+
+.admin-form-group input:focus {
+    border-color: var(--admin-red);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(183, 25, 45, 0.08);
+}
+
+
+
+/* =========================================================
+   LOGIN PORUKA
+========================================================= */
+
+.admin-login-message {
+    min-height: 18px;
+
+    margin-top: -3px;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: var(--admin-red);
+}
+
+
+.admin-login-message.success {
+    color: #28844a;
+}
+
+
+
+/* =========================================================
+   LOGIN DUGME
+========================================================= */
+
+.admin-login-button {
+    width: 100%;
+    height: 50px;
+
+    margin-top: 2px;
+
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--admin-red),
+            var(--admin-red-dark)
+        );
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    box-shadow:
+        0 10px 24px rgba(183, 25, 45, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.admin-login-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(183, 25, 45, 0.28);
+}
+
+
+.admin-login-button:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.6;
+
+    transform: none;
+}
+
+
+
+/* =========================================================
+   NAZAD NA SAJT
+========================================================= */
+
+.admin-back-link {
+    display: block;
+
+    margin-top: 25px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    color: #777a80;
+
+    transition:
+        color 0.2s ease;
+}
+
+
+.admin-back-link:hover {
+    color: var(--admin-red);
+}
+
+
+
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
+
+.admin-panel {
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        260px minmax(0, 1fr);
+
+    background: var(--admin-bg);
+}
+
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.admin-sidebar {
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 25px 18px 20px;
+
+    overflow-y: auto;
+
+    background:
+        linear-gradient(
+            180deg,
+            #151619 0%,
+            #101113 100%
+        );
+
+    border-right:
+        1px solid rgba(255,255,255,0.04);
+}
+
+
+
+/* =========================================================
+   SIDEBAR BRAND
+========================================================= */
+
+.admin-sidebar-brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 8px 23px;
+
+    margin-bottom: 20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+}
+
+
+.admin-sidebar-brand img {
+    width: 42px;
+    height: 50px;
+
+    object-fit: contain;
+}
+
+
+.admin-sidebar-brand div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.admin-sidebar-brand strong {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 16px;
+
+    letter-spacing: 0.5px;
+
+    color: #ffffff;
+}
+
+
+.admin-sidebar-brand span {
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: rgba(255,255,255,0.48);
+}
+
+
+
+/* =========================================================
+   NAVIGACIJA
+========================================================= */
+
+.admin-navigation {
+    display: grid;
+
+    gap: 5px;
+}
+
+
+.admin-nav-item {
+    width: 100%;
+
+    min-height: 45px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 13px;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    color:
+        rgba(255,255,255,0.68);
+
+    cursor: pointer;
+
+    text-align: left;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    letter-spacing: 0.7px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.admin-nav-item > span {
+    width: 23px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 15px;
+}
+
+
+.admin-nav-item:hover {
+    background:
+        rgba(255,255,255,0.05);
+
+    color: #ffffff;
+}
+
+
+.admin-nav-item.active {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(183,25,45,0.95),
+            rgba(143,16,32,0.95)
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(183,25,45,0.17);
+}
+
+
+.admin-nav-item.active > span {
+    color: #ffffff;
+}
+
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.admin-sidebar-bottom {
+    margin-top: auto;
+
+    padding-top: 25px;
+
+    display: grid;
+
+    gap: 10px;
+}
+
+
+.admin-sidebar-bottom a,
+.admin-sidebar-bottom button {
+    min-height: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color:
+        rgba(255,255,255,0.67);
+
+    cursor: pointer;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.admin-sidebar-bottom a:hover {
+    background:
+        rgba(255,255,255,0.09);
+
+    color: #ffffff;
+}
+
+
+.admin-sidebar-bottom button {
+    background:
+        rgba(183,25,45,0.12);
+
+    color: #d96a79;
+}
+
+
+.admin-sidebar-bottom button:hover {
+    background:
+        rgba(183,25,45,0.22);
+
+    color: #ffffff;
+}
+
+
+
+/* =========================================================
+   GLAVNI DEO
+========================================================= */
+
+.admin-main {
+    min-width: 0;
+}
+
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.admin-topbar {
+    min-height: 92px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 18px 32px;
+
+    background: #ffffff;
+
+    border-bottom:
+        1px solid var(--admin-border);
+}
+
+
+.admin-topbar-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-topbar h1 {
+    margin: 0;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 25px;
+    line-height: 1.2;
+
+    color: #17181a;
+}
+
+
+
+/* =========================================================
+   USER
+========================================================= */
+
+.admin-user {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-end;
+}
+
+
+.admin-user span {
+    margin-bottom: 2px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    color: #9a9da3;
+}
+
+
+.admin-user strong {
+    max-width: 250px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    color: #4e5157;
+}
+
+
+
+/* =========================================================
+   SADRŽAJ
+========================================================= */
+
+.admin-content {
+    padding: 30px 32px 50px;
+}
+
+
+.admin-page {
+    display: none;
+}
+
+
+.admin-page.active {
+    display: block;
+}
+
+
+
+/* =========================================================
+   DOBRODOŠLICA
+========================================================= */
+
+.admin-welcome-card {
+    min-height: 200px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 35px 38px;
+
+    margin-bottom: 25px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius:
+        var(--admin-radius);
+
+    background:
+        linear-gradient(
+            125deg,
+            #17181b 0%,
+            #202226 60%,
+            #111214 100%
+        );
+
+    box-shadow:
+        var(--admin-shadow);
+}
+
+
+.admin-welcome-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: 80px;
+    top: -110px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(183,25,45,0.13);
+}
+
+
+.admin-welcome-card > div {
+    position: relative;
+    z-index: 2;
+}
+
+
+.admin-welcome-card span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color: #d25465;
+}
+
+
+.admin-welcome-card h2 {
+    margin: 0 0 10px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 31px;
+
+    color: #ffffff;
+}
+
+
+.admin-welcome-card p {
+    max-width: 500px;
+
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color:
+        rgba(255,255,255,0.58);
+}
+
+
+.admin-welcome-card img {
+    width: 110px;
+    height: 130px;
+
+    position: relative;
+    z-index: 2;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 10px 18px rgba(0,0,0,0.35)
+        );
+}
+
+
+
+/* =========================================================
+   STAT KARTICE
+========================================================= */
+
+.admin-stat-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.admin-stat-card {
+    min-height: 145px;
+
+    padding: 22px;
+
+    border:
+        1px solid var(--admin-border);
+
+    border-radius:
+        var(--admin-radius);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 6px 20px rgba(0,0,0,0.04);
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.admin-stat-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--admin-red);
+}
+
+
+.admin-stat-card:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(0,0,0,0.07);
+}
+
+
+.admin-stat-card > span {
+    display: block;
+
+    margin-bottom: 15px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-stat-card strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 32px;
+
+    color: #18191b;
+}
+
+
+.admin-stat-card small {
+    font-size: 10px;
+
+    color: #92959b;
+}
+
+
+
+/* =========================================================
+   PRAZNE ADMIN STRANICE
+========================================================= */
+
+.admin-page > h2 {
+    margin:
+        0 0 22px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 27px;
+
+    color: #18191b;
+}
+
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .admin-panel {
+        grid-template-columns:
+            220px minmax(0, 1fr);
+    }
+
+
+    .admin-stat-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .admin-content {
+        padding:
+            25px 24px 45px;
+    }
+
+
+    .admin-topbar {
+        padding:
+            18px 24px;
+    }
+
+}
+
+
+
+/* =========================================================
+   MOBILNI
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .admin-login-card {
+        padding:
+            28px 22px;
+    }
+
+
+    .admin-login-heading h1 {
+        font-size: 29px;
+    }
+
+
+    .admin-panel {
+        display: block;
+    }
+
+
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+
+        position: relative;
+
+        padding:
+            16px 14px;
+
+        overflow: visible;
+    }
+
+
+    .admin-sidebar-brand {
+        padding:
+            0 4px 15px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .admin-navigation {
+        display: flex;
+
+        overflow-x: auto;
+
+        gap: 6px;
+
+        padding-bottom: 4px;
+
+        scrollbar-width: none;
+    }
+
+
+    .admin-navigation::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .admin-nav-item {
+        width: auto;
+
+        min-width: max-content;
+
+        padding:
+            0 13px;
+
+        flex-shrink: 0;
+    }
+
+
+    .admin-nav-item > span {
+        width: auto;
+    }
+
+
+    .admin-sidebar-bottom {
+        display: none;
+    }
+
+
+    .admin-topbar {
+        min-height: 78px;
+
+        padding:
+            14px 17px;
+    }
+
+
+    .admin-topbar h1 {
+        font-size: 21px;
+    }
+
+
+    .admin-user {
+        display: none;
+    }
+
+
+    .admin-content {
+        padding:
+            18px 14px 35px;
+    }
+
+
+    .admin-welcome-card {
+        min-height: 180px;
+
+        padding:
+            25px 23px;
+    }
+
+
+    .admin-welcome-card h2 {
+        font-size: 26px;
+    }
+
+
+    .admin-welcome-card img {
+        width: 78px;
+        height: 95px;
+    }
+
+
+    .admin-stat-grid {
+        gap: 12px;
+    }
+
+
+    .admin-stat-card {
+        min-height: 125px;
+
+        padding: 18px;
+    }
+
+
+    .admin-stat-card strong {
+        font-size: 28px;
+    }
+
+}
+
+
+
+/* =========================================================
+   MALI TELEFONI
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-login-screen {
+        padding:
+            20px 12px;
+    }
+
+
+    .admin-login-card {
+        border-radius: 12px;
+    }
+
+
+    .admin-login-club img {
+        width: 47px;
+        height: 56px;
+    }
+
+
+    .admin-login-club strong {
+        font-size: 19px;
+    }
+
+
+    .admin-welcome-card img {
+        display: none;
+    }
+
+
+    .admin-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
