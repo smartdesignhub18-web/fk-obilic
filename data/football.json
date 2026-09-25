@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-25T02:27:47.364Z",
+  "updatedAt": "2026-09-25T03:26:59.281Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889553,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jadran",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889553-obilic-jadran",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889629,
       "round": null,
       "home": "Obilić",
@@ -428,18 +440,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889619,
-      "round": null,
-      "home": "Jedinstvo (SK)",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889599,
       "round": null,
       "home": "Obilić",
@@ -447,6 +447,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889619,
+      "round": null,
+      "home": "Jedinstvo (SK)",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889553,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jadran",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889553-obilic-jadran",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
