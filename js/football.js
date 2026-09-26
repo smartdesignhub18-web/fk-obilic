@@ -27,8 +27,8 @@ const FOOTBALL_CONFIG = {
     // Naš API
    apiUrl: "data/football.json",
 
-    // Keširanje podataka - 30 minuta
-    cacheTime: 30 * 60 * 1000
+    // Keširanje podataka - 2 minuta
+    cacheTime: 2 * 60 * 1000
 };
 
 const CLUB_LOGOS = {

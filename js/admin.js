@@ -82,10 +82,20 @@ const adminPages =
         ".admin-page"
     );
 
+const adminNewsList =
+    document.querySelector(
+        "#admin-news-list"
+    );
+
+const addNewsButton =
+    document.querySelector(
+        "#admin-add-news"
+    );
+
 
 
 /* =========================================================
-   NASLOVI SEKCIJA
+   NASLOVI STRANICA
 ========================================================= */
 
 const pageTitles = {
@@ -122,13 +132,14 @@ const pageTitles = {
 
 
 /* =========================================================
-   POKRETANJE
+   START
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     initializeAdmin
 );
+
 
 
 async function initializeAdmin() {
@@ -140,7 +151,6 @@ async function initializeAdmin() {
         );
 
         return;
-
     }
 
 
@@ -150,24 +160,14 @@ async function initializeAdmin() {
 
     setupNavigation();
 
+    setupNewsActions();
+
 
     await checkCurrentSession();
 
 
     supabaseClient.auth.onAuthStateChange(
-        (event, session) => {
-
-            if (
-                event === "SIGNED_IN" &&
-                session?.user
-            ) {
-
-                showAdminPanel(
-                    session.user
-                );
-
-            }
-
+        event => {
 
             if (
                 event === "SIGNED_OUT"
@@ -185,7 +185,7 @@ async function initializeAdmin() {
 
 
 /* =========================================================
-   PROVERA POSTOJEĆE PRIJAVE
+   PROVERA SESIJE
 ========================================================= */
 
 async function checkCurrentSession() {
@@ -196,7 +196,9 @@ async function checkCurrentSession() {
             data,
             error
         } =
-            await supabaseClient.auth.getSession();
+            await supabaseClient
+                .auth
+                .getSession();
 
 
         if (error) {
@@ -208,26 +210,135 @@ async function checkCurrentSession() {
             data?.session?.user
         ) {
 
-            showAdminPanel(
+            await handleAuthenticatedUser(
                 data.session.user
             );
 
             return;
-
         }
 
 
         showLoginScreen();
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "Грешка при провери пријаве:",
             error
         );
 
+
         showLoginScreen();
 
+
+        showLoginMessage(
+            "Није могуће проверити пријаву."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   PROVERA ADMIN PRISTUPA
+========================================================= */
+
+async function verifyAdminUser(user) {
+
+    if (!user?.id) {
+        return false;
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("admin_users")
+            .select("user_id")
+            .eq(
+                "user_id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Грешка при провери администратора:",
+            error
+        );
+
+        throw error;
+    }
+
+
+    return Boolean(data);
+
+}
+
+
+
+async function handleAuthenticatedUser(user) {
+
+    try {
+
+        const isAdmin =
+            await verifyAdminUser(
+                user
+            );
+
+
+        if (!isAdmin) {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            showLoginScreen();
+
+
+            showLoginMessage(
+                "Овај налог нема администраторски приступ."
+            );
+
+            return false;
+        }
+
+
+        showAdminPanel(
+            user
+        );
+
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Није могуће потврдити администратора:",
+            error
+        );
+
+
+        showLoginScreen();
+
+
+        showLoginMessage(
+            "Није могуће проверити администраторски приступ."
+        );
+
+
+        return false;
     }
 
 }
@@ -270,13 +381,13 @@ function setupLogin() {
                 );
 
                 return;
-
             }
 
 
             setLoginLoading(
                 true
             );
+
 
             clearLoginMessage();
 
@@ -311,15 +422,25 @@ function setupLogin() {
                 }
 
 
-                showAdminPanel(
-                    data.user
-                );
+                const allowed =
+                    await handleAuthenticatedUser(
+                        data.user
+                    );
 
 
-                passwordInput.value =
-                    "";
+                if (
+                    allowed &&
+                    passwordInput
+                ) {
 
-            } catch (error) {
+                    passwordInput.value =
+                        "";
+
+                }
+
+            }
+
+            catch (error) {
 
                 console.error(
                     "Грешка при пријави:",
@@ -333,7 +454,9 @@ function setupLogin() {
                     )
                 );
 
-            } finally {
+            }
+
+            finally {
 
                 setLoginLoading(
                     false
@@ -384,18 +507,23 @@ function setupLogout() {
 
                 showLoginScreen();
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(
                     "Грешка при одјави:",
                     error
                 );
 
+
                 alert(
                     "Није могуће извршити одјаву."
                 );
 
-            } finally {
+            }
+
+            finally {
 
                 logoutButton.disabled =
                     false;
@@ -410,12 +538,10 @@ function setupLogout() {
 
 
 /* =========================================================
-   PRIKAŽI ADMIN
+   PRIKAZ ADMIN PANELA
 ========================================================= */
 
-function showAdminPanel(
-    user
-) {
+function showAdminPanel(user) {
 
     if (loginScreen) {
 
@@ -457,7 +583,7 @@ function showAdminPanel(
 
 
 /* =========================================================
-   PRIKAŽI LOGIN
+   PRIKAZ LOGIN EKRANA
 ========================================================= */
 
 function showLoginScreen() {
@@ -516,6 +642,20 @@ function setupNavigation() {
                         page
                     );
 
+
+                    /*
+                        Kada otvorimo VESTI,
+                        učitavamo podatke iz Supabase-a.
+                    */
+
+                    if (
+                        page === "vesti"
+                    ) {
+
+                        loadAdminNews();
+
+                    }
+
                 }
             );
 
@@ -526,9 +666,7 @@ function setupNavigation() {
 
 
 
-function openAdminPage(
-    page
-) {
+function openAdminPage(page) {
 
     navigationButtons.forEach(
         button => {
@@ -577,18 +715,21 @@ function openAdminPage(
 
 
 /* =========================================================
-   DASHBOARD STATISTIKA
-   Za sada čita postojeće JSON fajlove.
-   Kasnije ovo prebacujemo direktno na Supabase.
+   DASHBOARD
 ========================================================= */
 
 async function loadDashboardStats() {
 
     await Promise.all([
+
         loadNewsCount(),
+
         loadPlayersCount(),
+
         loadGalleryCount(),
+
         loadPartnersCount()
+
     ]);
 
 }
@@ -596,7 +737,7 @@ async function loadDashboardStats() {
 
 
 /* =========================================================
-   VESTI
+   BROJ VESTI - SUPABASE
 ========================================================= */
 
 async function loadNewsCount() {
@@ -614,51 +755,42 @@ async function loadNewsCount() {
 
     try {
 
-        const response =
-            await fetch(
-                "data/vesti.json",
-                {
-                    cache:
-                        "no-store"
-                }
-            );
+        const {
+            count,
+            error
+        } =
+            await supabaseClient
+                .from("vesti")
+                .select(
+                    "id",
+                    {
+                        count: "exact",
+                        head: true
+                    }
+                )
+                .eq(
+                    "published",
+                    true
+                );
 
 
-        if (!response.ok) {
-            throw new Error();
+        if (error) {
+            throw error;
         }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !Array.isArray(
-                data
-            )
-        ) {
-
-            element.textContent =
-                "0";
-
-            return;
-
-        }
-
-
-        const published =
-            data.filter(
-                article =>
-                    article?.published !==
-                    false
-            );
 
 
         element.textContent =
-            published.length;
+            count ?? 0;
 
-    } catch {
+    }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при бројању вести:",
+            error
+        );
+
 
         element.textContent =
             "—";
@@ -671,6 +803,7 @@ async function loadNewsCount() {
 
 /* =========================================================
    IGRAČI
+   ZA SADA POSTOJEĆI JSON
 ========================================================= */
 
 async function loadPlayersCount() {
@@ -719,7 +852,9 @@ async function loadPlayersCount() {
                 ? players.length
                 : "0";
 
-    } catch {
+    }
+
+    catch {
 
         element.textContent =
             "—";
@@ -732,6 +867,7 @@ async function loadPlayersCount() {
 
 /* =========================================================
    GALERIJA
+   ZA SADA POSTOJEĆI JSON
 ========================================================= */
 
 async function loadGalleryCount() {
@@ -779,7 +915,9 @@ async function loadGalleryCount() {
                 ? photos.length
                 : "0";
 
-    } catch {
+    }
+
+    catch {
 
         element.textContent =
             "—";
@@ -792,6 +930,7 @@ async function loadGalleryCount() {
 
 /* =========================================================
    PARTNERI
+   ZA SADA POSTOJEĆI JSON
 ========================================================= */
 
 async function loadPartnersCount() {
@@ -839,7 +978,9 @@ async function loadPartnersCount() {
                 ? partners.length
                 : "0";
 
-    } catch {
+    }
+
+    catch {
 
         element.textContent =
             "—";
@@ -851,12 +992,612 @@ async function loadPartnersCount() {
 
 
 /* =========================================================
-   LOGIN STATUS
+   VESTI - UČITAVANJE IZ SUPABASE
 ========================================================= */
 
-function setLoginLoading(
-    loading
+async function loadAdminNews() {
+
+    if (!adminNewsList) {
+        return;
+    }
+
+
+    adminNewsList.innerHTML = `
+
+        <div class="admin-data-loading">
+
+            <div class="loader"></div>
+
+            <span>
+                Учитавање вести...
+            </span>
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("vesti")
+                .select(`
+                    id,
+                    slug,
+                    title,
+                    category,
+                    date,
+                    date_display,
+                    image,
+                    excerpt,
+                    featured,
+                    published,
+                    created_at
+                `)
+                .order(
+                    "date",
+                    {
+                        ascending: false
+                    }
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            renderEmptyNews();
+
+            return;
+        }
+
+
+        renderAdminNews(
+            data
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при учитавању вести:",
+            error
+        );
+
+
+        renderNewsError();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   PRIKAZ LISTE VESTI
+========================================================= */
+
+function renderAdminNews(news) {
+
+    if (!adminNewsList) {
+        return;
+    }
+
+
+    adminNewsList.innerHTML =
+        news
+            .map(article => {
+
+                const image =
+                    getNewsImage(
+                        article.image
+                    );
+
+
+                const date =
+                    article.date_display ||
+                    formatAdminDate(
+                        article.date
+                    );
+
+
+                const category =
+                    article.category ||
+                    "ВЕСТ";
+
+
+                const statusClass =
+                    article.published
+                        ? "published"
+                        : "draft";
+
+
+                const statusText =
+                    article.published
+                        ? "ОБЈАВЉЕНО"
+                        : "НАЦРТ";
+
+
+                const featuredText =
+                    article.featured
+                        ? " • ИСТАКНУТА"
+                        : "";
+
+
+                return `
+
+                    <article
+                        class="admin-news-row"
+                        data-news-id="${escapeAttribute(article.id)}"
+                    >
+
+
+                        <div class="admin-news-image">
+
+                            <img
+                                src="${escapeAttribute(image)}"
+                                alt="${escapeAttribute(article.title || "ФК Обилић")}"
+                                onerror="this.onerror=null;this.src='images/grb.png';"
+                            >
+
+                        </div>
+
+
+
+                        <div class="admin-news-info">
+
+                            <span class="admin-news-category">
+
+                                ${escapeHtml(category)}
+                                ${featuredText}
+
+                            </span>
+
+
+                            <h3>
+
+                                ${escapeHtml(article.title || "")}
+
+                            </h3>
+
+
+                            ${
+                                article.excerpt
+                                    ? `
+                                        <p>
+                                            ${escapeHtml(article.excerpt)}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+
+
+                        <div class="admin-news-date">
+
+                            ${escapeHtml(date)}
+
+                        </div>
+
+
+
+                        <div>
+
+                            <span
+                                class="
+                                    admin-news-status
+                                    ${statusClass}
+                                "
+                            >
+
+                                ${statusText}
+
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="admin-news-actions">
+
+                            <button
+                                type="button"
+                                class="admin-news-action edit"
+                                data-edit-news="${escapeAttribute(article.id)}"
+                            >
+                                ИЗМЕНИ
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="admin-news-action delete"
+                                data-delete-news="${escapeAttribute(article.id)}"
+                                data-news-title="${escapeAttribute(article.title || "")}"
+                            >
+                                ОБРИШИ
+                            </button>
+
+                        </div>
+
+
+                    </article>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+
+/* =========================================================
+   PRAZNA LISTA
+========================================================= */
+
+function renderEmptyNews() {
+
+    if (!adminNewsList) {
+        return;
+    }
+
+
+    adminNewsList.innerHTML = `
+
+        <div class="admin-news-empty">
+
+            <img
+                src="images/grb.png"
+                alt=""
+            >
+
+            <strong>
+                НЕМА ВЕСТИ
+            </strong>
+
+            <span>
+                Додајте прву вест на сајт.
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   GREŠKA PRI UČITAVANJU
+========================================================= */
+
+function renderNewsError() {
+
+    if (!adminNewsList) {
+        return;
+    }
+
+
+    adminNewsList.innerHTML = `
+
+        <div class="admin-news-empty">
+
+            <img
+                src="images/grb.png"
+                alt=""
+            >
+
+            <strong>
+                ГРЕШКА ПРИ УЧИТАВАЊУ
+            </strong>
+
+            <span>
+                Вести тренутно није могуће учитати.
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   AKCIJE VESTI
+========================================================= */
+
+function setupNewsActions() {
+
+    /*
+        DODAJ NOVU VEST
+
+        Forma dolazi u sledećem koraku.
+    */
+
+    if (addNewsButton) {
+
+        addNewsButton.addEventListener(
+            "click",
+            () => {
+
+                alert(
+                    "Следећи корак је форма за додавање нове вести."
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+        Event delegation za
+        IZMENI i OBRIŠI.
+    */
+
+    if (!adminNewsList) {
+        return;
+    }
+
+
+    adminNewsList.addEventListener(
+        "click",
+        async event => {
+
+            const editButton =
+                event.target.closest(
+                    "[data-edit-news]"
+                );
+
+
+            if (editButton) {
+
+                alert(
+                    "Форму за измену вести правимо у следећем кораку."
+                );
+
+                return;
+            }
+
+
+            const deleteButton =
+                event.target.closest(
+                    "[data-delete-news]"
+                );
+
+
+            if (!deleteButton) {
+                return;
+            }
+
+
+            const newsId =
+                deleteButton.dataset
+                    .deleteNews;
+
+
+            const newsTitle =
+                deleteButton.dataset
+                    .newsTitle ||
+                "ову вест";
+
+
+            if (!newsId) {
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    `Да ли сте сигурни да желите да обришете вест:\n\n${newsTitle}?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            await deleteNews(
+                newsId,
+                deleteButton
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   BRISANJE VESTI
+========================================================= */
+
+async function deleteNews(
+    newsId,
+    button
 ) {
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "БРИСАЊЕ...";
+
+    }
+
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("vesti")
+                .delete()
+                .eq(
+                    "id",
+                    newsId
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        await Promise.all([
+
+            loadAdminNews(),
+
+            loadNewsCount()
+
+        ]);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при брисању вести:",
+            error
+        );
+
+
+        alert(
+            "Вест није могуће обрисати."
+        );
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "ОБРИШИ";
+
+        }
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SLIKA VESTI
+========================================================= */
+
+function getNewsImage(value) {
+
+    const image =
+        String(
+            value || ""
+        ).trim();
+
+
+    if (!image) {
+
+        return "images/grb.png";
+
+    }
+
+
+    if (
+        image.startsWith(
+            "images/"
+        ) ||
+        image.startsWith(
+            "./images/"
+        ) ||
+        /^https?:\/\//i.test(
+            image
+        )
+    ) {
+
+        return image;
+
+    }
+
+
+    return "images/grb.png";
+
+}
+
+
+
+/* =========================================================
+   DATUM
+========================================================= */
+
+function formatAdminDate(dateString) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const date =
+        new Date(
+            `${dateString}T12:00:00`
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "sr-Cyrl-RS",
+        {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            timeZone: "Europe/Belgrade"
+        }
+    ).format(date);
+
+}
+
+
+
+/* =========================================================
+   LOGIN LOADING
+========================================================= */
+
+function setLoginLoading(loading) {
 
     const button =
         loginForm?.querySelector(
@@ -894,12 +1635,10 @@ function setLoginLoading(
 
 
 /* =========================================================
-   PORUKE
+   LOGIN PORUKE
 ========================================================= */
 
-function showLoginMessage(
-    message
-) {
+function showLoginMessage(message) {
 
     if (!loginMessage) {
         return;
@@ -928,12 +1667,10 @@ function clearLoginMessage() {
 
 
 /* =========================================================
-   PREVOD GREŠAKA
+   LOGIN GREŠKE
 ========================================================= */
 
-function getLoginErrorMessage(
-    error
-) {
+function getLoginErrorMessage(error) {
 
     const message =
         String(
@@ -975,5 +1712,52 @@ function getLoginErrorMessage(
 
 
     return "Пријава није успела. Проверите податке и покушајте поново.";
+
+}
+
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(value = "") {
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+
+
+function escapeAttribute(value = "") {
+
+    return escapeHtml(
+        value
+    );
 
 }

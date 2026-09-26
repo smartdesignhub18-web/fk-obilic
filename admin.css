@@ -1345,3 +1345,703 @@ button {
     }
 
 }
+
+/* =========================================================
+   ADMIN - ZAJEDNIČKI NASLOV SEKCIJE
+========================================================= */
+
+.admin-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 25px;
+}
+
+
+.admin-section-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-section-heading h2 {
+    margin: 0;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 31px;
+    line-height: 1.15;
+
+    color: #17181a;
+}
+
+
+.admin-section-heading p {
+    max-width: 520px;
+
+    margin: 8px 0 0;
+
+    color: #8a8d93;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+
+/* =========================================================
+   GLAVNO ADMIN DUGME
+========================================================= */
+
+.admin-primary-button {
+    min-height: 44px;
+
+    padding:
+        0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--admin-red),
+            var(--admin-red-dark)
+        );
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.1px;
+
+    box-shadow:
+        0 9px 22px rgba(183,25,45,0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.admin-primary-button > span {
+    margin-top: -2px;
+
+    font-size: 20px;
+    font-weight: 400;
+
+    line-height: 1;
+}
+
+
+.admin-primary-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 13px 27px rgba(183,25,45,0.27);
+}
+
+
+.admin-primary-button:active {
+    transform:
+        translateY(0);
+}
+
+
+.admin-primary-button:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.55;
+
+    transform: none;
+}
+
+
+
+/* =========================================================
+   VESTI - GLAVNI OKVIR
+========================================================= */
+
+.admin-news-list {
+    min-height: 260px;
+
+    overflow: hidden;
+
+    border:
+        1px solid var(--admin-border);
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 7px 25px rgba(0,0,0,0.045);
+}
+
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.admin-data-loading {
+    min-height: 260px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 13px;
+
+    color: #92959b;
+
+    font-size: 11px;
+}
+
+
+
+/* =========================================================
+   RED VESTI
+   OVO ĆE ADMIN.JS KORISTITI U SLEDEĆEM KORAKU
+========================================================= */
+
+.admin-news-row {
+    min-height: 112px;
+
+    padding:
+        14px 18px;
+
+    display: grid;
+
+    grid-template-columns:
+        125px
+        minmax(220px, 1fr)
+        120px
+        105px
+        155px;
+
+    align-items: center;
+
+    gap: 18px;
+
+    border-bottom:
+        1px solid #eceef1;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.admin-news-row:last-child {
+    border-bottom: 0;
+}
+
+
+.admin-news-row:hover {
+    background: #fafafa;
+}
+
+
+
+/* =========================================================
+   SLIKA VESTI
+========================================================= */
+
+.admin-news-image {
+    width: 125px;
+    height: 82px;
+
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    background: #e9eaed;
+}
+
+
+.admin-news-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* GRB KAO FALLBACK */
+
+.admin-news-image img[src$="grb.png"] {
+    padding: 12px;
+
+    object-fit: contain;
+
+    background:
+        linear-gradient(
+            135deg,
+            #202124,
+            #111214
+        );
+}
+
+
+
+/* =========================================================
+   PODACI VESTI
+========================================================= */
+
+.admin-news-info {
+    min-width: 0;
+}
+
+
+.admin-news-category {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    color: var(--admin-red);
+}
+
+
+.admin-news-info h3 {
+    margin: 0;
+
+    overflow: hidden;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 17px;
+    line-height: 1.25;
+
+    color: #202124;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+
+.admin-news-info p {
+    margin:
+        6px 0 0;
+
+    overflow: hidden;
+
+    color: #92959a;
+
+    font-size: 10px;
+    line-height: 1.45;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+
+/* =========================================================
+   DATUM
+========================================================= */
+
+.admin-news-date {
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+
+    color: #85888e;
+}
+
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.admin-news-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    min-width: 85px;
+
+    min-height: 27px;
+
+    padding:
+        0 10px;
+
+    border-radius: 30px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+.admin-news-status.published {
+    background:
+        rgba(37, 151, 85, 0.10);
+
+    color: #218449;
+}
+
+
+.admin-news-status.draft {
+    background:
+        rgba(130, 133, 140, 0.12);
+
+    color: #797d84;
+}
+
+
+
+/* =========================================================
+   AKCIJE
+========================================================= */
+
+.admin-news-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 7px;
+}
+
+
+.admin-news-action {
+    min-height: 34px;
+
+    padding:
+        0 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid #e0e2e6;
+
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: #50535a;
+
+    cursor: pointer;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.admin-news-action.edit:hover {
+    border-color:
+        var(--admin-red);
+
+    color:
+        var(--admin-red);
+}
+
+
+.admin-news-action.delete {
+    color: #a04652;
+}
+
+
+.admin-news-action.delete:hover {
+    border-color:
+        #c0394c;
+
+    background:
+        rgba(192,57,76,0.06);
+
+    color:
+        #c0394c;
+}
+
+
+
+/* =========================================================
+   PRAZNA LISTA / GREŠKA
+========================================================= */
+
+.admin-news-empty {
+    min-height: 260px;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    text-align: center;
+}
+
+
+.admin-news-empty img {
+    width: 55px;
+    height: 65px;
+
+    object-fit: contain;
+
+    opacity: 0.55;
+}
+
+
+.admin-news-empty strong {
+    margin-top: 5px;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 16px;
+
+    color: #34363a;
+}
+
+
+.admin-news-empty span {
+    font-size: 11px;
+
+    color: #96999f;
+}
+
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .admin-news-row {
+        grid-template-columns:
+            105px
+            minmax(200px, 1fr)
+            95px
+            90px
+            130px;
+
+        gap: 12px;
+    }
+
+
+    .admin-news-image {
+        width: 105px;
+        height: 72px;
+    }
+
+
+    .admin-news-action {
+        padding:
+            0 8px;
+    }
+
+}
+
+
+
+/* =========================================================
+   MOBILNI
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .admin-section-heading {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 18px;
+    }
+
+
+    .admin-primary-button {
+        width: 100%;
+    }
+
+
+    .admin-news-list {
+        padding: 10px;
+
+        display: grid;
+
+        gap: 10px;
+
+        border: 0;
+
+        background: transparent;
+
+        box-shadow: none;
+    }
+
+
+    .admin-news-row {
+        min-height: 0;
+
+        padding: 12px;
+
+        grid-template-columns:
+            95px minmax(0, 1fr);
+
+        gap: 12px;
+
+        border:
+            1px solid var(--admin-border);
+
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 5px 18px rgba(0,0,0,0.04);
+    }
+
+
+    .admin-news-image {
+        width: 95px;
+        height: 85px;
+
+        grid-row:
+            1 / 4;
+    }
+
+
+    .admin-news-info {
+        grid-column: 2;
+    }
+
+
+    .admin-news-info h3 {
+        font-size: 15px;
+    }
+
+
+    .admin-news-info p {
+        display: none;
+    }
+
+
+    .admin-news-date {
+        grid-column: 2;
+    }
+
+
+    .admin-news-status {
+        grid-column: 2;
+    }
+
+
+    .admin-news-actions {
+        grid-column:
+            1 / -1;
+
+        justify-content: stretch;
+
+        margin-top: 4px;
+    }
+
+
+    .admin-news-action {
+        flex: 1;
+    }
+
+}
+
+
+
+/* =========================================================
+   MALI TELEFONI
+========================================================= */
+
+@media (max-width: 430px) {
+
+    .admin-news-row {
+        grid-template-columns:
+            78px minmax(0, 1fr);
+    }
+
+
+    .admin-news-image {
+        width: 78px;
+        height: 78px;
+    }
+
+
+    .admin-news-info h3 {
+        font-size: 14px;
+    }
+
+}

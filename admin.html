@@ -25,7 +25,7 @@
 
     <link
         rel="stylesheet"
-        href="admin.css?v=1"
+        href="admin.css?v=2"
     >
 </head>
 
@@ -165,7 +165,6 @@
 
     <!-- ==========================================
          ADMIN PANEL
-         Za sada je skriven.
     =========================================== -->
 
     <div
@@ -323,7 +322,9 @@
 
 
 
-        <!-- GLAVNI DEO -->
+        <!-- ==========================================
+             GLAVNI DEO
+        =========================================== -->
 
         <section class="admin-main">
 
@@ -365,7 +366,9 @@
             >
 
 
-                <!-- DASHBOARD -->
+                <!-- ======================================
+                     KONTROLNA TABLA
+                ======================================= -->
 
                 <section
                     class="admin-page active"
@@ -478,69 +481,192 @@
                 </section>
 
 
-                <!-- Ostale sekcije ćemo praviti dalje -->
+
+                <!-- ======================================
+                     VESTI
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="vesti"
                 >
-                    <h2>Вести</h2>
+
+
+                    <div class="admin-section-heading">
+
+                        <div>
+
+                            <span class="admin-section-label">
+                                САДРЖАЈ САЈТА
+                            </span>
+
+                            <h2>
+                                Вести
+                            </h2>
+
+                            <p>
+                                Додавање, измена и управљање
+                                вестима на сајту.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="admin-add-news"
+                            class="admin-primary-button"
+                        >
+
+                            <span>
+                                +
+                            </span>
+
+                            ДОДАЈ НОВУ ВЕСТ
+
+                        </button>
+
+                    </div>
+
+
+
+                    <div
+                        id="admin-news-list"
+                        class="admin-news-list"
+                    >
+
+                        <div class="admin-data-loading">
+
+                            <div class="loader"></div>
+
+                            <span>
+                                Учитавање вести...
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
                 </section>
 
+
+
+                <!-- ======================================
+                     IGRACI
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="igraci"
                 >
-                    <h2>Играчи</h2>
+
+                    <h2>
+                        Играчи
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     STRUCNI STAB
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="strucni-stab"
                 >
-                    <h2>Стручни штаб</h2>
+
+                    <h2>
+                        Стручни штаб
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     UPRAVA
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="uprava"
                 >
-                    <h2>Управа</h2>
+
+                    <h2>
+                        Управа
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     SELEKCIJE
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="selekcije"
                 >
-                    <h2>Селекције</h2>
+
+                    <h2>
+                        Селекције
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     GALERIJA
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="galerija"
                 >
-                    <h2>Галерија</h2>
+
+                    <h2>
+                        Галерија
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     PARTNERI
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="partneri"
                 >
-                    <h2>Партнери</h2>
+
+                    <h2>
+                        Партнери
+                    </h2>
+
                 </section>
 
+
+
+                <!-- ======================================
+                     KONTAKT
+                ======================================= -->
 
                 <section
                     class="admin-page"
                     data-page="kontakt"
                 >
-                    <h2>Контакт</h2>
+
+                    <h2>
+                        Контакт
+                    </h2>
+
                 </section>
 
 
@@ -554,13 +680,20 @@
 
 
 
+    <!-- ==========================================
+         SUPABASE
+    =========================================== -->
+
     <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
     ></script>
 
-    <script
-        src="js/admin.js?v=1"
-    ></script>
+
+    <!-- ==========================================
+         ADMIN JS
+    =========================================== -->
+
+    <script src="js/admin.js?v=2"></script>
 
 
 </body>
