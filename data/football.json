@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-09-26T01:26:05.331Z",
+  "updatedAt": "2026-09-26T02:27:30.092Z",
   "obilicStanding": {
     "position": 3,
     "clubId": 787,
@@ -368,25 +368,13 @@
       "status": "scheduled"
     },
     {
-      "id": 889629,
+      "id": 889614,
       "round": null,
       "home": "Obilić",
-      "away": "Horgoš 1911",
+      "away": "Šampion",
       "startDate": null,
       "location": "",
-      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889584,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jedinstvo (M)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
+      "url": "https://srbijasport.net/game/889614-obilic-sampion",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -399,18 +387,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889569-obilic-tromedja",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889614,
-      "round": null,
-      "home": "Obilić",
-      "away": "Šampion",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889614-obilic-sampion",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -507,6 +483,30 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889553-obilic-jadran",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889584,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jedinstvo (M)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889629,
+      "round": null,
+      "home": "Obilić",
+      "away": "Horgoš 1911",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
