@@ -14,9 +14,7 @@
         content="noindex, nofollow"
     >
 
-    <title>
-        Админ панел | ФК Обилић
-    </title>
+    <title>Админ панел | ФК Обилић</title>
 
     <link
         rel="stylesheet"
@@ -25,7 +23,7 @@
 
     <link
         rel="stylesheet"
-        href="admin.css?v=2"
+        href="admin.css?v=3"
     >
 </head>
 
@@ -33,9 +31,9 @@
 <body class="admin-body">
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          LOGIN
-    =========================================== -->
+    ====================================================== -->
 
     <main
         id="admin-login-screen"
@@ -43,7 +41,6 @@
     >
 
         <div class="admin-login-card">
-
 
             <div class="admin-login-club">
 
@@ -89,7 +86,6 @@
                 id="admin-login-form"
                 class="admin-login-form"
             >
-
 
                 <div class="admin-form-group">
 
@@ -138,13 +134,10 @@
                     type="submit"
                     class="admin-login-button"
                 >
-
                     <span>
                         ПРИЈАВИ СЕ
                     </span>
-
                 </button>
-
 
             </form>
 
@@ -156,16 +149,15 @@
                 ← НАЗАД НА САЈТ
             </a>
 
-
         </div>
 
     </main>
 
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          ADMIN PANEL
-    =========================================== -->
+    ====================================================== -->
 
     <div
         id="admin-panel"
@@ -174,10 +166,11 @@
     >
 
 
-        <!-- SIDEBAR -->
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
 
         <aside class="admin-sidebar">
-
 
             <div class="admin-sidebar-brand">
 
@@ -201,9 +194,7 @@
             </div>
 
 
-
             <nav class="admin-navigation">
-
 
                 <button
                     type="button"
@@ -294,7 +285,6 @@
                     Контакт
                 </button>
 
-
             </nav>
 
 
@@ -308,6 +298,7 @@
                     ОТВОРИ САЈТ ↗
                 </a>
 
+
                 <button
                     type="button"
                     id="admin-logout-button"
@@ -317,17 +308,18 @@
 
             </div>
 
-
         </aside>
 
 
 
-        <!-- ==========================================
+        <!-- =================================================
              GLAVNI DEO
-        =========================================== -->
+        ================================================== -->
 
         <section class="admin-main">
 
+
+            <!-- TOPBAR -->
 
             <header class="admin-topbar">
 
@@ -360,15 +352,19 @@
 
 
 
+            <!-- =================================================
+                 SADRŽAJ
+            ================================================== -->
+
             <div
                 id="admin-content"
                 class="admin-content"
             >
 
 
-                <!-- ======================================
+                <!-- =================================================
                      KONTROLNA TABLA
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page active"
@@ -477,20 +473,18 @@
 
                     </div>
 
-
                 </section>
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      VESTI
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
                     data-page="vesti"
                 >
-
 
                     <div class="admin-section-heading">
 
@@ -517,17 +511,11 @@
                             id="admin-add-news"
                             class="admin-primary-button"
                         >
-
-                            <span>
-                                +
-                            </span>
-
+                            <span>+</span>
                             ДОДАЈ НОВУ ВЕСТ
-
                         </button>
 
                     </div>
-
 
 
                     <div
@@ -547,14 +535,13 @@
 
                     </div>
 
-
                 </section>
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      IGRACI
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -569,9 +556,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      STRUCNI STAB
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -586,9 +573,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      UPRAVA
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -603,9 +590,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      SELEKCIJE
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -620,9 +607,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      GALERIJA
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -637,9 +624,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      PARTNERI
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -654,9 +641,9 @@
 
 
 
-                <!-- ======================================
+                <!-- =================================================
                      KONTAKT
-                ======================================= -->
+                ================================================== -->
 
                 <section
                     class="admin-page"
@@ -672,28 +659,548 @@
 
             </div>
 
-
         </section>
-
 
     </div>
 
 
 
-    <!-- ==========================================
+    <!-- =========================================================
+         MODAL - DODAJ / IZMENI VEST
+    ========================================================== -->
+
+    <div
+        id="admin-news-modal"
+        class="admin-modal"
+        hidden
+    >
+
+
+        <!-- POZADINA MODALA -->
+
+        <div
+            class="admin-modal-backdrop"
+            data-close-news-modal
+        ></div>
+
+
+
+        <!-- PROZOR -->
+
+        <div
+            class="admin-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-news-modal-title"
+        >
+
+
+            <!-- HEADER MODALA -->
+
+            <div class="admin-modal-header">
+
+                <div>
+
+                    <span class="admin-section-label">
+                        УПРАВЉАЊЕ ВЕСТИМА
+                    </span>
+
+                    <h2 id="admin-news-modal-title">
+                        Додај нову вест
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="admin-modal-close"
+                    data-close-news-modal
+                    aria-label="Затвори"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORMA VESTI
+            ================================================== -->
+
+            <form
+                id="admin-news-form"
+                class="admin-news-form"
+            >
+
+
+                <!-- ID VESTI -->
+
+                <input
+                    type="hidden"
+                    id="admin-news-id"
+                >
+
+
+                <!-- POSTOJEĆA SLIKA -->
+
+                <input
+                    type="hidden"
+                    id="admin-news-current-image"
+                >
+
+
+
+                <div class="admin-form-grid">
+
+
+                    <!-- NASLOV -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <label for="admin-news-title">
+                            НАСЛОВ ВЕСТИ *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="admin-news-title"
+                            placeholder="Унесите наслов вести"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- KATEGORIJA -->
+
+                    <div class="admin-field">
+
+                        <label for="admin-news-category">
+                            КАТЕГОРИЈА
+                        </label>
+
+                        <select id="admin-news-category">
+
+                            <option value="ПРВИ ТИМ">
+                                ПРВИ ТИМ
+                            </option>
+
+                            <option value="МЛАЂЕ КАТЕГОРИЈЕ">
+                                МЛАЂЕ КАТЕГОРИЈЕ
+                            </option>
+
+                            <option value="КЛУБ">
+                                КЛУБ
+                            </option>
+
+                            <option value="ОБАВЕШТЕЊЕ">
+                                ОБАВЕШТЕЊЕ
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- DATUM -->
+
+                    <div class="admin-field">
+
+                        <label for="admin-news-date">
+                            ДАТУМ *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="admin-news-date"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- KRATAK OPIS -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <label for="admin-news-excerpt">
+                            КРАТАК ОПИС
+                        </label>
+
+                        <textarea
+                            id="admin-news-excerpt"
+                            rows="3"
+                            placeholder="Кратак опис који ће се приказивати на листи вести..."
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <!-- TEKST VESTI -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <label for="admin-news-content">
+                            ТЕКСТ ВЕСТИ *
+                        </label>
+
+                        <textarea
+                            id="admin-news-content"
+                            rows="10"
+                            placeholder="Унесите текст вести..."
+                            required
+                        ></textarea>
+
+                        <small>
+                            Сваки нови пасус одвојите празним редом.
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         FOTOGRAFIJA
+                    ================================================== -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <label>
+                            ФОТОГРАФИЈА
+                        </label>
+
+
+                        <div class="admin-image-upload">
+
+
+                            <!-- PREVIEW -->
+
+                            <div
+                                id="admin-news-image-preview"
+                                class="admin-image-preview"
+                            >
+
+                                <img
+                                    src="images/grb.png"
+                                    alt="Преглед фотографије"
+                                >
+
+                            </div>
+
+
+
+                            <!-- UPLOAD -->
+
+                            <div class="admin-image-upload-controls">
+
+                                <label
+                                    for="admin-news-image"
+                                    class="admin-file-button"
+                                >
+                                    ИЗАБЕРИ ФОТОГРАФИЈУ
+                                </label>
+
+
+                                <input
+                                    type="file"
+                                    id="admin-news-image"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    hidden
+                                >
+
+
+                                <span id="admin-news-image-name">
+                                    Није изабрана нова фотографија
+                                </span>
+
+
+                                <small>
+                                    Дозвољени формати:
+                                    JPG, PNG и WEBP.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         IZVOR
+                    ================================================== -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <div class="admin-field-heading">
+
+                            <label>
+                                ИЗВОР
+                            </label>
+
+                            <span>
+                                Опционо
+                            </span>
+
+                        </div>
+
+
+                        <div class="admin-inline-fields">
+
+                            <input
+                                type="text"
+                                id="admin-news-source-name"
+                                placeholder="Назив извора, нпр. Sportissimo"
+                            >
+
+
+                            <input
+                                type="url"
+                                id="admin-news-source-url"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         REZULTAT UTAKMICE
+                    ================================================== -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <div class="admin-checkbox-row">
+
+                            <label class="admin-checkbox">
+
+                                <input
+                                    type="checkbox"
+                                    id="admin-news-has-match"
+                                >
+
+                                <span>
+                                    Додај резултат утакмице
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+
+                        <div
+                            id="admin-news-match-fields"
+                            class="admin-match-fields"
+                            hidden
+                        >
+
+
+                            <!-- DOMAĆIN -->
+
+                            <div class="admin-field">
+
+                                <label for="admin-news-home">
+                                    ДОМАЋИН
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="admin-news-home"
+                                    placeholder="Обилић"
+                                >
+
+                            </div>
+
+
+
+                            <!-- GOST -->
+
+                            <div class="admin-field">
+
+                                <label for="admin-news-away">
+                                    ГОСТ
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="admin-news-away"
+                                    placeholder="Тиса"
+                                >
+
+                            </div>
+
+
+
+                            <!-- REZULTAT DOMAĆINA -->
+
+                            <div class="admin-field">
+
+                                <label for="admin-news-home-score">
+                                    ГОЛОВИ ДОМАЋИН
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="admin-news-home-score"
+                                    min="0"
+                                    inputmode="numeric"
+                                >
+
+                            </div>
+
+
+
+                            <!-- REZULTAT GOSTA -->
+
+                            <div class="admin-field">
+
+                                <label for="admin-news-away-score">
+                                    ГОЛОВИ ГОСТ
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="admin-news-away-score"
+                                    min="0"
+                                    inputmode="numeric"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         OPCIJE
+                    ================================================== -->
+
+                    <div class="admin-field admin-field-full">
+
+                        <div class="admin-news-options">
+
+
+                            <!-- ISTAKNUTA -->
+
+                            <label class="admin-checkbox">
+
+                                <input
+                                    type="checkbox"
+                                    id="admin-news-featured"
+                                >
+
+                                <span>
+                                    Истакнута вест
+                                </span>
+
+                            </label>
+
+
+
+                            <!-- OBJAVLJENA -->
+
+                            <label class="admin-checkbox">
+
+                                <input
+                                    type="checkbox"
+                                    id="admin-news-published"
+                                    checked
+                                >
+
+                                <span>
+                                    Одмах објави на сајту
+                                </span>
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PORUKA
+                ================================================== -->
+
+                <div
+                    id="admin-news-form-message"
+                    class="admin-news-form-message"
+                    aria-live="polite"
+                ></div>
+
+
+
+                <!-- =================================================
+                     DUGMAD
+                ================================================== -->
+
+                <div class="admin-modal-actions">
+
+
+                    <button
+                        type="button"
+                        class="admin-secondary-button"
+                        data-close-news-modal
+                    >
+                        ОДУСТАНИ
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        id="admin-news-save-button"
+                        class="admin-primary-button"
+                    >
+                        САЧУВАЈ ВЕСТ
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
          SUPABASE
-    =========================================== -->
+    ========================================================== -->
 
     <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
     ></script>
 
 
-    <!-- ==========================================
-         ADMIN JS
-    =========================================== -->
 
-    <script src="js/admin.js?v=2"></script>
+    <!-- =========================================================
+         ADMIN JS
+    ========================================================== -->
+
+    <script
+        src="js/admin.js?v=3"
+    ></script>
 
 
 </body>

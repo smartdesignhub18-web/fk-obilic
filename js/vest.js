@@ -1,8 +1,45 @@
 /* =========================================================
    FK OBILIĆ NOVI KNEŽEVAC
-   POJEDINAČNA VEST
+   POJEDINAČNA VEST - SUPABASE
 ========================================================= */
 
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const ARTICLE_SUPABASE_URL =
+    "https://uvevthgxlnzzkapkjxky.supabase.co";
+
+const ARTICLE_SUPABASE_KEY =
+    "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
+
+
+
+/* =========================================================
+   ELEMENTI STRANICE
+========================================================= */
+
+const articleLoading =
+    document.querySelector(
+        ".article-loading"
+    );
+
+const articleContent =
+    document.querySelector(
+        ".article-content"
+    );
+
+const articleError =
+    document.querySelector(
+        ".article-error"
+    );
+
+
+
+/* =========================================================
+   START
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -12,52 +49,237 @@ document.addEventListener(
 
 
 /* =========================================================
-   GLAVNA FUNKCIJA
+   STANJE STRANICE
 ========================================================= */
 
-async function loadArticle() {
+function showArticleLoading() {
 
-    const loading =
-        document.querySelector(
-            "#article-loading"
-        );
+    if (articleLoading) {
+        articleLoading.hidden = false;
+    }
 
-    const content =
-        document.querySelector(
-            "#article-content"
-        );
+    if (articleContent) {
+        articleContent.hidden = true;
+    }
 
-    const errorBox =
-        document.querySelector(
-            "#article-error"
-        );
+    if (articleError) {
+        articleError.hidden = true;
+    }
+
+}
 
 
-    try {
 
-        const params =
-            new URLSearchParams(
-                window.location.search
+function showArticleContent() {
+
+    if (articleLoading) {
+        articleLoading.hidden = true;
+    }
+
+    if (articleError) {
+        articleError.hidden = true;
+    }
+
+    if (articleContent) {
+        articleContent.hidden = false;
+    }
+
+}
+
+
+
+function showArticleError(message) {
+
+    if (articleLoading) {
+        articleLoading.hidden = true;
+    }
+
+    if (articleContent) {
+        articleContent.hidden = true;
+    }
+
+
+    if (articleError) {
+
+        articleError.hidden = false;
+
+
+        const errorTitle =
+            articleError.querySelector(
+                "h2"
             );
 
-        const slug =
-            params.get("id");
 
-
-        if (!slug) {
-
-            throw new Error(
-                "Недостаје ID вести."
+        const errorText =
+            articleError.querySelector(
+                "p"
             );
+
+
+        if (errorTitle) {
+
+            errorTitle.textContent =
+                message ||
+                "Вест није пронађена.";
 
         }
 
 
+        if (errorText) {
+
+            errorText.textContent =
+                "Вратите се на страницу вести и покушајте поново.";
+
+        }
+
+
+        return;
+    }
+
+
+    /*
+        Rezerva ako vest.html nema poseban
+        article-error element.
+    */
+
+    if (articleContent) {
+
+        articleContent.hidden =
+            false;
+
+
+        articleContent.innerHTML = `
+
+            <div class="article-error">
+
+                <img
+                    src="images/grb.png"
+                    alt="ФК Обилић"
+                >
+
+                <h2>
+                    ${escapeHtml(message || "Вест није пронађена.")}
+                </h2>
+
+                <p>
+                    Вратите се на страницу вести и покушајте поново.
+                </p>
+
+                <a
+                    href="vesti.html"
+                    class="article-footer-link"
+                >
+                    ← НАЗАД НА ВЕСТИ
+                </a>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   UČITAVANJE VESTI
+========================================================= */
+
+async function loadArticle() {
+
+    showArticleLoading();
+
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const slug =
+        params
+            .get("id")
+            ?.trim();
+
+
+    if (!slug) {
+
+        showArticleError(
+            "Вест није пронађена."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const url =
+            new URL(
+                `${ARTICLE_SUPABASE_URL}/rest/v1/vesti`
+            );
+
+
+        url.searchParams.set(
+            "select",
+            [
+                "id",
+                "slug",
+                "title",
+                "category",
+                "date",
+                "date_display",
+                "image",
+                "excerpt",
+                "content",
+                "match_data",
+                "source",
+                "featured",
+                "published"
+            ].join(",")
+        );
+
+
+        url.searchParams.set(
+            "slug",
+            `eq.${slug}`
+        );
+
+
+        url.searchParams.set(
+            "published",
+            "eq.true"
+        );
+
+
+        url.searchParams.set(
+            "limit",
+            "1"
+        );
+
+
         const response =
             await fetch(
-                "data/vesti.json",
+                url.toString(),
                 {
-                    cache: "no-store"
+                    method: "GET",
+
+                    headers: {
+
+                        "apikey":
+                            ARTICLE_SUPABASE_KEY,
+
+                        "Authorization":
+                            `Bearer ${ARTICLE_SUPABASE_KEY}`,
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    cache:
+                        "no-store"
                 }
             );
 
@@ -71,47 +293,26 @@ async function loadArticle() {
         }
 
 
-        const news =
+        const data =
             await response.json();
 
 
-        if (!Array.isArray(news)) {
+        if (
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
 
-            throw new Error(
-                "Неисправан формат вести."
-            );
-
-        }
-
-
-        const article =
-            news.find(
-                item =>
-                    item.slug === slug &&
-                    item.published !== false
-            );
-
-
-        if (!article) {
-
-            throw new Error(
+            showArticleError(
                 "Вест није пронађена."
             );
 
+            return;
         }
 
 
-        renderArticle(article);
-
-
-        if (loading) {
-            loading.hidden = true;
-        }
-
-
-        if (content) {
-            content.hidden = false;
-        }
+        renderArticle(
+            data[0]
+        );
 
     }
 
@@ -123,19 +324,9 @@ async function loadArticle() {
         );
 
 
-        if (loading) {
-            loading.hidden = true;
-        }
-
-
-        if (content) {
-            content.hidden = true;
-        }
-
-
-        if (errorBox) {
-            errorBox.hidden = false;
-        }
+        showArticleError(
+            "Вест тренутно није могуће учитати."
+        );
 
     }
 
@@ -149,86 +340,241 @@ async function loadArticle() {
 
 function renderArticle(article) {
 
-    document.title =
-        `${article.title} | ФК Обилић Нови Кнежевац`;
+    const categoryElement =
+        document.querySelector(
+            "#article-category"
+        );
 
 
-    /* KATEGORIJA */
-
-    setText(
-        "#article-category",
-        article.category || "ВЕСТ"
-    );
+    const dateElement =
+        document.querySelector(
+            "#article-date"
+        );
 
 
-    /* DATUM */
-
-    setText(
-        "#article-date",
-        article.dateDisplay ||
-        formatArticleDate(article.date)
-    );
+    const titleElement =
+        document.querySelector(
+            "#article-title"
+        );
 
 
-    /* NASLOV */
-
-    setText(
-        "#article-title",
-        article.title || ""
-    );
+    const excerptElement =
+        document.querySelector(
+            "#article-excerpt"
+        );
 
 
-    /* KRATAK UVOD */
-
-    setText(
-        "#article-excerpt",
-        article.excerpt || ""
-    );
-
-
-    /* SLIKA */
-
-    const image =
+    const imageElement =
         document.querySelector(
             "#article-image"
         );
 
 
-    if (image) {
+    const matchElement =
+        document.querySelector(
+            "#article-match"
+        );
 
-        image.src =
-            article.image ||
-            "images/grb.png";
 
-        image.alt =
-            article.title ||
-            "ФК Обилић";
+    const bodyElement =
+        document.querySelector(
+            "#article-body"
+        );
 
-        image.onerror = function () {
 
-            this.onerror = null;
 
-            this.src =
-                "images/grb.png";
+    /* =====================================================
+       KATEGORIJA
+    ====================================================== */
 
-        };
+    if (categoryElement) {
+
+        categoryElement.textContent =
+            article.category ||
+            "ВЕСТ";
 
     }
 
 
-    /* REZULTAT */
 
-    renderArticleMatch(
-        article.match
-    );
+    /* =====================================================
+       DATUM
+    ====================================================== */
+
+    if (dateElement) {
+
+        dateElement.textContent =
+            article.date_display ||
+            formatArticleDate(
+                article.date
+            );
+
+    }
 
 
-    /* TEKST + IZVOR */
 
-    renderArticleBody(
-        article.content,
-        article.source
-    );
+    /* =====================================================
+       NASLOV
+    ====================================================== */
+
+    if (titleElement) {
+
+        titleElement.textContent =
+            article.title ||
+            "";
+
+    }
+
+
+
+    /* =====================================================
+       KRATAK OPIS
+    ====================================================== */
+
+    if (excerptElement) {
+
+        if (
+            article.excerpt &&
+            String(
+                article.excerpt
+            ).trim()
+        ) {
+
+            excerptElement.textContent =
+                article.excerpt;
+
+
+            excerptElement.hidden =
+                false;
+
+        }
+
+        else {
+
+            excerptElement.textContent =
+                "";
+
+
+            excerptElement.hidden =
+                true;
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       FOTOGRAFIJA
+    ====================================================== */
+
+    if (imageElement) {
+
+        const image =
+            getArticleImage(
+                article.image
+            );
+
+
+        imageElement.src =
+            image;
+
+
+        imageElement.alt =
+            article.title ||
+            "ФК Обилић";
+
+
+        imageElement.onerror =
+            function () {
+
+                this.onerror =
+                    null;
+
+
+                this.src =
+                    "images/grb.png";
+
+            };
+
+    }
+
+
+
+    /* =====================================================
+       REZULTAT UTAKMICE
+    ====================================================== */
+
+    if (matchElement) {
+
+        matchElement.innerHTML =
+            renderMatch(
+                article.match_data
+            );
+
+    }
+
+
+
+    /* =====================================================
+       TEKST VESTI + IZVOR
+    ====================================================== */
+
+    if (bodyElement) {
+
+        bodyElement.innerHTML =
+            renderArticleBody(
+                article.content,
+                article.source
+            );
+
+    }
+
+
+
+    /* =====================================================
+       TITLE
+    ====================================================== */
+
+    if (article.title) {
+
+        document.title =
+            `${article.title} | ФК Обилић`;
+
+    }
+
+
+
+    /* =====================================================
+       META DESCRIPTION
+    ====================================================== */
+
+    const description =
+        document.querySelector(
+            'meta[name="description"]'
+        );
+
+
+    if (
+        description &&
+        article.excerpt
+    ) {
+
+        description.setAttribute(
+            "content",
+            article.excerpt
+        );
+
+    }
+
+
+
+    /*
+        Tek kada je sve popunjeno,
+        uklanjamo loader i prikazujemo vest.
+    */
+
+    showArticleContent();
 
 }
 
@@ -238,109 +584,160 @@ function renderArticle(article) {
    REZULTAT UTAKMICE
 ========================================================= */
 
-function renderArticleMatch(match) {
+function renderMatch(match) {
 
-    const container =
-        document.querySelector(
-            "#article-match"
-        );
+    if (
+        !match ||
+        typeof match !== "object"
+    ) {
 
-
-    if (!container) {
-        return;
-    }
-
-
-    if (!match) {
-
-        container.hidden = true;
-
-        return;
+        return "";
 
     }
 
 
-    container.hidden = false;
+    const home =
+        String(
+            match.home ||
+            ""
+        ).trim();
 
 
-    setText(
-        "#article-home-team",
-        match.home || "-"
-    );
-
-    setText(
-        "#article-away-team",
-        match.away || "-"
-    );
+    const away =
+        String(
+            match.away ||
+            ""
+        ).trim();
 
 
-    setText(
-        "#article-home-score",
-        match.homeScore ?? "-"
-    );
+    if (
+        !home ||
+        !away
+    ) {
 
-    setText(
-        "#article-away-score",
-        match.awayScore ?? "-"
-    );
+        return "";
+
+    }
 
 
-    /* DOMAĆIN GRB */
+    const homeScore =
+        match.homeScore ??
+        "";
+
+
+    const awayScore =
+        match.awayScore ??
+        "";
+
 
     const homeLogo =
-        document.querySelector(
-            "#article-home-logo"
+        sanitizeImageUrl(
+            match.homeLogo
         );
 
-
-    if (homeLogo) {
-
-        homeLogo.src =
-            match.homeLogo ||
-            "images/grb.png";
-
-        homeLogo.alt =
-            match.home || "";
-
-        homeLogo.onerror = function () {
-
-            this.onerror = null;
-
-            this.src =
-                "images/grb.png";
-
-        };
-
-    }
-
-
-    /* GOST GRB */
 
     const awayLogo =
-        document.querySelector(
-            "#article-away-logo"
+        sanitizeImageUrl(
+            match.awayLogo
         );
 
 
-    if (awayLogo) {
+    return `
 
-        awayLogo.src =
-            match.awayLogo ||
-            "images/grb.png";
+        <div class="article-match">
 
-        awayLogo.alt =
-            match.away || "";
+            <span class="article-match-label">
+                РЕЗУЛТАТ УТАКМИЦЕ
+            </span>
 
-        awayLogo.onerror = function () {
 
-            this.onerror = null;
+            <div class="article-match-teams">
 
-            this.src =
-                "images/grb.png";
 
-        };
+                <!-- DOMAĆIN -->
 
-    }
+                <div class="article-match-team">
+
+                    ${
+                        homeLogo
+                            ? `
+                                <img
+                                    src="${escapeAttribute(homeLogo)}"
+                                    alt="${escapeAttribute(home)}"
+                                    onerror="this.style.display='none';"
+                                >
+                            `
+                            : ""
+                    }
+
+
+                    <strong>
+                        ${escapeHtml(home)}
+                    </strong>
+
+
+                    <span>
+                        ДОМАЋИН
+                    </span>
+
+                </div>
+
+
+
+                <!-- REZULTAT -->
+
+                <div class="article-match-score">
+
+                    <strong>
+                        ${escapeHtml(homeScore)}
+                    </strong>
+
+                    <span>
+                        :
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(awayScore)}
+                    </strong>
+
+                </div>
+
+
+
+                <!-- GOST -->
+
+                <div class="article-match-team">
+
+                    ${
+                        awayLogo
+                            ? `
+                                <img
+                                    src="${escapeAttribute(awayLogo)}"
+                                    alt="${escapeAttribute(away)}"
+                                    onerror="this.style.display='none';"
+                                >
+                            `
+                            : ""
+                    }
+
+
+                    <strong>
+                        ${escapeHtml(away)}
+                    </strong>
+
+
+                    <span>
+                        ГОСТ
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    `;
 
 }
 
@@ -355,55 +752,77 @@ function renderArticleBody(
     source
 ) {
 
-    const container =
-        document.querySelector(
-            "#article-body"
-        );
+    let paragraphs =
+        [];
 
 
-    if (!container) {
-        return;
-    }
-
-
-    let html = "";
-
+    /*
+        Supabase content je JSON niz pasusa.
+    */
 
     if (
-        Array.isArray(content) &&
-        content.length > 0
+        Array.isArray(content)
     ) {
 
-        html =
+        paragraphs =
             content
-                .map(paragraph => {
-
-                    return `
-                        <p>
-                            ${escapeHtml(paragraph)}
-                        </p>
-                    `;
-
-                })
-                .join("");
-
-    }
-
-    else {
-
-        html = `
-            <p>
-                Текст вести тренутно није доступан.
-            </p>
-        `;
+                .map(
+                    paragraph =>
+                        String(
+                            paragraph ||
+                            ""
+                        ).trim()
+                )
+                .filter(Boolean);
 
     }
 
 
-    /* IZVOR */
+    /*
+        Rezerva ako nekada bude sačuvan kao tekst.
+    */
+
+    else if (
+        typeof content === "string"
+    ) {
+
+        paragraphs =
+            content
+                .split(
+                    /\n\s*\n/
+                )
+                .map(
+                    paragraph =>
+                        paragraph.trim()
+                )
+                .filter(Boolean);
+
+    }
+
+
+
+    let html =
+        paragraphs
+            .map(
+                paragraph => `
+
+                    <p>
+                        ${escapeHtml(paragraph)}
+                    </p>
+
+                `
+            )
+            .join("");
+
+
+
+    /* =====================================================
+       IZVOR
+    ====================================================== */
 
     if (
         source &&
+        typeof source === "object" &&
         source.name
     ) {
 
@@ -411,6 +830,7 @@ function renderArticleBody(
             escapeHtml(
                 source.name
             );
+
 
         const sourceUrl =
             sanitizeUrl(
@@ -421,8 +841,11 @@ function renderArticleBody(
         if (sourceUrl) {
 
             html += `
+
                 <p class="article-source">
+
                     Извор:
+
                     <a
                         href="${escapeAttribute(sourceUrl)}"
                         target="_blank"
@@ -430,7 +853,9 @@ function renderArticleBody(
                     >
                         ${sourceName} →
                     </a>
+
                 </p>
+
             `;
 
         }
@@ -438,12 +863,17 @@ function renderArticleBody(
         else {
 
             html += `
+
                 <p class="article-source">
+
                     Извор:
+
                     <strong>
                         ${sourceName}
                     </strong>
+
                 </p>
+
             `;
 
         }
@@ -451,18 +881,38 @@ function renderArticleBody(
     }
 
 
-    container.innerHTML =
-        html;
+    /*
+        Ako nema teksta.
+    */
+
+    if (
+        !html.trim()
+    ) {
+
+        html = `
+
+            <p>
+                Текст вести тренутно није доступан.
+            </p>
+
+        `;
+
+    }
+
+
+    return html;
 
 }
 
 
 
 /* =========================================================
-   FORMATIRANJE DATUMA
+   DATUM
 ========================================================= */
 
-function formatArticleDate(dateString) {
+function formatArticleDate(
+    dateString
+) {
 
     if (!dateString) {
         return "";
@@ -489,10 +939,19 @@ function formatArticleDate(dateString) {
     return new Intl.DateTimeFormat(
         "sr-Cyrl-RS",
         {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            timeZone: "Europe/Belgrade"
+
+            day:
+                "numeric",
+
+            month:
+                "long",
+
+            year:
+                "numeric",
+
+            timeZone:
+                "Europe/Belgrade"
+
         }
     ).format(date);
 
@@ -501,30 +960,111 @@ function formatArticleDate(dateString) {
 
 
 /* =========================================================
-   SIGURNI LINKOVI
+   FOTOGRAFIJA
 ========================================================= */
 
-function sanitizeUrl(value = "") {
+function getArticleImage(value) {
+
+    const image =
+        sanitizeImageUrl(
+            value
+        );
+
+
+    return image ||
+        "images/grb.png";
+
+}
+
+
+
+function sanitizeImageUrl(value) {
+
+    const url =
+        String(
+            value ||
+            ""
+        ).trim();
+
+
+    if (!url) {
+        return "";
+    }
+
+
+    /*
+        Lokalne slike.
+    */
+
+    if (
+        url.startsWith(
+            "images/"
+        ) ||
+        url.startsWith(
+            "./images/"
+        )
+    ) {
+
+        return url;
+
+    }
+
+
+    /*
+        Supabase Storage i drugi HTTPS izvori.
+    */
+
+    if (
+        /^https?:\/\//i.test(
+            url
+        )
+    ) {
+
+        return url;
+
+    }
+
+
+    return "";
+
+}
+
+
+
+/* =========================================================
+   LINK IZVORA
+========================================================= */
+
+function sanitizeUrl(value) {
+
+    const url =
+        String(
+            value ||
+            ""
+        ).trim();
+
+
+    if (!url) {
+        return "";
+    }
+
 
     try {
 
-        const url =
+        const parsed =
             new URL(
-                String(value)
+                url
             );
 
 
         if (
-            url.protocol !== "http:" &&
-            url.protocol !== "https:"
+            parsed.protocol === "http:" ||
+            parsed.protocol === "https:"
         ) {
 
-            return "";
+            return parsed.href;
 
         }
-
-
-        return url.href;
 
     }
 
@@ -534,36 +1074,16 @@ function sanitizeUrl(value = "") {
 
     }
 
+
+    return "";
+
 }
 
 
 
 /* =========================================================
-   POMOĆNE FUNKCIJE
+   BEZBEDAN ISPIS
 ========================================================= */
-
-function setText(
-    selector,
-    value
-) {
-
-    const element =
-        document.querySelector(
-            selector
-        );
-
-
-    if (!element) {
-        return;
-    }
-
-
-    element.textContent =
-        value ?? "";
-
-}
-
-
 
 function escapeHtml(value = "") {
 
@@ -600,6 +1120,8 @@ function escapeHtml(value = "") {
 
 function escapeAttribute(value = "") {
 
-    return escapeHtml(value);
+    return escapeHtml(
+        value
+    );
 
 }

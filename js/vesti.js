@@ -1,12 +1,25 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEZEVAC
-   VESTI
+   FK OBILIĆ NOVI KNEŽEVAC
+   VESTI - SUPABASE
 ========================================================= */
+
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const NEWS_SUPABASE_URL =
+    "https://uvevthgxlnzzkapkjxky.supabase.co";
+
+const NEWS_SUPABASE_KEY =
+    "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
+
 
 document.addEventListener(
     "DOMContentLoaded",
     loadNews
 );
+
 
 
 /* =========================================================
@@ -17,11 +30,34 @@ async function loadNews() {
 
     try {
 
+        const url =
+            `${NEWS_SUPABASE_URL}/rest/v1/vesti` +
+            `?select=slug,title,category,date,date_display,image,excerpt,featured,published,created_at` +
+            `&published=eq.true` +
+            `&order=date.desc,created_at.desc`;
+
+
         const response =
             await fetch(
-                "data/vesti.json",
+                url,
                 {
-                    cache: "no-store"
+                    method: "GET",
+
+                    headers: {
+
+                        "apikey":
+                            NEWS_SUPABASE_KEY,
+
+                        "Authorization":
+                            `Bearer ${NEWS_SUPABASE_KEY}`,
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    cache:
+                        "no-store"
                 }
             );
 
@@ -48,35 +84,28 @@ async function loadNews() {
         }
 
 
-        /*
-            Prikazujemo samo objavljene vesti.
-        */
-
         const news =
-            data
-                .filter(
-                    article =>
-                        article.published !== false
-                )
-                .sort(
-                    (a, b) =>
-                        getNewsTimestamp(b.date) -
-                        getNewsTimestamp(a.date)
-                );
+            data.map(
+                article => ({
+
+                    ...article,
+
+                    dateDisplay:
+                        article.date_display ||
+                        ""
+
+                })
+            );
 
 
-        /*
-            POČETNA STRANA
-        */
-
-        renderHomeNews(news);
+        renderHomeNews(
+            news
+        );
 
 
-        /*
-            STRANICA VESTI
-        */
-
-        renderNewsPage(news);
+        renderNewsPage(
+            news
+        );
 
     }
 
@@ -87,9 +116,13 @@ async function loadNews() {
             error
         );
 
+
+        renderNewsLoadError();
+
     }
 
 }
+
 
 
 /* =========================================================
@@ -112,9 +145,11 @@ function renderHomeNews(news) {
     if (!news.length) {
 
         container.innerHTML = `
+
             <div class="football-error">
                 Тренутно нема објављених вести.
             </div>
+
         `;
 
         return;
@@ -122,89 +157,123 @@ function renderHomeNews(news) {
 
 
     const latestNews =
-        news.slice(0, 3);
+        news.slice(
+            0,
+            3
+        );
 
 
     container.innerHTML =
         latestNews
-            .map(article => {
-
-                const image =
-                    article.image ||
-                    "images/grb.png";
-
-
-                const date =
-                    article.dateDisplay ||
-                    formatNewsDate(article.date);
-
-
-                const category =
-                    article.category ||
-                    "ВЕСТ";
-
-
-                return `
-                    <a
-                        href="vest.html?id=${encodeURIComponent(article.slug)}"
-                        class="news-item home-news-item"
-                    >
-
-                        <div class="news-placeholder news-thumb">
-
-                            <img
-                                src="${escapeAttribute(image)}"
-                                alt="${escapeAttribute(article.title || "ФК Обилић")}"
-                                onerror="this.src='images/grb.png'"
-                            >
-
-                        </div>
-
-
-                        <div class="home-news-content">
-
-                            <div class="home-news-meta">
-
-                                <span class="home-news-category">
-                                    ${escapeHtml(category)}
-                                </span>
-
-                                <span class="home-news-date">
-                                    ${escapeHtml(date)}
-                                </span>
-
-                            </div>
-
-
-                            <h3>
-                                ${escapeHtml(article.title || "")}
-                            </h3>
-
-
-                            ${
-                                article.excerpt
-                                    ? `
-                                        <p>
-                                            ${escapeHtml(article.excerpt)}
-                                        </p>
-                                    `
-                                    : ""
-                            }
-
-
-                            <span class="home-news-read">
-                                ПРОЧИТАЈ ВЕСТ →
-                            </span>
-
-                        </div>
-
-                    </a>
-                `;
-
-            })
+            .map(
+                article =>
+                    renderHomeNewsItem(
+                        article
+                    )
+            )
             .join("");
 
 }
+
+
+
+/* =========================================================
+   POČETNA - KARTICA VESTI
+========================================================= */
+
+function renderHomeNewsItem(article) {
+
+    const image =
+        article.image ||
+        "images/grb.png";
+
+
+    const date =
+        article.dateDisplay ||
+        formatNewsDate(
+            article.date
+        );
+
+
+    const category =
+        article.category ||
+        "ВЕСТ";
+
+
+    return `
+
+        <a
+            href="vest.html?id=${encodeURIComponent(article.slug)}"
+            class="home-news-item"
+        >
+
+
+            <!-- SLIKA -->
+
+            <div class="news-thumb">
+
+                <img
+                    src="${escapeAttribute(image)}"
+                    alt="${escapeAttribute(article.title || "ФК Обилић")}"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+
+
+            <!-- SADRŽAJ -->
+
+            <div class="home-news-content">
+
+
+                <div class="home-news-meta">
+
+                    <span class="home-news-category">
+                        ${escapeHtml(category)}
+                    </span>
+
+
+                    <span class="home-news-date">
+                        ${escapeHtml(date)}
+                    </span>
+
+                </div>
+
+
+
+                <h3>
+                    ${escapeHtml(article.title || "")}
+                </h3>
+
+
+
+                ${
+                    article.excerpt
+                        ? `
+                            <p>
+                                ${escapeHtml(article.excerpt)}
+                            </p>
+                        `
+                        : ""
+                }
+
+
+
+                <span class="home-news-read">
+                    ПРОЧИТАЈ ВЕСТ →
+                </span>
+
+
+            </div>
+
+
+        </a>
+
+    `;
+
+}
+
 
 
 /* =========================================================
@@ -212,10 +281,6 @@ function renderHomeNews(news) {
 ========================================================= */
 
 function renderNewsPage(news) {
-
-    /*
-        Ovaj selektor postoji samo na vesti.html.
-    */
 
     const container =
         document.querySelector(
@@ -235,7 +300,9 @@ function renderNewsPage(news) {
 
 
     if (loading) {
+
         loading.remove();
+
     }
 
 
@@ -254,24 +321,26 @@ function renderNewsPage(news) {
 
 
     /*
-        Ako postoji vest sa featured: true,
-        ona ide prva.
+        Ako postoji istaknuta vest,
+        ona ide kao glavna.
 
-        Ako ne postoji,
-        koristimo najnoviju.
+        Ako nema istaknute,
+        ide najnovija.
     */
 
     const featured =
         news.find(
             article =>
                 article.featured === true
-        ) || news[0];
+        ) ||
+        news[0];
 
 
     const otherNews =
         news.filter(
             article =>
-                article.slug !== featured.slug
+                article.slug !==
+                featured.slug
         );
 
 
@@ -280,7 +349,9 @@ function renderNewsPage(news) {
         ${renderFeaturedNews(featured)}
 
         ${otherNews
-            .map(renderNewsCard)
+            .map(
+                renderNewsCard
+            )
             .join("")}
 
     `;
@@ -288,8 +359,9 @@ function renderNewsPage(news) {
 }
 
 
+
 /* =========================================================
-   GLAVNA VEST
+   STRANICA VESTI - GLAVNA VEST
 ========================================================= */
 
 function renderFeaturedNews(article) {
@@ -301,12 +373,15 @@ function renderFeaturedNews(article) {
 
     const date =
         article.dateDisplay ||
-        formatNewsDate(article.date);
+        formatNewsDate(
+            article.date
+        );
 
 
     return `
 
         <article class="news-feature-card">
+
 
             <a
                 href="vest.html?id=${encodeURIComponent(article.slug)}"
@@ -318,7 +393,7 @@ function renderFeaturedNews(article) {
                     <img
                         src="${escapeAttribute(image)}"
                         alt="${escapeAttribute(article.title || "ФК Обилић")}"
-                        onerror="this.src='images/grb.png'"
+                        onerror="this.onerror=null;this.src='images/grb.png';"
                     >
 
                 </div>
@@ -326,7 +401,9 @@ function renderFeaturedNews(article) {
             </a>
 
 
+
             <div class="news-feature-content">
+
 
                 <span class="news-category">
                     ${escapeHtml(article.category || "ВЕСТ")}
@@ -336,6 +413,7 @@ function renderFeaturedNews(article) {
                 <span class="news-date">
                     ${escapeHtml(date)}
                 </span>
+
 
 
                 <h2>
@@ -349,6 +427,7 @@ function renderFeaturedNews(article) {
                 </h2>
 
 
+
                 ${
                     article.excerpt
                         ? `
@@ -360,6 +439,7 @@ function renderFeaturedNews(article) {
                 }
 
 
+
                 <a
                     href="vest.html?id=${encodeURIComponent(article.slug)}"
                     class="news-read-more"
@@ -367,7 +447,9 @@ function renderFeaturedNews(article) {
                     ПРОЧИТАЈ ВЕСТ →
                 </a>
 
+
             </div>
+
 
         </article>
 
@@ -376,8 +458,9 @@ function renderFeaturedNews(article) {
 }
 
 
+
 /* =========================================================
-   OSTALE VESTI
+   STRANICA VESTI - OSTALE VESTI
 ========================================================= */
 
 function renderNewsCard(article) {
@@ -389,12 +472,15 @@ function renderNewsCard(article) {
 
     const date =
         article.dateDisplay ||
-        formatNewsDate(article.date);
+        formatNewsDate(
+            article.date
+        );
 
 
     return `
 
         <article class="news-list-card">
+
 
             <a
                 href="vest.html?id=${encodeURIComponent(article.slug)}"
@@ -404,13 +490,15 @@ function renderNewsCard(article) {
                 <img
                     src="${escapeAttribute(image)}"
                     alt="${escapeAttribute(article.title || "ФК Обилић")}"
-                    onerror="this.src='images/grb.png'"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
                 >
 
             </a>
 
 
+
             <div class="news-list-content">
+
 
                 <span class="news-category">
                     ${escapeHtml(article.category || "ВЕСТ")}
@@ -420,6 +508,7 @@ function renderNewsCard(article) {
                 <span class="news-card-date">
                     ${escapeHtml(date)}
                 </span>
+
 
 
                 <h3>
@@ -433,6 +522,7 @@ function renderNewsCard(article) {
                 </h3>
 
 
+
                 ${
                     article.excerpt
                         ? `
@@ -444,6 +534,7 @@ function renderNewsCard(article) {
                 }
 
 
+
                 <a
                     href="vest.html?id=${encodeURIComponent(article.slug)}"
                     class="news-read-more"
@@ -451,7 +542,9 @@ function renderNewsCard(article) {
                     ПРОЧИТАЈ →
                 </a>
 
+
             </div>
+
 
         </article>
 
@@ -460,38 +553,70 @@ function renderNewsCard(article) {
 }
 
 
+
 /* =========================================================
-   DATUM
+   GREŠKA PRI UČITAVANJU
 ========================================================= */
 
-function getNewsTimestamp(dateString) {
+function renderNewsLoadError() {
 
-    if (!dateString) {
-        return 0;
-    }
-
-
-    const date =
-        new Date(
-            `${dateString}T12:00:00`
+    const homeContainer =
+        document.querySelector(
+            "#home-news-list"
         );
 
 
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
+    if (homeContainer) {
 
-        return 0;
+        homeContainer.innerHTML = `
+
+            <div class="football-error">
+                Вести тренутно није могуће учитати.
+            </div>
+
+        `;
 
     }
 
 
-    return date.getTime();
+    const pageContainer =
+        document.querySelector(
+            ".news-page-grid"
+        );
+
+
+    const loading =
+        document.querySelector(
+            "#news-page-loading"
+        );
+
+
+    if (loading) {
+
+        loading.remove();
+
+    }
+
+
+    if (pageContainer) {
+
+        pageContainer.innerHTML = `
+
+            <div class="football-error">
+                Вести тренутно није могуће учитати.
+            </div>
+
+        `;
+
+    }
 
 }
 
+
+
+/* =========================================================
+   DATUM
+========================================================= */
 
 function formatNewsDate(dateString) {
 
@@ -520,14 +645,24 @@ function formatNewsDate(dateString) {
     return new Intl.DateTimeFormat(
         "sr-Cyrl-RS",
         {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            timeZone: "Europe/Belgrade"
+
+            day:
+                "numeric",
+
+            month:
+                "long",
+
+            year:
+                "numeric",
+
+            timeZone:
+                "Europe/Belgrade"
+
         }
     ).format(date);
 
 }
+
 
 
 /* =========================================================
@@ -566,8 +701,11 @@ function escapeHtml(value = "") {
 }
 
 
+
 function escapeAttribute(value = "") {
 
-    return escapeHtml(value);
+    return escapeHtml(
+        value
+    );
 
 }

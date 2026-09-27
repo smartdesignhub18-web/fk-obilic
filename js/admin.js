@@ -22,75 +22,154 @@ const supabaseClient =
     );
 
 
+const NEWS_BUCKET =
+    "vesti";
+
+
 
 /* =========================================================
-   ELEMENTI
+   ELEMENTI - LOGIN / PANEL
 ========================================================= */
 
 const loginScreen =
-    document.querySelector(
-        "#admin-login-screen"
-    );
+    document.querySelector("#admin-login-screen");
 
 const adminPanel =
-    document.querySelector(
-        "#admin-panel"
-    );
+    document.querySelector("#admin-panel");
 
 const loginForm =
-    document.querySelector(
-        "#admin-login-form"
-    );
+    document.querySelector("#admin-login-form");
 
 const emailInput =
-    document.querySelector(
-        "#admin-email"
-    );
+    document.querySelector("#admin-email");
 
 const passwordInput =
-    document.querySelector(
-        "#admin-password"
-    );
+    document.querySelector("#admin-password");
 
 const loginMessage =
-    document.querySelector(
-        "#admin-login-message"
-    );
+    document.querySelector("#admin-login-message");
 
 const logoutButton =
-    document.querySelector(
-        "#admin-logout-button"
-    );
+    document.querySelector("#admin-logout-button");
 
 const adminUserEmail =
-    document.querySelector(
-        "#admin-user-email"
-    );
+    document.querySelector("#admin-user-email");
 
 const adminPageTitle =
-    document.querySelector(
-        "#admin-page-title"
-    );
+    document.querySelector("#admin-page-title");
 
 const navigationButtons =
-    document.querySelectorAll(
-        ".admin-nav-item"
-    );
+    document.querySelectorAll(".admin-nav-item");
 
 const adminPages =
-    document.querySelectorAll(
-        ".admin-page"
-    );
+    document.querySelectorAll(".admin-page");
+
+
+
+/* =========================================================
+   ELEMENTI - VESTI
+========================================================= */
 
 const adminNewsList =
-    document.querySelector(
-        "#admin-news-list"
-    );
+    document.querySelector("#admin-news-list");
 
 const addNewsButton =
+    document.querySelector("#admin-add-news");
+
+const newsModal =
+    document.querySelector("#admin-news-modal");
+
+const newsForm =
+    document.querySelector("#admin-news-form");
+
+const newsModalTitle =
+    document.querySelector("#admin-news-modal-title");
+
+const newsIdInput =
+    document.querySelector("#admin-news-id");
+
+const currentImageInput =
+    document.querySelector("#admin-news-current-image");
+
+const newsTitleInput =
+    document.querySelector("#admin-news-title");
+
+const newsCategoryInput =
+    document.querySelector("#admin-news-category");
+
+const newsDateInput =
+    document.querySelector("#admin-news-date");
+
+const newsExcerptInput =
+    document.querySelector("#admin-news-excerpt");
+
+const newsContentInput =
+    document.querySelector("#admin-news-content");
+
+const newsImageInput =
+    document.querySelector("#admin-news-image");
+
+const newsImagePreview =
     document.querySelector(
-        "#admin-add-news"
+        "#admin-news-image-preview img"
     );
+
+const newsImageName =
+    document.querySelector("#admin-news-image-name");
+
+const newsSourceNameInput =
+    document.querySelector("#admin-news-source-name");
+
+const newsSourceUrlInput =
+    document.querySelector("#admin-news-source-url");
+
+const newsHasMatchInput =
+    document.querySelector("#admin-news-has-match");
+
+const newsMatchFields =
+    document.querySelector("#admin-news-match-fields");
+
+const newsHomeInput =
+    document.querySelector("#admin-news-home");
+
+const newsAwayInput =
+    document.querySelector("#admin-news-away");
+
+const newsHomeScoreInput =
+    document.querySelector("#admin-news-home-score");
+
+const newsAwayScoreInput =
+    document.querySelector("#admin-news-away-score");
+
+const newsFeaturedInput =
+    document.querySelector("#admin-news-featured");
+
+const newsPublishedInput =
+    document.querySelector("#admin-news-published");
+
+const newsFormMessage =
+    document.querySelector("#admin-news-form-message");
+
+const newsSaveButton =
+    document.querySelector("#admin-news-save-button");
+
+const closeNewsModalButtons =
+    document.querySelectorAll("[data-close-news-modal]");
+
+
+
+/* =========================================================
+   STANJE
+========================================================= */
+
+let editingNews =
+    null;
+
+let previewObjectUrl =
+    null;
+
+let savingNews =
+    false;
 
 
 
@@ -162,6 +241,12 @@ async function initializeAdmin() {
 
     setupNewsActions();
 
+    setupNewsModal();
+
+    setupNewsImagePreview();
+
+    setupMatchFields();
+
 
     await checkCurrentSession();
 
@@ -169,9 +254,7 @@ async function initializeAdmin() {
     supabaseClient.auth.onAuthStateChange(
         event => {
 
-            if (
-                event === "SIGNED_OUT"
-            ) {
+            if (event === "SIGNED_OUT") {
 
                 showLoginScreen();
 
@@ -185,7 +268,7 @@ async function initializeAdmin() {
 
 
 /* =========================================================
-   PROVERA SESIJE
+   SESIJA
 ========================================================= */
 
 async function checkCurrentSession() {
@@ -206,9 +289,7 @@ async function checkCurrentSession() {
         }
 
 
-        if (
-            data?.session?.user
-        ) {
+        if (data?.session?.user) {
 
             await handleAuthenticatedUser(
                 data.session.user
@@ -244,7 +325,7 @@ async function checkCurrentSession() {
 
 
 /* =========================================================
-   PROVERA ADMIN PRISTUPA
+   ADMIN PROVERA
 ========================================================= */
 
 async function verifyAdminUser(user) {
@@ -269,12 +350,6 @@ async function verifyAdminUser(user) {
 
 
     if (error) {
-
-        console.error(
-            "Грешка при провери администратора:",
-            error
-        );
-
         throw error;
     }
 
@@ -325,7 +400,7 @@ async function handleAuthenticatedUser(user) {
     catch (error) {
 
         console.error(
-            "Није могуће потврдити администратора:",
+            "Грешка при провери администратора:",
             error
         );
 
@@ -364,17 +439,13 @@ function setupLogin() {
 
 
             const email =
-                emailInput?.value
-                    ?.trim();
+                emailInput?.value?.trim();
 
             const password =
                 passwordInput?.value;
 
 
-            if (
-                !email ||
-                !password
-            ) {
+            if (!email || !password) {
 
                 showLoginMessage(
                     "Унесите е-маил и лозинку."
@@ -384,10 +455,7 @@ function setupLogin() {
             }
 
 
-            setLoginLoading(
-                true
-            );
-
+            setLoginLoading(true);
 
             clearLoginMessage();
 
@@ -411,9 +479,7 @@ function setupLogin() {
                 }
 
 
-                if (
-                    !data?.user
-                ) {
+                if (!data?.user) {
 
                     throw new Error(
                         "Корисник није пронађен."
@@ -458,9 +524,7 @@ function setupLogin() {
 
             finally {
 
-                setLoginLoading(
-                    false
-                );
+                setLoginLoading(false);
 
             }
 
@@ -570,11 +634,7 @@ function showAdminPanel(user) {
 
     clearLoginMessage();
 
-
-    openAdminPage(
-        "dashboard"
-    );
-
+    openAdminPage("dashboard");
 
     loadDashboardStats();
 
@@ -583,10 +643,13 @@ function showAdminPanel(user) {
 
 
 /* =========================================================
-   PRIKAZ LOGIN EKRANA
+   LOGIN EKRAN
 ========================================================= */
 
 function showLoginScreen() {
+
+    closeNewsModal();
+
 
     if (adminPanel) {
 
@@ -629,8 +692,7 @@ function setupNavigation() {
                 () => {
 
                     const page =
-                        button.dataset
-                            .adminPage;
+                        button.dataset.adminPage;
 
 
                     if (!page) {
@@ -638,19 +700,10 @@ function setupNavigation() {
                     }
 
 
-                    openAdminPage(
-                        page
-                    );
+                    openAdminPage(page);
 
 
-                    /*
-                        Kada otvorimo VESTI,
-                        učitavamo podatke iz Supabase-a.
-                    */
-
-                    if (
-                        page === "vesti"
-                    ) {
+                    if (page === "vesti") {
 
                         loadAdminNews();
 
@@ -671,14 +724,9 @@ function openAdminPage(page) {
     navigationButtons.forEach(
         button => {
 
-            const isActive =
-                button.dataset
-                    .adminPage === page;
-
-
             button.classList.toggle(
                 "active",
-                isActive
+                button.dataset.adminPage === page
             );
 
         }
@@ -688,14 +736,9 @@ function openAdminPage(page) {
     adminPages.forEach(
         section => {
 
-            const isActive =
-                section.dataset
-                    .page === page;
-
-
             section.classList.toggle(
                 "active",
-                isActive
+                section.dataset.page === page
             );
 
         }
@@ -737,7 +780,7 @@ async function loadDashboardStats() {
 
 
 /* =========================================================
-   BROJ VESTI - SUPABASE
+   BROJ VESTI
 ========================================================= */
 
 async function loadNewsCount() {
@@ -802,8 +845,7 @@ async function loadNewsCount() {
 
 
 /* =========================================================
-   IGRAČI
-   ZA SADA POSTOJEĆI JSON
+   IGRAČI - JOŠ UVEK JSON
 ========================================================= */
 
 async function loadPlayersCount() {
@@ -841,14 +883,11 @@ async function loadPlayersCount() {
 
 
         const players =
-            data?.prviTim
-                ?.igraci;
+            data?.prviTim?.igraci;
 
 
         element.textContent =
-            Array.isArray(
-                players
-            )
+            Array.isArray(players)
                 ? players.length
                 : "0";
 
@@ -866,8 +905,7 @@ async function loadPlayersCount() {
 
 
 /* =========================================================
-   GALERIJA
-   ZA SADA POSTOJEĆI JSON
+   GALERIJA - JOŠ UVEK JSON
 ========================================================= */
 
 async function loadGalleryCount() {
@@ -909,9 +947,7 @@ async function loadGalleryCount() {
 
 
         element.textContent =
-            Array.isArray(
-                photos
-            )
+            Array.isArray(photos)
                 ? photos.length
                 : "0";
 
@@ -929,8 +965,7 @@ async function loadGalleryCount() {
 
 
 /* =========================================================
-   PARTNERI
-   ZA SADA POSTOJEĆI JSON
+   PARTNERI - JOŠ UVEK JSON
 ========================================================= */
 
 async function loadPartnersCount() {
@@ -972,9 +1007,7 @@ async function loadPartnersCount() {
 
 
         element.textContent =
-            Array.isArray(
-                partners
-            )
+            Array.isArray(partners)
                 ? partners.length
                 : "0";
 
@@ -992,7 +1025,7 @@ async function loadPartnersCount() {
 
 
 /* =========================================================
-   VESTI - UČITAVANJE IZ SUPABASE
+   UČITAVANJE VESTI
 ========================================================= */
 
 async function loadAdminNews() {
@@ -1041,13 +1074,15 @@ async function loadAdminNews() {
                 .order(
                     "date",
                     {
-                        ascending: false
+                        ascending:
+                            false
                     }
                 )
                 .order(
                     "created_at",
                     {
-                        ascending: false
+                        ascending:
+                            false
                     }
                 );
 
@@ -1068,9 +1103,7 @@ async function loadAdminNews() {
         }
 
 
-        renderAdminNews(
-            data
-        );
+        renderAdminNews(data);
 
     }
 
@@ -1091,7 +1124,7 @@ async function loadAdminNews() {
 
 
 /* =========================================================
-   PRIKAZ LISTE VESTI
+   PRIKAZ VESTI
 ========================================================= */
 
 function renderAdminNews(news) {
@@ -1113,7 +1146,7 @@ function renderAdminNews(news) {
 
                 const date =
                     article.date_display ||
-                    formatAdminDate(
+                    formatDateDisplay(
                         article.date
                     );
 
@@ -1135,7 +1168,7 @@ function renderAdminNews(news) {
                         : "НАЦРТ";
 
 
-                const featuredText =
+                const featured =
                     article.featured
                         ? " • ИСТАКНУТА"
                         : "";
@@ -1160,21 +1193,18 @@ function renderAdminNews(news) {
                         </div>
 
 
-
                         <div class="admin-news-info">
 
                             <span class="admin-news-category">
 
                                 ${escapeHtml(category)}
-                                ${featuredText}
+                                ${featured}
 
                             </span>
 
 
                             <h3>
-
                                 ${escapeHtml(article.title || "")}
-
                             </h3>
 
 
@@ -1191,30 +1221,20 @@ function renderAdminNews(news) {
                         </div>
 
 
-
                         <div class="admin-news-date">
-
                             ${escapeHtml(date)}
-
                         </div>
-
 
 
                         <div>
 
                             <span
-                                class="
-                                    admin-news-status
-                                    ${statusClass}
-                                "
+                                class="admin-news-status ${statusClass}"
                             >
-
                                 ${statusText}
-
                             </span>
 
                         </div>
-
 
 
                         <div class="admin-news-actions">
@@ -1257,11 +1277,6 @@ function renderAdminNews(news) {
 
 function renderEmptyNews() {
 
-    if (!adminNewsList) {
-        return;
-    }
-
-
     adminNewsList.innerHTML = `
 
         <div class="admin-news-empty">
@@ -1288,15 +1303,10 @@ function renderEmptyNews() {
 
 
 /* =========================================================
-   GREŠKA PRI UČITAVANJU
+   GREŠKA
 ========================================================= */
 
 function renderNewsError() {
-
-    if (!adminNewsList) {
-        return;
-    }
-
 
     adminNewsList.innerHTML = `
 
@@ -1329,32 +1339,19 @@ function renderNewsError() {
 
 function setupNewsActions() {
 
-    /*
-        DODAJ NOVU VEST
-
-        Forma dolazi u sledećem koraku.
-    */
-
     if (addNewsButton) {
 
         addNewsButton.addEventListener(
             "click",
             () => {
 
-                alert(
-                    "Следећи корак је форма за додавање нове вести."
-                );
+                openNewNewsModal();
 
             }
         );
 
     }
 
-
-    /*
-        Event delegation za
-        IZMENI i OBRIŠI.
-    */
 
     if (!adminNewsList) {
         return;
@@ -1373,8 +1370,12 @@ function setupNewsActions() {
 
             if (editButton) {
 
-                alert(
-                    "Форму за измену вести правимо у следећем кораку."
+                const id =
+                    editButton.dataset.editNews;
+
+
+                await openEditNewsModal(
+                    id
                 );
 
                 return;
@@ -1393,19 +1394,12 @@ function setupNewsActions() {
 
 
             const newsId =
-                deleteButton.dataset
-                    .deleteNews;
+                deleteButton.dataset.deleteNews;
 
 
             const newsTitle =
-                deleteButton.dataset
-                    .newsTitle ||
+                deleteButton.dataset.newsTitle ||
                 "ову вест";
-
-
-            if (!newsId) {
-                return;
-            }
 
 
             const confirmed =
@@ -1432,6 +1426,1231 @@ function setupNewsActions() {
 
 
 /* =========================================================
+   MODAL
+========================================================= */
+
+function setupNewsModal() {
+
+    closeNewsModalButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                closeNewsModal
+            );
+
+        }
+    );
+
+
+    if (newsForm) {
+
+        newsForm.addEventListener(
+            "submit",
+            saveNews
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                newsModal &&
+                !newsModal.hidden
+            ) {
+
+                closeNewsModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+function openNewNewsModal() {
+
+    resetNewsForm();
+
+
+    editingNews =
+        null;
+
+
+    if (newsModalTitle) {
+
+        newsModalTitle.textContent =
+            "Додај нову вест";
+
+    }
+
+
+    if (newsDateInput) {
+
+        newsDateInput.value =
+            getTodayDateValue();
+
+    }
+
+
+    if (newsPublishedInput) {
+
+        newsPublishedInput.checked =
+            true;
+
+    }
+
+
+    openNewsModal();
+
+}
+
+
+
+async function openEditNewsModal(id) {
+
+    if (!id) {
+        return;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("vesti")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        editingNews =
+            data;
+
+
+        resetNewsForm(
+            false
+        );
+
+
+        if (newsModalTitle) {
+
+            newsModalTitle.textContent =
+                "Измени вест";
+
+        }
+
+
+        newsIdInput.value =
+            data.id || "";
+
+
+        currentImageInput.value =
+            data.image || "";
+
+
+        newsTitleInput.value =
+            data.title || "";
+
+
+        newsCategoryInput.value =
+            data.category ||
+            "ПРВИ ТИМ";
+
+
+        newsDateInput.value =
+            data.date || "";
+
+
+        newsExcerptInput.value =
+            data.excerpt || "";
+
+
+        newsContentInput.value =
+            Array.isArray(data.content)
+                ? data.content.join("\n\n")
+                : "";
+
+
+        newsSourceNameInput.value =
+            data.source?.name ||
+            "";
+
+
+        newsSourceUrlInput.value =
+            data.source?.url ||
+            "";
+
+
+        newsFeaturedInput.checked =
+            Boolean(
+                data.featured
+            );
+
+
+        newsPublishedInput.checked =
+            Boolean(
+                data.published
+            );
+
+
+        if (data.match_data) {
+
+            newsHasMatchInput.checked =
+                true;
+
+
+            newsMatchFields.hidden =
+                false;
+
+
+            newsHomeInput.value =
+                data.match_data.home ||
+                "";
+
+
+            newsAwayInput.value =
+                data.match_data.away ||
+                "";
+
+
+            newsHomeScoreInput.value =
+                data.match_data.homeScore ??
+                "";
+
+
+            newsAwayScoreInput.value =
+                data.match_data.awayScore ??
+                "";
+
+        }
+
+
+        setNewsPreview(
+            data.image ||
+            "images/grb.png"
+        );
+
+
+        if (newsImageName) {
+
+            newsImageName.textContent =
+                data.image
+                    ? "Тренутна фотографија"
+                    : "Није изабрана фотографија";
+
+        }
+
+
+        openNewsModal();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при учитавању вести:",
+            error
+        );
+
+
+        alert(
+            "Вест није могуће учитати за измену."
+        );
+
+    }
+
+}
+
+
+
+function openNewsModal() {
+
+    if (!newsModal) {
+        return;
+    }
+
+
+    newsModal.hidden =
+        false;
+
+
+    document.body.classList.add(
+        "admin-modal-open"
+    );
+
+
+    setTimeout(
+        () => {
+
+            newsTitleInput?.focus();
+
+        },
+        50
+    );
+
+}
+
+
+
+function closeNewsModal() {
+
+    if (!newsModal) {
+        return;
+    }
+
+
+    newsModal.hidden =
+        true;
+
+
+    document.body.classList.remove(
+        "admin-modal-open"
+    );
+
+
+    clearPreviewObjectUrl();
+
+}
+
+
+
+/* =========================================================
+   RESET FORME
+========================================================= */
+
+function resetNewsForm(
+    clearEditing = true
+) {
+
+    if (newsForm) {
+
+        newsForm.reset();
+
+    }
+
+
+    if (clearEditing) {
+
+        editingNews =
+            null;
+
+    }
+
+
+    if (newsIdInput) {
+
+        newsIdInput.value =
+            "";
+
+    }
+
+
+    if (currentImageInput) {
+
+        currentImageInput.value =
+            "";
+
+    }
+
+
+    if (newsPublishedInput) {
+
+        newsPublishedInput.checked =
+            true;
+
+    }
+
+
+    if (newsHasMatchInput) {
+
+        newsHasMatchInput.checked =
+            false;
+
+    }
+
+
+    if (newsMatchFields) {
+
+        newsMatchFields.hidden =
+            true;
+
+    }
+
+
+    setNewsPreview(
+        "images/grb.png"
+    );
+
+
+    if (newsImageName) {
+
+        newsImageName.textContent =
+            "Није изабрана нова фотографија";
+
+    }
+
+
+    clearNewsFormMessage();
+
+}
+
+
+
+/* =========================================================
+   REZULTAT UTAKMICE
+========================================================= */
+
+function setupMatchFields() {
+
+    if (!newsHasMatchInput) {
+        return;
+    }
+
+
+    newsHasMatchInput.addEventListener(
+        "change",
+        () => {
+
+            if (!newsMatchFields) {
+                return;
+            }
+
+
+            newsMatchFields.hidden =
+                !newsHasMatchInput.checked;
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   PREVIEW SLIKE
+========================================================= */
+
+function setupNewsImagePreview() {
+
+    if (!newsImageInput) {
+        return;
+    }
+
+
+    newsImageInput.addEventListener(
+        "change",
+        () => {
+
+            const file =
+                newsImageInput.files?.[0];
+
+
+            if (!file) {
+
+                if (editingNews?.image) {
+
+                    setNewsPreview(
+                        editingNews.image
+                    );
+
+                }
+
+                return;
+            }
+
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+
+            if (
+                !allowedTypes.includes(
+                    file.type
+                )
+            ) {
+
+                alert(
+                    "Дозвољене су JPG, PNG и WEBP фотографије."
+                );
+
+
+                newsImageInput.value =
+                    "";
+
+                return;
+            }
+
+
+            clearPreviewObjectUrl();
+
+
+            previewObjectUrl =
+                URL.createObjectURL(
+                    file
+                );
+
+
+            setNewsPreview(
+                previewObjectUrl
+            );
+
+
+            if (newsImageName) {
+
+                newsImageName.textContent =
+                    file.name;
+
+            }
+
+        }
+    );
+
+}
+
+
+
+function setNewsPreview(src) {
+
+    if (!newsImagePreview) {
+        return;
+    }
+
+
+    newsImagePreview.src =
+        src ||
+        "images/grb.png";
+
+}
+
+
+
+function clearPreviewObjectUrl() {
+
+    if (!previewObjectUrl) {
+        return;
+    }
+
+
+    URL.revokeObjectURL(
+        previewObjectUrl
+    );
+
+
+    previewObjectUrl =
+        null;
+
+}
+
+
+
+/* =========================================================
+   ČUVANJE VESTI
+========================================================= */
+
+async function saveNews(event) {
+
+    event.preventDefault();
+
+
+    if (savingNews) {
+        return;
+    }
+
+
+    clearNewsFormMessage();
+
+
+    const title =
+        newsTitleInput?.value
+            ?.trim();
+
+
+    const date =
+        newsDateInput?.value;
+
+
+    const contentText =
+        newsContentInput?.value
+            ?.trim();
+
+
+    if (
+        !title ||
+        !date ||
+        !contentText
+    ) {
+
+        showNewsFormMessage(
+            "Попуните наслов, датум и текст вести.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const paragraphs =
+        contentText
+            .split(/\n\s*\n/)
+            .map(
+                paragraph =>
+                    paragraph.trim()
+            )
+            .filter(Boolean);
+
+
+    if (!paragraphs.length) {
+
+        showNewsFormMessage(
+            "Унесите текст вести.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (
+        newsHasMatchInput?.checked
+    ) {
+
+        if (
+            !newsHomeInput.value.trim() ||
+            !newsAwayInput.value.trim() ||
+            newsHomeScoreInput.value === "" ||
+            newsAwayScoreInput.value === ""
+        ) {
+
+            showNewsFormMessage(
+                "Попуните све податке о резултату утакмице.",
+                "error"
+            );
+
+            return;
+        }
+
+    }
+
+
+    savingNews =
+        true;
+
+
+    setNewsSaveLoading(
+        true
+    );
+
+
+    let uploadedImagePath =
+        null;
+
+
+    try {
+
+        const id =
+            newsIdInput?.value ||
+            null;
+
+
+        let slug =
+            editingNews?.slug ||
+            "";
+
+
+        if (!slug) {
+
+            slug =
+                await createUniqueSlug(
+                    title
+                );
+
+        }
+
+
+        let image =
+            currentImageInput?.value ||
+            editingNews?.image ||
+            "";
+
+
+        const newImageFile =
+            newsImageInput
+                ?.files?.[0];
+
+
+        if (newImageFile) {
+
+            const uploadResult =
+                await uploadNewsImage(
+                    newImageFile,
+                    slug
+                );
+
+
+            image =
+                uploadResult.publicUrl;
+
+
+            uploadedImagePath =
+                uploadResult.path;
+
+        }
+
+
+        const sourceName =
+            newsSourceNameInput
+                ?.value
+                ?.trim() ||
+            "";
+
+
+        const sourceUrl =
+            newsSourceUrlInput
+                ?.value
+                ?.trim() ||
+            "";
+
+
+        const source =
+            sourceName ||
+            sourceUrl
+                ? {
+                    name:
+                        sourceName ||
+                        "Извор",
+
+                    url:
+                        sourceUrl ||
+                        ""
+                }
+                : null;
+
+
+        const matchData =
+            buildMatchData();
+
+
+        const articleData = {
+
+            slug,
+
+            title,
+
+            category:
+                newsCategoryInput?.value ||
+                "ПРВИ ТИМ",
+
+            date,
+
+            date_display:
+                formatDateDisplay(
+                    date
+                ),
+
+            image:
+                image ||
+                null,
+
+            excerpt:
+                newsExcerptInput
+                    ?.value
+                    ?.trim() ||
+                "",
+
+            content:
+                paragraphs,
+
+            match_data:
+                matchData,
+
+            source,
+
+            featured:
+                Boolean(
+                    newsFeaturedInput
+                        ?.checked
+                ),
+
+            published:
+                Boolean(
+                    newsPublishedInput
+                        ?.checked
+                )
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+            result =
+                await supabaseClient
+                    .from("vesti")
+                    .update(
+                        articleData
+                    )
+                    .eq(
+                        "id",
+                        id
+                    )
+                    .select()
+                    .single();
+
+        }
+
+        else {
+
+            result =
+                await supabaseClient
+                    .from("vesti")
+                    .insert(
+                        articleData
+                    )
+                    .select()
+                    .single();
+
+        }
+
+
+        if (result.error) {
+
+            throw result.error;
+
+        }
+
+
+        /*
+         * Ako smo prilikom izmene postavili novu sliku,
+         * staru Supabase sliku brišemo tek kada je baza
+         * uspešno sačuvana.
+         */
+
+        if (
+            id &&
+            newImageFile &&
+            editingNews?.image
+        ) {
+
+            const oldPath =
+                extractNewsStoragePath(
+                    editingNews.image
+                );
+
+
+            if (
+                oldPath &&
+                oldPath !== uploadedImagePath
+            ) {
+
+                await supabaseClient
+                    .storage
+                    .from(
+                        NEWS_BUCKET
+                    )
+                    .remove([
+                        oldPath
+                    ]);
+
+            }
+
+        }
+
+
+        showNewsFormMessage(
+            id
+                ? "Вест је успешно измењена."
+                : "Вест је успешно додата.",
+            "success"
+        );
+
+
+        await Promise.all([
+
+            loadAdminNews(),
+
+            loadNewsCount()
+
+        ]);
+
+
+        setTimeout(
+            () => {
+
+                closeNewsModal();
+
+            },
+            500
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при чувању вести:",
+            error
+        );
+
+
+        /*
+         * Ako je upload uspeo, a upis u bazu nije,
+         * uklanjamo novu sliku da ne ostane nepotreban
+         * fajl u Storage-u.
+         */
+
+        if (uploadedImagePath) {
+
+            try {
+
+                await supabaseClient
+                    .storage
+                    .from(
+                        NEWS_BUCKET
+                    )
+                    .remove([
+                        uploadedImagePath
+                    ]);
+
+            }
+
+            catch {
+                // Nije kritično.
+            }
+
+        }
+
+
+        let message =
+            "Вест није могуће сачувати.";
+
+
+        if (
+            String(
+                error?.message || ""
+            )
+                .toLowerCase()
+                .includes("duplicate")
+        ) {
+
+            message =
+                "Вест са овим називом већ постоји.";
+
+        }
+
+
+        showNewsFormMessage(
+            message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        savingNews =
+            false;
+
+
+        setNewsSaveLoading(
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   MATCH DATA
+========================================================= */
+
+function buildMatchData() {
+
+    if (
+        !newsHasMatchInput?.checked
+    ) {
+
+        return null;
+
+    }
+
+
+    const home =
+        newsHomeInput
+            .value
+            .trim();
+
+
+    const away =
+        newsAwayInput
+            .value
+            .trim();
+
+
+    const homeScore =
+        Number(
+            newsHomeScoreInput.value
+        );
+
+
+    const awayScore =
+        Number(
+            newsAwayScoreInput.value
+        );
+
+
+    return {
+
+        home,
+
+        away,
+
+        homeLogo:
+            getClubLogoPath(
+                home
+            ),
+
+        awayLogo:
+            getClubLogoPath(
+                away
+            ),
+
+        homeScore,
+
+        awayScore
+
+    };
+
+}
+
+
+
+/* =========================================================
+   GRBOVI KLUBOVA
+========================================================= */
+
+function getClubLogoPath(teamName = "") {
+
+    const team =
+        normalizeTeamName(
+            teamName
+        );
+
+
+    const logos = {
+
+        "obilic":
+            "images/grbovi/obilic.webp",
+
+        "potisje":
+            "images/grbovi/potisje.webp",
+
+        "djala 1922":
+            "images/grbovi/djala-1922.webp",
+
+        "horgos 1911":
+            "images/grbovi/horgos-1911.webp",
+
+        "backa":
+            "images/grbovi/backa.webp",
+
+        "jedinstvo sk":
+            "images/grbovi/jedinstvo-sk.webp",
+
+        "slavija":
+            "images/grbovi/slavija.webp",
+
+        "sloga o":
+            "images/grbovi/sloga-o.webp",
+
+        "sampion":
+            "images/grbovi/sampion.webp",
+
+        "tisa":
+            "images/grbovi/tisa.webp",
+
+        "jadran":
+            "images/grbovi/jadran.webp",
+
+        "tromedja":
+            "images/grbovi/tromedja.webp",
+
+        "jedinstvo m":
+            "images/grbovi/jedinstvo-m.webp"
+
+    };
+
+
+    return logos[team] ||
+        "";
+
+}
+
+
+
+/* =========================================================
+   UPLOAD FOTOGRAFIJE
+========================================================= */
+
+async function uploadNewsImage(
+    file,
+    slug
+) {
+
+    const extension =
+        getFileExtension(
+            file
+        );
+
+
+    const safeSlug =
+        slug
+            .slice(0, 70) ||
+        "vest";
+
+
+    const path =
+        `slike/${Date.now()}-${safeSlug}.${extension}`;
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .storage
+            .from(
+                NEWS_BUCKET
+            )
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false,
+
+                    contentType:
+                        file.type
+                }
+            );
+
+
+    if (error) {
+
+        throw error;
+
+    }
+
+
+    const {
+        data
+    } =
+        supabaseClient
+            .storage
+            .from(
+                NEWS_BUCKET
+            )
+            .getPublicUrl(
+                path
+            );
+
+
+    if (!data?.publicUrl) {
+
+        throw new Error(
+            "Јавни URL фотографије није добијен."
+        );
+
+    }
+
+
+    return {
+
+        path,
+
+        publicUrl:
+            data.publicUrl
+
+    };
+
+}
+
+
+
+function getFileExtension(file) {
+
+    const type =
+        file?.type ||
+        "";
+
+
+    if (
+        type === "image/jpeg"
+    ) {
+
+        return "jpg";
+
+    }
+
+
+    if (
+        type === "image/png"
+    ) {
+
+        return "png";
+
+    }
+
+
+    if (
+        type === "image/webp"
+    ) {
+
+        return "webp";
+
+    }
+
+
+    const nameExtension =
+        String(
+            file?.name || ""
+        )
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    return nameExtension ||
+        "jpg";
+
+}
+
+
+
+/* =========================================================
    BRISANJE VESTI
 ========================================================= */
 
@@ -1440,10 +2659,16 @@ async function deleteNews(
     button
 ) {
 
+    if (!newsId) {
+        return;
+    }
+
+
     if (button) {
 
         button.disabled =
             true;
+
 
         button.textContent =
             "БРИСАЊЕ...";
@@ -1452,6 +2677,32 @@ async function deleteNews(
 
 
     try {
+
+        /*
+         * Prvo učitamo vest da bismo znali
+         * da li ima fotografiju u Supabase Storage-u.
+         */
+
+        const {
+            data: article,
+            error: readError
+        } =
+            await supabaseClient
+                .from("vesti")
+                .select(
+                    "id, image"
+                )
+                .eq(
+                    "id",
+                    newsId
+                )
+                .single();
+
+
+        if (readError) {
+            throw readError;
+        }
+
 
         const {
             error
@@ -1467,6 +2718,45 @@ async function deleteNews(
 
         if (error) {
             throw error;
+        }
+
+
+        /*
+         * Lokalnu sliku iz images/vesti ne diramo.
+         * Brišemo samo sliku koja pripada našem
+         * Supabase bucket-u.
+         */
+
+        const storagePath =
+            extractNewsStoragePath(
+                article?.image
+            );
+
+
+        if (storagePath) {
+
+            const {
+                error: storageError
+            } =
+                await supabaseClient
+                    .storage
+                    .from(
+                        NEWS_BUCKET
+                    )
+                    .remove([
+                        storagePath
+                    ]);
+
+
+            if (storageError) {
+
+                console.warn(
+                    "Вест је обрисана, али слика није уклоњена:",
+                    storageError
+                );
+
+            }
+
         }
 
 
@@ -1498,12 +2788,388 @@ async function deleteNews(
             button.disabled =
                 false;
 
+
             button.textContent =
                 "ОБРИШИ";
 
         }
 
     }
+
+}
+
+
+
+/* =========================================================
+   STORAGE PATH
+========================================================= */
+
+function extractNewsStoragePath(url = "") {
+
+    const marker =
+        `/storage/v1/object/public/${NEWS_BUCKET}/`;
+
+
+    const value =
+        String(
+            url || ""
+        );
+
+
+    if (
+        !value.includes(
+            marker
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    const path =
+        value
+            .split(marker)[1]
+            ?.split("?")[0];
+
+
+    if (!path) {
+        return null;
+    }
+
+
+    try {
+
+        return decodeURIComponent(
+            path
+        );
+
+    }
+
+    catch {
+
+        return path;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SLUG
+========================================================= */
+
+async function createUniqueSlug(
+    title
+) {
+
+    let base =
+        createSlug(
+            title
+        );
+
+
+    if (!base) {
+
+        base =
+            `vest-${Date.now()}`;
+
+    }
+
+
+    let candidate =
+        base;
+
+
+    for (
+        let attempt = 0;
+        attempt < 50;
+        attempt++
+    ) {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("vesti")
+                .select(
+                    "id"
+                )
+                .eq(
+                    "slug",
+                    candidate
+                )
+                .maybeSingle();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data) {
+
+            return candidate;
+
+        }
+
+
+        candidate =
+            `${base}-${attempt + 2}`;
+
+    }
+
+
+    return `${base}-${Date.now()}`;
+
+}
+
+
+
+function createSlug(value = "") {
+
+    return transliterateSerbian(
+        value
+    )
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+        .replace(
+            /^-+|-+$/g,
+            ""
+        )
+        .replace(
+            /-+/g,
+            "-"
+        );
+
+}
+
+
+
+/* =========================================================
+   PRETVARANJE ĆIRILICE
+========================================================= */
+
+function transliterateSerbian(
+    value = ""
+) {
+
+    const map = {
+
+        А: "A",
+        Б: "B",
+        В: "V",
+        Г: "G",
+        Д: "D",
+        Ђ: "Dj",
+        Е: "E",
+        Ж: "Z",
+        З: "Z",
+        И: "I",
+        Ј: "J",
+        К: "K",
+        Л: "L",
+        Љ: "Lj",
+        М: "M",
+        Н: "N",
+        Њ: "Nj",
+        О: "O",
+        П: "P",
+        Р: "R",
+        С: "S",
+        Т: "T",
+        Ћ: "C",
+        У: "U",
+        Ф: "F",
+        Х: "H",
+        Ц: "C",
+        Ч: "C",
+        Џ: "Dz",
+        Ш: "S",
+
+        а: "a",
+        б: "b",
+        в: "v",
+        г: "g",
+        д: "d",
+        ђ: "dj",
+        е: "e",
+        ж: "z",
+        з: "z",
+        и: "i",
+        ј: "j",
+        к: "k",
+        л: "l",
+        љ: "lj",
+        м: "m",
+        н: "n",
+        њ: "nj",
+        о: "o",
+        п: "p",
+        р: "r",
+        с: "s",
+        т: "t",
+        ћ: "c",
+        у: "u",
+        ф: "f",
+        х: "h",
+        ц: "c",
+        ч: "c",
+        џ: "dz",
+        ш: "s"
+
+    };
+
+
+    return String(value)
+        .split("")
+        .map(
+            character =>
+                map[character] ??
+                character
+        )
+        .join("");
+
+}
+
+
+
+/* =========================================================
+   NORMALIZACIJA NAZIVA KLUBA
+========================================================= */
+
+function normalizeTeamName(
+    value = ""
+) {
+
+    return transliterateSerbian(
+        value
+    )
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /đ/g,
+            "dj"
+        )
+        .replace(
+            /[^a-z0-9]+/g,
+            " "
+        )
+        .trim();
+
+}
+
+
+
+/* =========================================================
+   DATUM
+========================================================= */
+
+function getTodayDateValue() {
+
+    const date =
+        new Date();
+
+
+    const local =
+        new Date(
+            date.getTime() -
+            date.getTimezoneOffset() *
+            60000
+        );
+
+
+    return local
+        .toISOString()
+        .slice(
+            0,
+            10
+        );
+
+}
+
+
+
+function formatDateDisplay(
+    dateString
+) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const parts =
+        String(dateString)
+            .split("-");
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return dateString;
+
+    }
+
+
+    const year =
+        Number(parts[0]);
+
+    const month =
+        Number(parts[1]);
+
+    const day =
+        Number(parts[2]);
+
+
+    const months = [
+
+        "јануар",
+        "фебруар",
+        "март",
+        "април",
+        "мај",
+        "јун",
+        "јул",
+        "август",
+        "септембар",
+        "октобар",
+        "новембар",
+        "децембар"
+
+    ];
+
+
+    if (
+        !year ||
+        !month ||
+        !day ||
+        !months[
+            month - 1
+        ]
+    ) {
+
+        return dateString;
+
+    }
+
+
+    return `${day}. ${months[month - 1]} ${year}.`;
 
 }
 
@@ -1529,12 +3195,8 @@ function getNewsImage(value) {
 
 
     if (
-        image.startsWith(
-            "images/"
-        ) ||
-        image.startsWith(
-            "./images/"
-        ) ||
+        image.startsWith("images/") ||
+        image.startsWith("./images/") ||
         /^https?:\/\//i.test(
             image
         )
@@ -1552,42 +3214,78 @@ function getNewsImage(value) {
 
 
 /* =========================================================
-   DATUM
+   FORMA - PORUKE
 ========================================================= */
 
-function formatAdminDate(dateString) {
+function showNewsFormMessage(
+    message,
+    type
+) {
 
-    if (!dateString) {
-        return "";
+    if (!newsFormMessage) {
+        return;
     }
 
 
-    const date =
-        new Date(
-            `${dateString}T12:00:00`
+    newsFormMessage.className =
+        "admin-news-form-message";
+
+
+    if (type) {
+
+        newsFormMessage.classList.add(
+            type
         );
 
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return "";
-
     }
 
 
-    return new Intl.DateTimeFormat(
-        "sr-Cyrl-RS",
-        {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            timeZone: "Europe/Belgrade"
-        }
-    ).format(date);
+    newsFormMessage.textContent =
+        message;
+
+}
+
+
+
+function clearNewsFormMessage() {
+
+    if (!newsFormMessage) {
+        return;
+    }
+
+
+    newsFormMessage.className =
+        "admin-news-form-message";
+
+
+    newsFormMessage.textContent =
+        "";
+
+}
+
+
+
+/* =========================================================
+   SAVE LOADING
+========================================================= */
+
+function setNewsSaveLoading(
+    loading
+) {
+
+    if (!newsSaveButton) {
+        return;
+    }
+
+
+    newsSaveButton.disabled =
+        loading;
+
+
+    newsSaveButton.textContent =
+        loading
+            ? "ЧУВАЊЕ..."
+            : "САЧУВАЈ ВЕСТ";
 
 }
 
@@ -1597,7 +3295,9 @@ function formatAdminDate(dateString) {
    LOGIN LOADING
 ========================================================= */
 
-function setLoginLoading(loading) {
+function setLoginLoading(
+    loading
+) {
 
     const button =
         loginForm?.querySelector(
@@ -1638,7 +3338,9 @@ function setLoginLoading(loading) {
    LOGIN PORUKE
 ========================================================= */
 
-function showLoginMessage(message) {
+function showLoginMessage(
+    message
+) {
 
     if (!loginMessage) {
         return;
@@ -1670,11 +3372,14 @@ function clearLoginMessage() {
    LOGIN GREŠKE
 ========================================================= */
 
-function getLoginErrorMessage(error) {
+function getLoginErrorMessage(
+    error
+) {
 
     const message =
         String(
-            error?.message || ""
+            error?.message ||
+            ""
         ).toLowerCase();
 
 
@@ -1721,7 +3426,9 @@ function getLoginErrorMessage(error) {
    ESCAPE
 ========================================================= */
 
-function escapeHtml(value = "") {
+function escapeHtml(
+    value = ""
+) {
 
     return String(value)
 
@@ -1754,7 +3461,9 @@ function escapeHtml(value = "") {
 
 
 
-function escapeAttribute(value = "") {
+function escapeAttribute(
+    value = ""
+) {
 
     return escapeHtml(
         value
