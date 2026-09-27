@@ -23,7 +23,7 @@
 
     <link
         rel="stylesheet"
-        href="admin.css?v=3"
+        href="admin.css?v=6"
     >
 </head>
 
@@ -539,54 +539,164 @@
 
 
 
-                <!-- =================================================
-                     IGRACI
-                ================================================== -->
+ <!-- ==========================================
+     IGRAČI
+=========================================== -->
 
-                <section
-                    class="admin-page"
-                    data-page="igraci"
-                >
+<section
+    class="admin-page"
+    data-page="igraci"
+>
 
-                    <h2>
-                        Играчи
-                    </h2>
+    <div class="admin-section-header">
 
-                </section>
+        <div>
 
+            <span class="admin-section-label">
+                ПРВИ ТИМ
+            </span>
 
+            <h2>
+                Играчи
+            </h2>
 
-                <!-- =================================================
-                     STRUCNI STAB
-                ================================================== -->
+            <p>
+                Управљање играчким кадром ФК Обилић.
+            </p>
 
-                <section
-                    class="admin-page"
-                    data-page="strucni-stab"
-                >
-
-                    <h2>
-                        Стручни штаб
-                    </h2>
-
-                </section>
+        </div>
 
 
+        <button
+            type="button"
+            id="admin-add-player"
+            class="admin-primary-button"
+        >
+            + ДОДАЈ ИГРАЧА
+        </button>
 
-                <!-- =================================================
-                     UPRAVA
-                ================================================== -->
+    </div>
 
-                <section
-                    class="admin-page"
-                    data-page="uprava"
-                >
 
-                    <h2>
-                        Управа
-                    </h2>
+    <div
+        id="admin-players-list"
+        class="admin-players-list"
+    >
 
-                </section>
+        <div class="admin-list-loading">
+            Учитавање играча...
+        </div>
+
+    </div>
+
+</section>
+
+
+
+       <!-- ==========================================
+     STRUČNI ŠTAB
+=========================================== -->
+
+<section
+    class="admin-page"
+    data-page="strucni-stab"
+>
+
+    <div class="admin-section-header">
+
+        <div>
+
+            <span class="admin-section-label">
+                ФК ОБИЛИЋ
+            </span>
+
+            <h2>
+                Стручни штаб
+            </h2>
+
+            <p>
+                Управљање тренерима и члановима стручног штаба.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="admin-add-staff"
+            class="admin-primary-button"
+        >
+            + ДОДАЈ ЧЛАНА
+        </button>
+
+    </div>
+
+
+    <div
+        id="admin-staff-list"
+        class="admin-staff-list"
+    >
+
+        <div class="admin-list-loading">
+            Учитавање стручног штаба...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     UPRAVA KLUBA
+=========================================== -->
+
+<section
+    class="admin-page"
+    data-page="uprava"
+>
+
+    <div class="admin-section-header">
+
+        <div>
+
+            <span class="admin-section-label">
+                ФК ОБИЛИЋ
+            </span>
+
+            <h2>
+                Управа клуба
+            </h2>
+
+            <p>
+                Управљање члановима управе ФК Обилић.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="admin-add-management"
+            class="admin-primary-button"
+        >
+            + ДОДАЈ ЧЛАНА
+        </button>
+
+    </div>
+
+
+    <div
+        id="admin-management-list"
+        class="admin-management-list"
+    >
+
+        <div class="admin-list-loading">
+            Учитавање управе...
+        </div>
+
+    </div>
+
+</section>
 
 
 
@@ -1192,14 +1302,967 @@
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
     ></script>
 
+<!-- ==========================================
+     MODAL - IGRAČ
+=========================================== -->
 
+<div
+    id="admin-player-modal"
+    class="admin-modal"
+    hidden
+>
+
+    <div
+        class="admin-modal-backdrop"
+        data-close-player-modal
+    ></div>
+
+
+    <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="admin-player-modal-title"
+    >
+
+
+        <!-- HEADER -->
+
+        <div class="admin-modal-header">
+
+            <div>
+
+                <span>
+                    ФК ОБИЛИЋ
+                </span>
+
+                <h2 id="admin-player-modal-title">
+                    Додај играча
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="admin-modal-close"
+                data-close-player-modal
+                aria-label="Затвори"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <!-- FORMA -->
+
+        <form
+            id="admin-player-form"
+            class="admin-news-form"
+        >
+
+
+            <!-- ID -->
+
+            <input
+                type="hidden"
+                id="admin-player-id"
+            >
+
+
+            <!-- TRENUTNA SLIKA -->
+
+            <input
+                type="hidden"
+                id="admin-player-current-image"
+            >
+
+
+
+            <div class="admin-form-grid">
+
+
+                <!-- IME I PREZIME -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label for="admin-player-name">
+                        ИМЕ И ПРЕЗИМЕ *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-player-name"
+                        placeholder="нпр. Терзин Зоран"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- BROJ -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-number">
+                        БРОЈ ДРЕСА
+                    </label>
+
+                    <input
+                        type="number"
+                        id="admin-player-number"
+                        min="0"
+                        max="99"
+                        placeholder="нпр. 5"
+                    >
+
+                </div>
+
+
+
+                <!-- GRUPA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-position">
+                        ГРУПА *
+                    </label>
+
+                    <select
+                        id="admin-player-position"
+                        required
+                    >
+
+                        <option value="">
+                            Изабери
+                        </option>
+
+                        <option value="ГОЛМАНИ">
+                            ГОЛМАНИ
+                        </option>
+
+                        <option value="ОДБРАНА">
+                            ОДБРАНА
+                        </option>
+
+                        <option value="ВЕЗНИ РЕД">
+                            ВЕЗНИ РЕД
+                        </option>
+
+                        <option value="НАПАД">
+                            НАПАД
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- DETALJNA POZICIJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-position-detail">
+                        ПОЗИЦИЈА
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-player-position-detail"
+                        placeholder="нпр. Штопер"
+                    >
+
+                </div>
+
+
+
+                <!-- DATUM ROĐENJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-birth-date">
+                        ДАТУМ РОЂЕЊА
+                    </label>
+
+                    <input
+                        type="date"
+                        id="admin-player-birth-date"
+                    >
+
+                </div>
+
+
+
+                <!-- SELEKCIJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-selection">
+                        СЕЛЕКЦИЈА
+                    </label>
+
+                    <select
+                        id="admin-player-selection"
+                    >
+
+                        <option value="ПРВИ ТИМ">
+                            ПРВИ ТИМ
+                        </option>
+
+                        <option value="ПИОНИРИ">
+                            ПИОНИРИ
+                        </option>
+
+                        <option value="ПЕТЛИЋИ">
+                            ПЕТЛИЋИ
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- REDOSLED -->
+
+                <div class="admin-field">
+
+                    <label for="admin-player-order">
+                        РЕДОСЛЕД
+                    </label>
+
+                    <input
+                        type="number"
+                        id="admin-player-order"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+
+
+                <!-- FOTOGRAFIJA -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label>
+                        ФОТОГРАФИЈА
+                    </label>
+
+
+                    <div class="admin-image-upload">
+
+
+                        <div
+                            id="admin-player-image-preview"
+                            class="admin-image-preview"
+                        >
+
+                            <img
+                                src="images/grb.png"
+                                alt=""
+                            >
+
+                        </div>
+
+
+                        <div class="admin-image-controls">
+
+                            <label
+                                for="admin-player-image"
+                                class="admin-file-button"
+                            >
+                                ИЗАБЕРИ ФОТОГРАФИЈУ
+                            </label>
+
+
+                            <input
+                                type="file"
+                                id="admin-player-image"
+                                accept="image/jpeg,image/png,image/webp"
+                                hidden
+                            >
+
+
+                            <span
+                                id="admin-player-image-name"
+                            >
+                                Није изабрана фотографија
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- AKTIVAN -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            id="admin-player-active"
+                            checked
+                        >
+
+                        <span>
+                            Играч је активан и приказује се на сајту
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- PORUKA -->
+
+            <div
+                id="admin-player-form-message"
+                class="admin-form-message"
+                aria-live="polite"
+            ></div>
+
+
+
+            <!-- DUGMAD -->
+
+            <div class="admin-modal-actions">
+
+                <button
+                    type="button"
+                    class="admin-secondary-button"
+                    data-close-player-modal
+                >
+                    ОДУСТАНИ
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="admin-player-save-button"
+                    class="admin-primary-button"
+                >
+                    САЧУВАЈ ИГРАЧА
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     MODAL - STRUČNI ŠTAB
+=========================================== -->
+
+<div
+    id="admin-staff-modal"
+    class="admin-modal"
+    hidden
+>
+
+    <div
+        class="admin-modal-backdrop"
+        data-close-staff-modal
+    ></div>
+
+
+    <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="admin-staff-modal-title"
+    >
+
+
+        <!-- HEADER -->
+
+        <div class="admin-modal-header">
+
+            <div>
+
+                <span>
+                    ФК ОБИЛИЋ
+                </span>
+
+                <h2 id="admin-staff-modal-title">
+                    Додај члана
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="admin-modal-close"
+                data-close-staff-modal
+                aria-label="Затвори"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <!-- FORMA -->
+
+        <form
+            id="admin-staff-form"
+            class="admin-news-form"
+        >
+
+
+            <!-- ID -->
+
+            <input
+                type="hidden"
+                id="admin-staff-id"
+            >
+
+
+            <!-- TRENUTNA FOTOGRAFIJA -->
+
+            <input
+                type="hidden"
+                id="admin-staff-current-image"
+            >
+
+
+
+            <div class="admin-form-grid">
+
+
+                <!-- IME I PREZIME -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label for="admin-staff-name">
+                        ИМЕ И ПРЕЗИМЕ *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-staff-name"
+                        placeholder="нпр. Николин Давор"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ULOGA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-staff-role">
+                        УЛОГА *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-staff-role"
+                        placeholder="нпр. Тренер првог тима"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- SELEKCIJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-staff-selection">
+                        СЕЛЕКЦИЈА *
+                    </label>
+
+                    <select
+                        id="admin-staff-selection"
+                        required
+                    >
+
+                        <option value="ПРВИ ТИМ">
+                            ПРВИ ТИМ
+                        </option>
+
+                        <option value="ПИОНИРИ">
+                            ПИОНИРИ
+                        </option>
+
+                        <option value="ПЕТЛИЋИ">
+                            ПЕТЛИЋИ
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- DATUM ROĐENJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-staff-birth-date">
+                        ДАТУМ РОЂЕЊА
+                    </label>
+
+                    <input
+                        type="date"
+                        id="admin-staff-birth-date"
+                    >
+
+                </div>
+
+
+
+                <!-- REDOSLED -->
+
+                <div class="admin-field">
+
+                    <label for="admin-staff-order">
+                        РЕДОСЛЕД
+                    </label>
+
+                    <input
+                        type="number"
+                        id="admin-staff-order"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+
+
+                <!-- FOTOGRAFIJA -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label>
+                        ФОТОГРАФИЈА
+                    </label>
+
+
+                    <div class="admin-image-upload">
+
+
+                        <div
+                            id="admin-staff-image-preview"
+                            class="admin-image-preview"
+                        >
+
+                            <img
+                                src="images/grb.png"
+                                alt=""
+                            >
+
+                        </div>
+
+
+                        <div class="admin-image-controls">
+
+                            <label
+                                for="admin-staff-image"
+                                class="admin-file-button"
+                            >
+                                ИЗАБЕРИ ФОТОГРАФИЈУ
+                            </label>
+
+
+                            <input
+                                type="file"
+                                id="admin-staff-image"
+                                accept="image/jpeg,image/png,image/webp"
+                                hidden
+                            >
+
+
+                            <span
+                                id="admin-staff-image-name"
+                            >
+                                Није изабрана фотографија
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- AKTIVAN -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            id="admin-staff-active"
+                            checked
+                        >
+
+                        <span>
+                            Члан је активан и приказује се на сајту
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- PORUKA -->
+
+            <div
+                id="admin-staff-form-message"
+                class="admin-form-message"
+                aria-live="polite"
+            ></div>
+
+
+
+            <!-- AKCIJE -->
+
+            <div class="admin-modal-actions">
+
+                <button
+                    type="button"
+                    class="admin-secondary-button"
+                    data-close-staff-modal
+                >
+                    ОДУСТАНИ
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="admin-staff-save-button"
+                    class="admin-primary-button"
+                >
+                    САЧУВАЈ
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     MODAL - UPRAVA
+=========================================== -->
+
+<div
+    id="admin-management-modal"
+    class="admin-modal"
+    hidden
+>
+
+    <div
+        class="admin-modal-backdrop"
+        data-close-management-modal
+    ></div>
+
+
+    <div
+        class="admin-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="admin-management-modal-title"
+    >
+
+
+        <div class="admin-modal-header">
+
+            <div>
+
+                <span>
+                    ФК ОБИЛИЋ
+                </span>
+
+                <h2 id="admin-management-modal-title">
+                    Додај члана управе
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="admin-modal-close"
+                data-close-management-modal
+                aria-label="Затвори"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form
+            id="admin-management-form"
+            class="admin-news-form"
+        >
+
+
+            <input
+                type="hidden"
+                id="admin-management-id"
+            >
+
+
+            <input
+                type="hidden"
+                id="admin-management-current-image"
+            >
+
+
+
+            <div class="admin-form-grid">
+
+
+                <!-- IME I PREZIME -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label for="admin-management-name">
+                        ИМЕ И ПРЕЗИМЕ *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-management-name"
+                        placeholder="нпр. Горан Малбашки"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- FUNKCIJA -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label for="admin-management-role">
+                        ФУНКЦИЈА *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admin-management-role"
+                        placeholder="нпр. Председник клуба"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- REDOSLED -->
+
+                <div class="admin-field">
+
+                    <label for="admin-management-order">
+                        РЕДОСЛЕД
+                    </label>
+
+                    <input
+                        type="number"
+                        id="admin-management-order"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+
+
+                <!-- PRAZNO POLJE RADI GRIDA -->
+
+                <div class="admin-field"></div>
+
+
+
+                <!-- FOTOGRAFIJA -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label>
+                        ФОТОГРАФИЈА
+                    </label>
+
+
+                    <div class="admin-image-upload">
+
+
+                        <div
+                            id="admin-management-image-preview"
+                            class="admin-image-preview"
+                        >
+
+                            <img
+                                src="images/grb.png"
+                                alt=""
+                            >
+
+                        </div>
+
+
+                        <div class="admin-image-controls">
+
+                            <label
+                                for="admin-management-image"
+                                class="admin-file-button"
+                            >
+                                ИЗАБЕРИ ФОТОГРАФИЈУ
+                            </label>
+
+
+                            <input
+                                type="file"
+                                id="admin-management-image"
+                                accept="image/jpeg,image/png,image/webp"
+                                hidden
+                            >
+
+
+                            <span id="admin-management-image-name">
+                                Није изабрана фотографија
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ISTAKNUT -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            id="admin-management-featured"
+                        >
+
+                        <span>
+                            Истакни овог члана управе
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- AKTIVAN -->
+
+                <div class="admin-field admin-field-full">
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            id="admin-management-active"
+                            checked
+                        >
+
+                        <span>
+                            Члан је активан и приказује се на сајту
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div
+                id="admin-management-form-message"
+                class="admin-form-message"
+                aria-live="polite"
+            ></div>
+
+
+
+            <div class="admin-modal-actions">
+
+                <button
+                    type="button"
+                    class="admin-secondary-button"
+                    data-close-management-modal
+                >
+                    ОДУСТАНИ
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="admin-management-save-button"
+                    class="admin-primary-button"
+                >
+                    САЧУВАЈ
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
 
     <!-- =========================================================
          ADMIN JS
     ========================================================== -->
 
     <script
-        src="js/admin.js?v=3"
+        src="js/admin.js?v=6"
     ></script>
 
 

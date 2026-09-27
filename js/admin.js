@@ -11,19 +11,28 @@
 const SUPABASE_URL =
     "https://uvevthgxlnzzkapkjxky.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY =
+const SUPABASE_KEY =
     "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
-
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
 
 
 const NEWS_BUCKET =
     "vesti";
+
+const PLAYERS_BUCKET =
+    "igraci";
+
+    const STAFF_BUCKET =
+    "strucni-stab";
+
+    const MANAGEMENT_BUCKET =
+    "uprava";
+
+
+const sb =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 
@@ -32,181 +41,49 @@ const NEWS_BUCKET =
 ========================================================= */
 
 const loginScreen =
-    document.querySelector("#admin-login-screen");
-
-const adminPanel =
-    document.querySelector("#admin-panel");
-
-const loginForm =
-    document.querySelector("#admin-login-form");
-
-const emailInput =
-    document.querySelector("#admin-email");
-
-const passwordInput =
-    document.querySelector("#admin-password");
-
-const loginMessage =
-    document.querySelector("#admin-login-message");
-
-const logoutButton =
-    document.querySelector("#admin-logout-button");
-
-const adminUserEmail =
-    document.querySelector("#admin-user-email");
-
-const adminPageTitle =
-    document.querySelector("#admin-page-title");
-
-const navigationButtons =
-    document.querySelectorAll(".admin-nav-item");
-
-const adminPages =
-    document.querySelectorAll(".admin-page");
-
-
-
-/* =========================================================
-   ELEMENTI - VESTI
-========================================================= */
-
-const adminNewsList =
-    document.querySelector("#admin-news-list");
-
-const addNewsButton =
-    document.querySelector("#admin-add-news");
-
-const newsModal =
-    document.querySelector("#admin-news-modal");
-
-const newsForm =
-    document.querySelector("#admin-news-form");
-
-const newsModalTitle =
-    document.querySelector("#admin-news-modal-title");
-
-const newsIdInput =
-    document.querySelector("#admin-news-id");
-
-const currentImageInput =
-    document.querySelector("#admin-news-current-image");
-
-const newsTitleInput =
-    document.querySelector("#admin-news-title");
-
-const newsCategoryInput =
-    document.querySelector("#admin-news-category");
-
-const newsDateInput =
-    document.querySelector("#admin-news-date");
-
-const newsExcerptInput =
-    document.querySelector("#admin-news-excerpt");
-
-const newsContentInput =
-    document.querySelector("#admin-news-content");
-
-const newsImageInput =
-    document.querySelector("#admin-news-image");
-
-const newsImagePreview =
     document.querySelector(
-        "#admin-news-image-preview img"
+        "#admin-login-screen"
     );
 
-const newsImageName =
-    document.querySelector("#admin-news-image-name");
+const adminPanel =
+    document.querySelector(
+        "#admin-panel"
+    );
 
-const newsSourceNameInput =
-    document.querySelector("#admin-news-source-name");
+const loginForm =
+    document.querySelector(
+        "#admin-login-form"
+    );
 
-const newsSourceUrlInput =
-    document.querySelector("#admin-news-source-url");
+const emailInput =
+    document.querySelector(
+        "#admin-email"
+    );
 
-const newsHasMatchInput =
-    document.querySelector("#admin-news-has-match");
+const passwordInput =
+    document.querySelector(
+        "#admin-password"
+    );
 
-const newsMatchFields =
-    document.querySelector("#admin-news-match-fields");
+const loginMessage =
+    document.querySelector(
+        "#admin-login-message"
+    );
 
-const newsHomeInput =
-    document.querySelector("#admin-news-home");
+const logoutButton =
+    document.querySelector(
+        "#admin-logout-button"
+    );
 
-const newsAwayInput =
-    document.querySelector("#admin-news-away");
+const adminUserEmail =
+    document.querySelector(
+        "#admin-user-email"
+    );
 
-const newsHomeScoreInput =
-    document.querySelector("#admin-news-home-score");
-
-const newsAwayScoreInput =
-    document.querySelector("#admin-news-away-score");
-
-const newsFeaturedInput =
-    document.querySelector("#admin-news-featured");
-
-const newsPublishedInput =
-    document.querySelector("#admin-news-published");
-
-const newsFormMessage =
-    document.querySelector("#admin-news-form-message");
-
-const newsSaveButton =
-    document.querySelector("#admin-news-save-button");
-
-const closeNewsModalButtons =
-    document.querySelectorAll("[data-close-news-modal]");
-
-
-
-/* =========================================================
-   STANJE
-========================================================= */
-
-let editingNews =
-    null;
-
-let previewObjectUrl =
-    null;
-
-let savingNews =
-    false;
-
-
-
-/* =========================================================
-   NASLOVI STRANICA
-========================================================= */
-
-const pageTitles = {
-
-    dashboard:
-        "Контролна табла",
-
-    vesti:
-        "Вести",
-
-    igraci:
-        "Играчи",
-
-    "strucni-stab":
-        "Стручни штаб",
-
-    uprava:
-        "Управа",
-
-    selekcije:
-        "Селекције",
-
-    galerija:
-        "Галерија",
-
-    partneri:
-        "Партнери",
-
-    kontakt:
-        "Контакт"
-
-};
+const adminPageTitle =
+    document.querySelector(
+        "#admin-page-title"
+    );
 
 
 
@@ -223,197 +100,40 @@ document.addEventListener(
 
 async function initializeAdmin() {
 
-    if (!window.supabase) {
-
-        showLoginMessage(
-            "Није могуће учитати систем за пријаву."
-        );
-
-        return;
-    }
-
-
-    setupLogin();
-
-    setupLogout();
-
     setupNavigation();
 
-    setupNewsActions();
+    setupNewsAdmin();
 
-    setupNewsModal();
+    setupPlayersAdmin();
 
-    setupNewsImagePreview();
+    setupStaffAdmin();
 
-    setupMatchFields();
-
-
-    await checkCurrentSession();
-
-
-    supabaseClient.auth.onAuthStateChange(
-        event => {
-
-            if (event === "SIGNED_OUT") {
-
-                showLoginScreen();
-
-            }
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   SESIJA
-========================================================= */
-
-async function checkCurrentSession() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        if (data?.session?.user) {
-
-            await handleAuthenticatedUser(
-                data.session.user
-            );
-
-            return;
-        }
-
-
-        showLoginScreen();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Грешка при провери пријаве:",
-            error
-        );
-
-
-        showLoginScreen();
-
-
-        showLoginMessage(
-            "Није могуће проверити пријаву."
-        );
-
-    }
-
-}
-
-
-
-/* =========================================================
-   ADMIN PROVERA
-========================================================= */
-
-async function verifyAdminUser(user) {
-
-    if (!user?.id) {
-        return false;
-    }
+    setupManagementAdmin();
 
 
     const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("admin_users")
-            .select("user_id")
-            .eq(
-                "user_id",
-                user.id
-            )
-            .maybeSingle();
-
-
-    if (error) {
-        throw error;
-    }
-
-
-    return Boolean(data);
-
-}
-
-
-
-async function handleAuthenticatedUser(user) {
-
-    try {
-
-        const isAdmin =
-            await verifyAdminUser(
-                user
-            );
-
-
-        if (!isAdmin) {
-
-            await supabaseClient
-                .auth
-                .signOut();
-
-
-            showLoginScreen();
-
-
-            showLoginMessage(
-                "Овај налог нема администраторски приступ."
-            );
-
-            return false;
+        data: {
+            session
         }
+    } =
+        await sb.auth.getSession();
 
 
-        showAdminPanel(
-            user
+    if (
+        session &&
+        session.user
+    ) {
+
+        await openAdminPanel(
+            session.user
         );
-
-
-        return true;
 
     }
 
-    catch (error) {
-
-        console.error(
-            "Грешка при провери администратора:",
-            error
-        );
-
+    else {
 
         showLoginScreen();
 
-
-        showLoginMessage(
-            "Није могуће проверити администраторски приступ."
-        );
-
-
-        return false;
     }
 
 }
@@ -424,12 +144,7 @@ async function handleAuthenticatedUser(user) {
    LOGIN
 ========================================================= */
 
-function setupLogin() {
-
-    if (!loginForm) {
-        return;
-    }
-
+if (loginForm) {
 
     loginForm.addEventListener(
         "submit",
@@ -438,26 +153,47 @@ function setupLogin() {
             event.preventDefault();
 
 
+            setLoginMessage(
+                "",
+                ""
+            );
+
+
             const email =
-                emailInput?.value?.trim();
+                emailInput?.value
+                    .trim();
 
             const password =
                 passwordInput?.value;
 
 
-            if (!email || !password) {
+            if (
+                !email ||
+                !password
+            ) {
 
-                showLoginMessage(
-                    "Унесите е-маил и лозинку."
+                setLoginMessage(
+                    "Унесите е-маил и лозинку.",
+                    "error"
                 );
 
                 return;
+
             }
 
 
-            setLoginLoading(true);
+            const submitButton =
+                loginForm.querySelector(
+                    'button[type="submit"]'
+                );
 
-            clearLoginMessage();
+
+            if (submitButton) {
+
+                submitButton.disabled =
+                    true;
+
+            }
 
 
             try {
@@ -466,65 +202,84 @@ function setupLogin() {
                     data,
                     error
                 } =
-                    await supabaseClient
-                        .auth
-                        .signInWithPassword({
-                            email,
-                            password
-                        });
+                    await sb.auth
+                        .signInWithPassword(
+                            {
+                                email,
+                                password
+                            }
+                        );
 
 
                 if (error) {
+
                     throw error;
-                }
-
-
-                if (!data?.user) {
-
-                    throw new Error(
-                        "Корисник није пронађен."
-                    );
 
                 }
-
-
-                const allowed =
-                    await handleAuthenticatedUser(
-                        data.user
-                    );
 
 
                 if (
-                    allowed &&
-                    passwordInput
+                    !data.user
                 ) {
 
-                    passwordInput.value =
-                        "";
+                    throw new Error(
+                        "Пријава није успела."
+                    );
 
                 }
+
+
+                const isAdmin =
+                    await checkAdminMembership(
+                        data.user.id
+                    );
+
+
+                if (!isAdmin) {
+
+                    await sb.auth
+                        .signOut();
+
+
+                    throw new Error(
+                        "Овај налог нема приступ админ панелу."
+                    );
+
+                }
+
+
+                await openAdminPanel(
+                    data.user
+                );
 
             }
 
             catch (error) {
 
                 console.error(
-                    "Грешка при пријави:",
+                    "Login error:",
                     error
                 );
 
 
-                showLoginMessage(
-                    getLoginErrorMessage(
-                        error
-                    )
+                setLoginMessage(
+                    getFriendlyError(
+                        error,
+                        "Пријава није успела."
+                    ),
+                    "error"
                 );
 
             }
 
             finally {
 
-                setLoginLoading(false);
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        false;
+
+                }
 
             }
 
@@ -539,60 +294,17 @@ function setupLogin() {
    LOGOUT
 ========================================================= */
 
-function setupLogout() {
-
-    if (!logoutButton) {
-        return;
-    }
-
+if (logoutButton) {
 
     logoutButton.addEventListener(
         "click",
         async () => {
 
-            logoutButton.disabled =
-                true;
+            await sb.auth
+                .signOut();
 
 
-            try {
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signOut();
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                showLoginScreen();
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Грешка при одјави:",
-                    error
-                );
-
-
-                alert(
-                    "Није могуће извршити одјаву."
-                );
-
-            }
-
-            finally {
-
-                logoutButton.disabled =
-                    false;
-
-            }
+            showLoginScreen();
 
         }
     );
@@ -602,53 +314,125 @@ function setupLogout() {
 
 
 /* =========================================================
-   PRIKAZ ADMIN PANELA
+   ADMIN PROVERA
 ========================================================= */
 
-function showAdminPanel(user) {
+async function checkAdminMembership(
+    userId
+) {
 
-    if (loginScreen) {
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "admin_users"
+            )
+            .select(
+                "user_id"
+            )
+            .eq(
+                "user_id",
+                userId
+            )
+            .maybeSingle();
 
-        loginScreen.hidden =
-            true;
+
+    if (error) {
+
+        console.error(
+            "Admin membership error:",
+            error
+        );
+
+        return false;
 
     }
 
 
-    if (adminPanel) {
-
-        adminPanel.hidden =
-            false;
-
-    }
-
-
-    if (adminUserEmail) {
-
-        adminUserEmail.textContent =
-            user?.email ||
-            "Администратор";
-
-    }
-
-
-    clearLoginMessage();
-
-    openAdminPage("dashboard");
-
-    loadDashboardStats();
+    return Boolean(
+        data
+    );
 
 }
 
 
 
 /* =========================================================
-   LOGIN EKRAN
+   PANEL
 ========================================================= */
+
+async function openAdminPanel(
+    user
+) {
+
+    const isAdmin =
+        await checkAdminMembership(
+            user.id
+        );
+
+
+    if (!isAdmin) {
+
+        await sb.auth
+            .signOut();
+
+
+        showLoginScreen();
+
+        return;
+
+    }
+
+
+    if (loginScreen) {
+
+        loginScreen.hidden =
+            true;
+
+    }
+
+
+    if (adminPanel) {
+
+        adminPanel.hidden =
+            false;
+
+    }
+
+
+    if (adminUserEmail) {
+
+        adminUserEmail.textContent =
+            user.email ||
+            "Администратор";
+
+    }
+
+
+   await Promise.allSettled(
+    [
+        loadDashboardStats(),
+        loadAdminNews(),
+        loadAdminPlayers(),
+        loadAdminStaff(),
+        loadAdminManagement()
+    ]
+);
+
+}
+
+
 
 function showLoginScreen() {
 
-    closeNewsModal();
+    if (loginScreen) {
+
+        loginScreen.hidden =
+            false;
+
+    }
 
 
     if (adminPanel) {
@@ -659,18 +443,10 @@ function showLoginScreen() {
     }
 
 
-    if (loginScreen) {
+    if (passwordInput) {
 
-        loginScreen.hidden =
-            false;
-
-    }
-
-
-    if (adminUserEmail) {
-
-        adminUserEmail.textContent =
-            "—";
+        passwordInput.value =
+            "";
 
     }
 
@@ -684,31 +460,109 @@ function showLoginScreen() {
 
 function setupNavigation() {
 
-    navigationButtons.forEach(
+    const navButtons =
+        document.querySelectorAll(
+            "[data-admin-page]"
+        );
+
+
+    const pages =
+        document.querySelectorAll(
+            ".admin-page"
+        );
+
+        
+
+
+    navButtons.forEach(
         button => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    const page =
-                        button.dataset.adminPage;
+                    const pageName =
+                        button.dataset
+                            .adminPage;
 
 
-                    if (!page) {
-                        return;
+                    navButtons.forEach(
+                        item => {
+
+                            item.classList
+                                .remove(
+                                    "active"
+                                );
+
+                        }
+                    );
+
+
+                    button.classList
+                        .add(
+                            "active"
+                        );
+
+
+                    pages.forEach(
+                        page => {
+
+                            page.classList
+                                .toggle(
+                                    "active",
+                                    page.dataset.page ===
+                                        pageName
+                                );
+
+                        }
+                    );
+
+
+                    if (adminPageTitle) {
+
+                        adminPageTitle.textContent =
+                            getAdminPageTitle(
+                                pageName
+                            );
+
                     }
 
 
-                    openAdminPage(page);
-
-
-                    if (page === "vesti") {
+                    if (
+                        pageName ===
+                        "vesti"
+                    ) {
 
                         loadAdminNews();
 
                     }
 
+
+                    if (
+                        pageName ===
+                        "igraci"
+                    ) {
+
+                        loadAdminPlayers();
+
+                    }
+if (
+    pageName ===
+    "strucni-stab"
+) {
+
+    loadAdminStaff();
+
+}
+
+if (
+    pageName ===
+    "uprava"
+) {
+
+    loadAdminManagement();
+
+}
                 }
             );
 
@@ -719,39 +573,46 @@ function setupNavigation() {
 
 
 
-function openAdminPage(page) {
+function getAdminPageTitle(
+    pageName
+) {
 
-    navigationButtons.forEach(
-        button => {
+    const titles = {
 
-            button.classList.toggle(
-                "active",
-                button.dataset.adminPage === page
-            );
+        dashboard:
+            "Контролна табла",
 
-        }
+        vesti:
+            "Вести",
+
+        igraci:
+            "Играчи",
+
+        "strucni-stab":
+            "Стручни штаб",
+
+        uprava:
+            "Управа",
+
+        selekcije:
+            "Селекције",
+
+        galerija:
+            "Галерија",
+
+        partneri:
+            "Партнери",
+
+        kontakt:
+            "Контакт"
+
+    };
+
+
+    return (
+        titles[pageName] ||
+        "Админ панел"
     );
-
-
-    adminPages.forEach(
-        section => {
-
-            section.classList.toggle(
-                "active",
-                section.dataset.page === page
-            );
-
-        }
-    );
-
-
-    if (adminPageTitle) {
-
-        adminPageTitle.textContent =
-            pageTitles[page] ||
-            "Админ панел";
-
-    }
 
 }
 
@@ -763,25 +624,26 @@ function openAdminPage(page) {
 
 async function loadDashboardStats() {
 
-    await Promise.all([
-
-        loadNewsCount(),
-
-        loadPlayersCount(),
-
-        loadGalleryCount(),
-
-        loadPartnersCount()
-
-    ]);
+    await Promise.allSettled(
+        [
+            loadNewsCount(),
+            loadPlayersCount(),
+            loadJsonCount(
+                "data/galerija.json",
+                "fotografije",
+                "#admin-stat-gallery"
+            ),
+            loadJsonCount(
+                "data/partneri.json",
+                "partneri",
+                "#admin-stat-partners"
+            )
+        ]
+    );
 
 }
 
 
-
-/* =========================================================
-   BROJ VESTI
-========================================================= */
 
 async function loadNewsCount() {
 
@@ -796,57 +658,40 @@ async function loadNewsCount() {
     }
 
 
-    try {
+    const {
+        count,
+        error
+    } =
+        await sb
+            .from(
+                "vesti"
+            )
+            .select(
+                "*",
+                {
+                    count:
+                        "exact",
 
-        const {
-            count,
-            error
-        } =
-            await supabaseClient
-                .from("vesti")
-                .select(
-                    "id",
-                    {
-                        count: "exact",
-                        head: true
-                    }
-                )
-                .eq(
-                    "published",
-                    true
-                );
-
-
-        if (error) {
-            throw error;
-        }
+                    head:
+                        true
+                }
+            )
+            .eq(
+                "published",
+                true
+            );
 
 
-        element.textContent =
-            count ?? 0;
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Грешка при бројању вести:",
-            error
-        );
-
-
-        element.textContent =
-            "—";
-
-    }
+    element.textContent =
+        error
+            ? "—"
+            : String(
+                count ?? 0
+            );
 
 }
 
 
-
-/* =========================================================
-   IGRAČI - JOŠ UVEK JSON
-========================================================= */
 
 async function loadPlayersCount() {
 
@@ -861,58 +706,50 @@ async function loadPlayersCount() {
     }
 
 
-    try {
-
-        const response =
-            await fetch(
-                "data/igraci.json",
+    const {
+        count,
+        error
+    } =
+        await sb
+            .from(
+                "igraci"
+            )
+            .select(
+                "*",
                 {
-                    cache:
-                        "no-store"
+                    count:
+                        "exact",
+
+                    head:
+                        true
                 }
+            )
+            .eq(
+                "aktivan",
+                true
             );
 
 
-        if (!response.ok) {
-            throw new Error();
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const players =
-            data?.prviTim?.igraci;
-
-
-        element.textContent =
-            Array.isArray(players)
-                ? players.length
-                : "0";
-
-    }
-
-    catch {
-
-        element.textContent =
-            "—";
-
-    }
+    element.textContent =
+        error
+            ? "—"
+            : String(
+                count ?? 0
+            );
 
 }
 
 
 
-/* =========================================================
-   GALERIJA - JOŠ UVEK JSON
-========================================================= */
-
-async function loadGalleryCount() {
+async function loadJsonCount(
+    url,
+    key,
+    selector
+) {
 
     const element =
         document.querySelector(
-            "#admin-stat-gallery"
+            selector
         );
 
 
@@ -925,7 +762,7 @@ async function loadGalleryCount() {
 
         const response =
             await fetch(
-                "data/galerija.json",
+                url,
                 {
                     cache:
                         "no-store"
@@ -934,67 +771,11 @@ async function loadGalleryCount() {
 
 
         if (!response.ok) {
-            throw new Error();
-        }
 
-
-        const data =
-            await response.json();
-
-
-        const photos =
-            data?.fotografije;
-
-
-        element.textContent =
-            Array.isArray(photos)
-                ? photos.length
-                : "0";
-
-    }
-
-    catch {
-
-        element.textContent =
-            "—";
-
-    }
-
-}
-
-
-
-/* =========================================================
-   PARTNERI - JOŠ UVEK JSON
-========================================================= */
-
-async function loadPartnersCount() {
-
-    const element =
-        document.querySelector(
-            "#admin-stat-partners"
-        );
-
-
-    if (!element) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "data/partneri.json",
-                {
-                    cache:
-                        "no-store"
-                }
+            throw new Error(
+                `HTTP ${response.status}`
             );
 
-
-        if (!response.ok) {
-            throw new Error();
         }
 
 
@@ -1002,120 +783,27 @@ async function loadPartnersCount() {
             await response.json();
 
 
-        const partners =
-            data?.partneri;
-
-
-        element.textContent =
-            Array.isArray(partners)
-                ? partners.length
-                : "0";
-
-    }
-
-    catch {
-
-        element.textContent =
-            "—";
-
-    }
-
-}
-
-
-
-/* =========================================================
-   UČITAVANJE VESTI
-========================================================= */
-
-async function loadAdminNews() {
-
-    if (!adminNewsList) {
-        return;
-    }
-
-
-    adminNewsList.innerHTML = `
-
-        <div class="admin-data-loading">
-
-            <div class="loader"></div>
-
-            <span>
-                Учитавање вести...
-            </span>
-
-        </div>
-
-    `;
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("vesti")
-                .select(`
-                    id,
-                    slug,
-                    title,
-                    category,
-                    date,
-                    date_display,
-                    image,
-                    excerpt,
-                    featured,
-                    published,
-                    created_at
-                `)
-                .order(
-                    "date",
-                    {
-                        ascending:
-                            false
-                    }
+        const value =
+            Array.isArray(data)
+                ? data.length
+                : Array.isArray(
+                    data?.[key]
                 )
-                .order(
-                    "created_at",
-                    {
-                        ascending:
-                            false
-                    }
-                );
+                    ? data[key].length
+                    : 0;
 
 
-        if (error) {
-            throw error;
-        }
-
-
-        if (
-            !Array.isArray(data) ||
-            data.length === 0
-        ) {
-
-            renderEmptyNews();
-
-            return;
-        }
-
-
-        renderAdminNews(data);
+        element.textContent =
+            String(
+                value
+            );
 
     }
 
-    catch (error) {
+    catch {
 
-        console.error(
-            "Грешка при учитавању вести:",
-            error
-        );
-
-
-        renderNewsError();
+        element.textContent =
+            "—";
 
     }
 
@@ -1124,220 +812,158 @@ async function loadAdminNews() {
 
 
 /* =========================================================
-   PRIKAZ VESTI
+   =========================================================
+   VESTI
+   =========================================================
 ========================================================= */
 
-function renderAdminNews(news) {
 
-    if (!adminNewsList) {
-        return;
-    }
+/* =========================================================
+   ELEMENTI - VESTI
+========================================================= */
 
+const addNewsButton =
+    document.querySelector(
+        "#admin-add-news"
+    );
 
-    adminNewsList.innerHTML =
-        news
-            .map(article => {
+const newsList =
+    document.querySelector(
+        "#admin-news-list"
+    );
 
-                const image =
-                    getNewsImage(
-                        article.image
-                    );
+const newsModal =
+    document.querySelector(
+        "#admin-news-modal"
+    );
 
+const newsForm =
+    document.querySelector(
+        "#admin-news-form"
+    );
 
-                const date =
-                    article.date_display ||
-                    formatDateDisplay(
-                        article.date
-                    );
+const newsModalTitle =
+    document.querySelector(
+        "#admin-news-modal-title"
+    );
 
+const newsIdInput =
+    document.querySelector(
+        "#admin-news-id"
+    );
 
-                const category =
-                    article.category ||
-                    "ВЕСТ";
+const newsCurrentImage =
+    document.querySelector(
+        "#admin-news-current-image"
+    );
 
+const newsTitleInput =
+    document.querySelector(
+        "#admin-news-title"
+    );
 
-                const statusClass =
-                    article.published
-                        ? "published"
-                        : "draft";
+const newsCategoryInput =
+    document.querySelector(
+        "#admin-news-category"
+    );
 
+const newsDateInput =
+    document.querySelector(
+        "#admin-news-date"
+    );
 
-                const statusText =
-                    article.published
-                        ? "ОБЈАВЉЕНО"
-                        : "НАЦРТ";
+const newsExcerptInput =
+    document.querySelector(
+        "#admin-news-excerpt"
+    );
 
+const newsContentInput =
+    document.querySelector(
+        "#admin-news-content"
+    );
 
-                const featured =
-                    article.featured
-                        ? " • ИСТАКНУТА"
-                        : "";
+const newsImageInput =
+    document.querySelector(
+        "#admin-news-image"
+    );
 
+const newsImagePreview =
+    document.querySelector(
+        "#admin-news-image-preview img"
+    );
 
-                return `
+const newsImageName =
+    document.querySelector(
+        "#admin-news-image-name"
+    );
 
-                    <article
-                        class="admin-news-row"
-                        data-news-id="${escapeAttribute(article.id)}"
-                    >
+const newsSourceName =
+    document.querySelector(
+        "#admin-news-source-name"
+    );
 
+const newsSourceUrl =
+    document.querySelector(
+        "#admin-news-source-url"
+    );
 
-                        <div class="admin-news-image">
+const newsHasMatch =
+    document.querySelector(
+        "#admin-news-has-match"
+    );
 
-                            <img
-                                src="${escapeAttribute(image)}"
-                                alt="${escapeAttribute(article.title || "ФК Обилић")}"
-                                onerror="this.onerror=null;this.src='images/grb.png';"
-                            >
+const newsMatchFields =
+    document.querySelector(
+        "#admin-news-match-fields"
+    );
 
-                        </div>
+const newsHome =
+    document.querySelector(
+        "#admin-news-home"
+    );
 
+const newsAway =
+    document.querySelector(
+        "#admin-news-away"
+    );
 
-                        <div class="admin-news-info">
+const newsHomeScore =
+    document.querySelector(
+        "#admin-news-home-score"
+    );
 
-                            <span class="admin-news-category">
+const newsAwayScore =
+    document.querySelector(
+        "#admin-news-away-score"
+    );
 
-                                ${escapeHtml(category)}
-                                ${featured}
+const newsFeatured =
+    document.querySelector(
+        "#admin-news-featured"
+    );
 
-                            </span>
+const newsPublished =
+    document.querySelector(
+        "#admin-news-published"
+    );
 
+const newsFormMessage =
+    document.querySelector(
+        "#admin-news-form-message"
+    );
 
-                            <h3>
-                                ${escapeHtml(article.title || "")}
-                            </h3>
-
-
-                            ${
-                                article.excerpt
-                                    ? `
-                                        <p>
-                                            ${escapeHtml(article.excerpt)}
-                                        </p>
-                                    `
-                                    : ""
-                            }
-
-                        </div>
-
-
-                        <div class="admin-news-date">
-                            ${escapeHtml(date)}
-                        </div>
-
-
-                        <div>
-
-                            <span
-                                class="admin-news-status ${statusClass}"
-                            >
-                                ${statusText}
-                            </span>
-
-                        </div>
-
-
-                        <div class="admin-news-actions">
-
-                            <button
-                                type="button"
-                                class="admin-news-action edit"
-                                data-edit-news="${escapeAttribute(article.id)}"
-                            >
-                                ИЗМЕНИ
-                            </button>
-
-
-                            <button
-                                type="button"
-                                class="admin-news-action delete"
-                                data-delete-news="${escapeAttribute(article.id)}"
-                                data-news-title="${escapeAttribute(article.title || "")}"
-                            >
-                                ОБРИШИ
-                            </button>
-
-                        </div>
-
-
-                    </article>
-
-                `;
-
-            })
-            .join("");
-
-}
+const newsSaveButton =
+    document.querySelector(
+        "#admin-news-save-button"
+    );
 
 
 
 /* =========================================================
-   PRAZNA LISTA
+   NEWS EVENTS
 ========================================================= */
 
-function renderEmptyNews() {
-
-    adminNewsList.innerHTML = `
-
-        <div class="admin-news-empty">
-
-            <img
-                src="images/grb.png"
-                alt=""
-            >
-
-            <strong>
-                НЕМА ВЕСТИ
-            </strong>
-
-            <span>
-                Додајте прву вест на сајт.
-            </span>
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* =========================================================
-   GREŠKA
-========================================================= */
-
-function renderNewsError() {
-
-    adminNewsList.innerHTML = `
-
-        <div class="admin-news-empty">
-
-            <img
-                src="images/grb.png"
-                alt=""
-            >
-
-            <strong>
-                ГРЕШКА ПРИ УЧИТАВАЊУ
-            </strong>
-
-            <span>
-                Вести тренутно није могуће учитати.
-            </span>
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* =========================================================
-   AKCIJE VESTI
-========================================================= */
-
-function setupNewsActions() {
+function setupNewsAdmin() {
 
     if (addNewsButton) {
 
@@ -1345,7 +971,7 @@ function setupNewsActions() {
             "click",
             () => {
 
-                openNewNewsModal();
+                openNewsModal();
 
             }
         );
@@ -1353,94 +979,40 @@ function setupNewsActions() {
     }
 
 
-    if (!adminNewsList) {
-        return;
+    document
+        .querySelectorAll(
+            "[data-close-news-modal]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closeNewsModal
+                );
+
+            }
+        );
+
+
+    if (newsHasMatch) {
+
+        newsHasMatch.addEventListener(
+            "change",
+            updateMatchFieldsVisibility
+        );
+
     }
 
 
-    adminNewsList.addEventListener(
-        "click",
-        async event => {
+    if (newsImageInput) {
 
-            const editButton =
-                event.target.closest(
-                    "[data-edit-news]"
-                );
+        newsImageInput.addEventListener(
+            "change",
+            previewNewsImage
+        );
 
-
-            if (editButton) {
-
-                const id =
-                    editButton.dataset.editNews;
-
-
-                await openEditNewsModal(
-                    id
-                );
-
-                return;
-            }
-
-
-            const deleteButton =
-                event.target.closest(
-                    "[data-delete-news]"
-                );
-
-
-            if (!deleteButton) {
-                return;
-            }
-
-
-            const newsId =
-                deleteButton.dataset.deleteNews;
-
-
-            const newsTitle =
-                deleteButton.dataset.newsTitle ||
-                "ову вест";
-
-
-            const confirmed =
-                window.confirm(
-                    `Да ли сте сигурни да желите да обришете вест:\n\n${newsTitle}?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            await deleteNews(
-                newsId,
-                deleteButton
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-function setupNewsModal() {
-
-    closeNewsModalButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                closeNewsModal
-            );
-
-        }
-    );
+    }
 
 
     if (newsForm) {
@@ -1458,7 +1030,8 @@ function setupNewsModal() {
         event => {
 
             if (
-                event.key === "Escape" &&
+                event.key ===
+                    "Escape" &&
                 newsModal &&
                 !newsModal.hidden
             ) {
@@ -1474,78 +1047,296 @@ function setupNewsModal() {
 
 
 
-function openNewNewsModal() {
+/* =========================================================
+   UČITAVANJE VESTI
+========================================================= */
 
-    resetNewsForm();
+async function loadAdminNews() {
+
+    if (!newsList) {
+        return;
+    }
 
 
-    editingNews =
-        null;
+    newsList.innerHTML = `
+
+        <div class="admin-list-loading">
+            Учитавање вести...
+        </div>
+
+    `;
 
 
-    if (newsModalTitle) {
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "vesti"
+            )
+            .select(
+                "id,slug,title,category,date,date_display,image,excerpt,content,match_data,source,featured,published,created_at"
+            )
+            .order(
+                "date",
+                {
+                    ascending:
+                        false
+                }
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:
+                        false
+                }
+            );
 
-        newsModalTitle.textContent =
-            "Додај нову вест";
+
+    if (error) {
+
+        console.error(
+            "News load error:",
+            error
+        );
+
+
+        newsList.innerHTML = `
+
+            <div class="admin-list-loading">
+                Грешка при учитавању вести.
+            </div>
+
+        `;
+
+        return;
 
     }
 
 
-    if (newsDateInput) {
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
 
-        newsDateInput.value =
-            getTodayDateValue();
+        newsList.innerHTML = `
+
+            <div class="admin-list-loading">
+                Још нема вести.
+            </div>
+
+        `;
+
+        return;
 
     }
 
 
-    if (newsPublishedInput) {
+    newsList.innerHTML =
+        data
+            .map(
+                article =>
+                    renderAdminNewsItem(
+                        article
+                    )
+            )
+            .join("");
 
-        newsPublishedInput.checked =
-            true;
 
-    }
+    newsList
+        .querySelectorAll(
+            "[data-edit-news]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .editNews;
 
 
-    openNewsModal();
+                        const article =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+
+                        if (article) {
+
+                            openNewsModal(
+                                article
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    newsList
+        .querySelectorAll(
+            "[data-delete-news]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .deleteNews;
+
+
+                        const article =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+
+                        if (article) {
+
+                            deleteNews(
+                                article
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
 
 }
 
 
 
-async function openEditNewsModal(id) {
+function renderAdminNewsItem(
+    article
+) {
 
-    if (!id) {
+    const image =
+        article.image ||
+        "images/grb.png";
+
+
+    const date =
+        article.date_display ||
+        formatDateDisplay(
+            article.date
+        );
+
+
+    return `
+
+        <article class="admin-news-item">
+
+            <div class="admin-news-image">
+
+                <img
+                    src="${escapeAttribute(image)}"
+                    alt=""
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+
+            <div class="admin-news-info">
+
+                <span class="admin-news-date">
+                    ${escapeHtml(date)}
+                </span>
+
+                <strong>
+                    ${escapeHtml(article.title || "")}
+                </strong>
+
+                <div class="admin-news-status">
+
+                    <span>
+                        ${escapeHtml(article.category || "ВЕСТ")}
+                    </span>
+
+                    <span>
+                        ${
+                            article.published
+                                ? "ОБЈАВЉЕНО"
+                                : "СКРИВЕНО"
+                        }
+                    </span>
+
+                    ${
+                        article.featured
+                            ? "<span>ИСТАКНУТО</span>"
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-news-actions">
+
+                <button
+                    type="button"
+                    data-edit-news="${escapeAttribute(article.id)}"
+                >
+                    ИЗМЕНИ
+                </button>
+
+                <button
+                    type="button"
+                    data-delete-news="${escapeAttribute(article.id)}"
+                >
+                    ОБРИШИ
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   NEWS MODAL
+========================================================= */
+
+function openNewsModal(
+    article = null
+) {
+
+    if (
+        !newsModal ||
+        !newsForm
+    ) {
         return;
     }
 
 
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("vesti")
-                .select("*")
-                .eq("id", id)
-                .single();
+    resetNewsForm();
 
 
-        if (error) {
-            throw error;
-        }
-
-
-        editingNews =
-            data;
-
-
-        resetNewsForm(
-            false
-        );
-
+    if (article) {
 
         if (newsModalTitle) {
 
@@ -1556,152 +1347,147 @@ async function openEditNewsModal(id) {
 
 
         newsIdInput.value =
-            data.id || "";
+            article.id ||
+            "";
 
 
-        currentImageInput.value =
-            data.image || "";
+        newsCurrentImage.value =
+            article.image ||
+            "";
 
 
         newsTitleInput.value =
-            data.title || "";
+            article.title ||
+            "";
 
 
         newsCategoryInput.value =
-            data.category ||
-            "ПРВИ ТИМ";
+            article.category ||
+            "ВЕСТ";
 
 
         newsDateInput.value =
-            data.date || "";
+            article.date ||
+            "";
 
 
         newsExcerptInput.value =
-            data.excerpt || "";
+            article.excerpt ||
+            "";
 
 
         newsContentInput.value =
-            Array.isArray(data.content)
-                ? data.content.join("\n\n")
-                : "";
+            Array.isArray(
+                article.content
+            )
+                ? article.content
+                    .join(
+                        "\n\n"
+                    )
+                : article.content ||
+                    "";
 
 
-        newsSourceNameInput.value =
-            data.source?.name ||
+        if (article.image) {
+
+            newsImagePreview.src =
+                article.image;
+
+        }
+
+
+        const source =
+            article.source &&
+            typeof article.source ===
+                "object"
+                ? article.source
+                : {};
+
+
+        newsSourceName.value =
+            source.name ||
             "";
 
 
-        newsSourceUrlInput.value =
-            data.source?.url ||
+        newsSourceUrl.value =
+            source.url ||
             "";
 
 
-        newsFeaturedInput.checked =
-            Boolean(
-                data.featured
-            );
+        if (
+            article.match_data &&
+            typeof article.match_data ===
+                "object"
+        ) {
 
-
-        newsPublishedInput.checked =
-            Boolean(
-                data.published
-            );
-
-
-        if (data.match_data) {
-
-            newsHasMatchInput.checked =
+            newsHasMatch.checked =
                 true;
 
 
-            newsMatchFields.hidden =
-                false;
-
-
-            newsHomeInput.value =
-                data.match_data.home ||
+            newsHome.value =
+                article.match_data.home ||
                 "";
 
 
-            newsAwayInput.value =
-                data.match_data.away ||
+            newsAway.value =
+                article.match_data.away ||
                 "";
 
 
-            newsHomeScoreInput.value =
-                data.match_data.homeScore ??
+            newsHomeScore.value =
+                article.match_data
+                    .homeScore ??
                 "";
 
 
-            newsAwayScoreInput.value =
-                data.match_data.awayScore ??
+            newsAwayScore.value =
+                article.match_data
+                    .awayScore ??
                 "";
 
         }
 
 
-        setNewsPreview(
-            data.image ||
-            "images/grb.png"
-        );
+        newsFeatured.checked =
+            article.featured ===
+            true;
 
 
-        if (newsImageName) {
+        newsPublished.checked =
+            article.published !==
+            false;
 
-            newsImageName.textContent =
-                data.image
-                    ? "Тренутна фотографија"
-                    : "Није изабрана фотографија";
+    }
+
+    else {
+
+        if (newsModalTitle) {
+
+            newsModalTitle.textContent =
+                "Додај вест";
 
         }
 
 
-        openNewsModal();
+        if (newsDateInput) {
+
+            newsDateInput.value =
+                getTodayInputValue();
+
+        }
 
     }
 
-    catch (error) {
 
-        console.error(
-            "Грешка при учитавању вести:",
-            error
-        );
-
-
-        alert(
-            "Вест није могуће учитати за измену."
-        );
-
-    }
-
-}
-
-
-
-function openNewsModal() {
-
-    if (!newsModal) {
-        return;
-    }
+    updateMatchFieldsVisibility();
 
 
     newsModal.hidden =
         false;
 
 
-    document.body.classList.add(
-        "admin-modal-open"
-    );
-
-
-    setTimeout(
-        () => {
-
-            newsTitleInput?.focus();
-
-        },
-        50
-    );
+    document.body.style.overflow =
+        "hidden";
 
 }
 
@@ -1718,38 +1504,21 @@ function closeNewsModal() {
         true;
 
 
-    document.body.classList.remove(
-        "admin-modal-open"
-    );
-
-
-    clearPreviewObjectUrl();
+    document.body.style.overflow =
+        "";
 
 }
 
 
 
-/* =========================================================
-   RESET FORME
-========================================================= */
+function resetNewsForm() {
 
-function resetNewsForm(
-    clearEditing = true
-) {
-
-    if (newsForm) {
-
-        newsForm.reset();
-
+    if (!newsForm) {
+        return;
     }
 
 
-    if (clearEditing) {
-
-        editingNews =
-            null;
-
-    }
+    newsForm.reset();
 
 
     if (newsIdInput) {
@@ -1760,202 +1529,123 @@ function resetNewsForm(
     }
 
 
-    if (currentImageInput) {
+    if (newsCurrentImage) {
 
-        currentImageInput.value =
+        newsCurrentImage.value =
             "";
 
     }
 
 
-    if (newsPublishedInput) {
+    if (newsImagePreview) {
 
-        newsPublishedInput.checked =
-            true;
-
-    }
-
-
-    if (newsHasMatchInput) {
-
-        newsHasMatchInput.checked =
-            false;
+        newsImagePreview.src =
+            "images/grb.png";
 
     }
-
-
-    if (newsMatchFields) {
-
-        newsMatchFields.hidden =
-            true;
-
-    }
-
-
-    setNewsPreview(
-        "images/grb.png"
-    );
 
 
     if (newsImageName) {
 
         newsImageName.textContent =
-            "Није изабрана нова фотографија";
+            "Није изабрана фотографија";
 
     }
 
 
-    clearNewsFormMessage();
+    if (newsPublished) {
 
-}
+        newsPublished.checked =
+            true;
 
-
-
-/* =========================================================
-   REZULTAT UTAKMICE
-========================================================= */
-
-function setupMatchFields() {
-
-    if (!newsHasMatchInput) {
-        return;
     }
 
 
-    newsHasMatchInput.addEventListener(
-        "change",
-        () => {
+    if (newsFeatured) {
 
-            if (!newsMatchFields) {
-                return;
-            }
+        newsFeatured.checked =
+            false;
+
+    }
 
 
-            newsMatchFields.hidden =
-                !newsHasMatchInput.checked;
+    if (newsHasMatch) {
 
-        }
+        newsHasMatch.checked =
+            false;
+
+    }
+
+
+    setNewsFormMessage(
+        "",
+        ""
     );
 
 }
 
 
 
-/* =========================================================
-   PREVIEW SLIKE
-========================================================= */
+function updateMatchFieldsVisibility() {
 
-function setupNewsImagePreview() {
-
-    if (!newsImageInput) {
+    if (!newsMatchFields) {
         return;
     }
 
 
-    newsImageInput.addEventListener(
-        "change",
-        () => {
-
-            const file =
-                newsImageInput.files?.[0];
-
-
-            if (!file) {
-
-                if (editingNews?.image) {
-
-                    setNewsPreview(
-                        editingNews.image
-                    );
-
-                }
-
-                return;
-            }
-
-
-            const allowedTypes = [
-                "image/jpeg",
-                "image/png",
-                "image/webp"
-            ];
-
-
-            if (
-                !allowedTypes.includes(
-                    file.type
-                )
-            ) {
-
-                alert(
-                    "Дозвољене су JPG, PNG и WEBP фотографије."
-                );
-
-
-                newsImageInput.value =
-                    "";
-
-                return;
-            }
-
-
-            clearPreviewObjectUrl();
-
-
-            previewObjectUrl =
-                URL.createObjectURL(
-                    file
-                );
-
-
-            setNewsPreview(
-                previewObjectUrl
-            );
-
-
-            if (newsImageName) {
-
-                newsImageName.textContent =
-                    file.name;
-
-            }
-
-        }
-    );
+    newsMatchFields.hidden =
+        !newsHasMatch?.checked;
 
 }
 
 
 
-function setNewsPreview(src) {
+/* =========================================================
+   NEWS IMAGE PREVIEW
+========================================================= */
 
-    if (!newsImagePreview) {
+function previewNewsImage() {
+
+    const file =
+        newsImageInput
+            ?.files?.[0];
+
+
+    if (!file) {
+
         return;
+
     }
+
+
+    if (
+        newsImageName
+    ) {
+
+        newsImageName.textContent =
+            file.name;
+
+    }
+
+
+    const objectUrl =
+        URL.createObjectURL(
+            file
+        );
 
 
     newsImagePreview.src =
-        src ||
-        "images/grb.png";
-
-}
+        objectUrl;
 
 
+    newsImagePreview.onload =
+        () => {
 
-function clearPreviewObjectUrl() {
+            URL.revokeObjectURL(
+                objectUrl
+            );
 
-    if (!previewObjectUrl) {
-        return;
-    }
-
-
-    URL.revokeObjectURL(
-        previewObjectUrl
-    );
-
-
-    previewObjectUrl =
-        null;
+        };
 
 }
 
@@ -1965,51 +1655,77 @@ function clearPreviewObjectUrl() {
    ČUVANJE VESTI
 ========================================================= */
 
-async function saveNews(event) {
+async function saveNews(
+    event
+) {
 
     event.preventDefault();
 
 
-    if (savingNews) {
-        return;
-    }
+    setNewsFormMessage(
+        "",
+        ""
+    );
 
 
-    clearNewsFormMessage();
+    const id =
+        newsIdInput
+            ?.value
+            .trim();
 
 
     const title =
-        newsTitleInput?.value
-            ?.trim();
+        newsTitleInput
+            ?.value
+            .trim();
+
+
+    const category =
+        newsCategoryInput
+            ?.value
+            .trim() ||
+        "ВЕСТ";
 
 
     const date =
-        newsDateInput?.value;
+        newsDateInput
+            ?.value;
 
 
-    const contentText =
-        newsContentInput?.value
-            ?.trim();
+    const excerpt =
+        newsExcerptInput
+            ?.value
+            .trim() ||
+        null;
+
+
+    const rawContent =
+        newsContentInput
+            ?.value
+            .trim();
 
 
     if (
         !title ||
         !date ||
-        !contentText
+        !rawContent
     ) {
 
-        showNewsFormMessage(
-            "Попуните наслов, датум и текст вести.",
+        setNewsFormMessage(
+            "Наслов, датум и текст вести су обавезни.",
             "error"
         );
 
         return;
+
     }
 
 
-    const paragraphs =
-        contentText
-            .split(/\n\s*\n/)
+    const content =
+        rawContent
+            .split(
+                /\n\s*\n/
+            )
             .map(
                 paragraph =>
                     paragraph.trim()
@@ -2017,146 +1733,172 @@ async function saveNews(event) {
             .filter(Boolean);
 
 
-    if (!paragraphs.length) {
-
-        showNewsFormMessage(
-            "Унесите текст вести.",
-            "error"
-        );
-
-        return;
-    }
+    let matchData =
+        null;
 
 
     if (
-        newsHasMatchInput?.checked
+        newsHasMatch?.checked
     ) {
 
+        const home =
+            newsHome
+                ?.value
+                .trim();
+
+        const away =
+            newsAway
+                ?.value
+                .trim();
+
+        const homeScore =
+            newsHomeScore
+                ?.value;
+
+        const awayScore =
+            newsAwayScore
+                ?.value;
+
+
         if (
-            !newsHomeInput.value.trim() ||
-            !newsAwayInput.value.trim() ||
-            newsHomeScoreInput.value === "" ||
-            newsAwayScoreInput.value === ""
+            !home ||
+            !away ||
+            homeScore === "" ||
+            awayScore === ""
         ) {
 
-            showNewsFormMessage(
-                "Попуните све податке о резултату утакмице.",
+            setNewsFormMessage(
+                "Попуните оба клуба и резултат утакмице.",
                 "error"
             );
 
             return;
+
         }
+
+
+        matchData = {
+
+            home,
+
+            away,
+
+            homeScore:
+                Number(
+                    homeScore
+                ),
+
+            awayScore:
+                Number(
+                    awayScore
+                ),
+
+            homeLogo:
+                getClubLogoPath(
+                    home
+                ),
+
+            awayLogo:
+                getClubLogoPath(
+                    away
+                )
+
+        };
 
     }
 
 
-    savingNews =
-        true;
+    const sourceName =
+        newsSourceName
+            ?.value
+            .trim();
 
 
-    setNewsSaveLoading(
-        true
-    );
+    const sourceUrl =
+        newsSourceUrl
+            ?.value
+            .trim();
 
 
-    let uploadedImagePath =
+    const source =
+        sourceName
+            ? {
+                name:
+                    sourceName,
+
+                url:
+                    sourceUrl ||
+                    null
+            }
+            : null;
+
+
+    const oldImage =
+        newsCurrentImage
+            ?.value
+            .trim() ||
+        "";
+
+
+    let uploadedImage =
         null;
+
+
+    setButtonLoading(
+        newsSaveButton,
+        true,
+        "ЧУВАЊЕ..."
+    );
 
 
     try {
 
-        const id =
-            newsIdInput?.value ||
-            null;
+        const selectedFile =
+            newsImageInput
+                ?.files?.[0];
 
 
-        let slug =
-            editingNews?.slug ||
-            "";
+        if (selectedFile) {
 
-
-        if (!slug) {
-
-            slug =
-                await createUniqueSlug(
+            uploadedImage =
+                await uploadStorageImage(
+                    NEWS_BUCKET,
+                    selectedFile,
                     title
                 );
 
         }
 
 
-        let image =
-            currentImageInput?.value ||
-            editingNews?.image ||
-            "";
+        const image =
+            uploadedImage ||
+            oldImage ||
+            null;
 
 
-        const newImageFile =
-            newsImageInput
-                ?.files?.[0];
+        const baseSlug =
+            createSlug(
+                title
+            );
 
 
-        if (newImageFile) {
-
-            const uploadResult =
-                await uploadNewsImage(
-                    newImageFile,
-                    slug
-                );
+        let slug =
+            baseSlug;
 
 
-            image =
-                uploadResult.publicUrl;
+        if (!id) {
 
-
-            uploadedImagePath =
-                uploadResult.path;
+            slug =
+                `${baseSlug}-${Date.now()}`;
 
         }
 
 
-        const sourceName =
-            newsSourceNameInput
-                ?.value
-                ?.trim() ||
-            "";
-
-
-        const sourceUrl =
-            newsSourceUrlInput
-                ?.value
-                ?.trim() ||
-            "";
-
-
-        const source =
-            sourceName ||
-            sourceUrl
-                ? {
-                    name:
-                        sourceName ||
-                        "Извор",
-
-                    url:
-                        sourceUrl ||
-                        ""
-                }
-                : null;
-
-
-        const matchData =
-            buildMatchData();
-
-
-        const articleData = {
-
-            slug,
+        const payload = {
 
             title,
 
-            category:
-                newsCategoryInput?.value ||
-                "ПРВИ ТИМ",
+            category,
 
             date,
 
@@ -2165,18 +1907,11 @@ async function saveNews(event) {
                     date
                 ),
 
-            image:
-                image ||
-                null,
+            image,
 
-            excerpt:
-                newsExcerptInput
-                    ?.value
-                    ?.trim() ||
-                "",
+            excerpt,
 
-            content:
-                paragraphs,
+            content,
 
             match_data:
                 matchData,
@@ -2185,121 +1920,104 @@ async function saveNews(event) {
 
             featured:
                 Boolean(
-                    newsFeaturedInput
+                    newsFeatured
                         ?.checked
                 ),
 
             published:
                 Boolean(
-                    newsPublishedInput
+                    newsPublished
                         ?.checked
                 )
 
         };
 
 
-        let result;
+        let error;
 
 
         if (id) {
 
-            result =
-                await supabaseClient
-                    .from("vesti")
+            const result =
+                await sb
+                    .from(
+                        "vesti"
+                    )
                     .update(
-                        articleData
+                        payload
                     )
                     .eq(
                         "id",
                         id
-                    )
-                    .select()
-                    .single();
+                    );
+
+
+            error =
+                result.error;
 
         }
 
         else {
 
-            result =
-                await supabaseClient
-                    .from("vesti")
-                    .insert(
-                        articleData
+            payload.slug =
+                slug;
+
+
+            const result =
+                await sb
+                    .from(
+                        "vesti"
                     )
-                    .select()
-                    .single();
+                    .insert(
+                        payload
+                    );
+
+
+            error =
+                result.error;
 
         }
 
 
-        if (result.error) {
+        if (error) {
 
-            throw result.error;
+            throw error;
 
         }
 
-
-        /*
-         * Ako smo prilikom izmene postavili novu sliku,
-         * staru Supabase sliku brišemo tek kada je baza
-         * uspešno sačuvana.
-         */
 
         if (
-            id &&
-            newImageFile &&
-            editingNews?.image
+            uploadedImage &&
+            oldImage &&
+            uploadedImage !==
+                oldImage
         ) {
 
-            const oldPath =
-                extractNewsStoragePath(
-                    editingNews.image
-                );
-
-
-            if (
-                oldPath &&
-                oldPath !== uploadedImagePath
-            ) {
-
-                await supabaseClient
-                    .storage
-                    .from(
-                        NEWS_BUCKET
-                    )
-                    .remove([
-                        oldPath
-                    ]);
-
-            }
+            await deleteStorageImageFromUrl(
+                NEWS_BUCKET,
+                oldImage
+            );
 
         }
 
 
-        showNewsFormMessage(
-            id
-                ? "Вест је успешно измењена."
-                : "Вест је успешно додата.",
+        setNewsFormMessage(
+            "Вест је успешно сачувана.",
             "success"
         );
 
 
-        await Promise.all([
-
-            loadAdminNews(),
-
-            loadNewsCount()
-
-        ]);
+        await Promise.allSettled(
+            [
+                loadAdminNews(),
+                loadNewsCount()
+            ]
+        );
 
 
         setTimeout(
-            () => {
-
-                closeNewsModal();
-
-            },
-            500
+            closeNewsModal,
+            450
         );
 
     }
@@ -2307,59 +2025,26 @@ async function saveNews(event) {
     catch (error) {
 
         console.error(
-            "Грешка при чувању вести:",
+            "Save news error:",
             error
         );
 
 
-        /*
-         * Ako je upload uspeo, a upis u bazu nije,
-         * uklanjamo novu sliku da ne ostane nepotreban
-         * fajl u Storage-u.
-         */
+        if (uploadedImage) {
 
-        if (uploadedImagePath) {
-
-            try {
-
-                await supabaseClient
-                    .storage
-                    .from(
-                        NEWS_BUCKET
-                    )
-                    .remove([
-                        uploadedImagePath
-                    ]);
-
-            }
-
-            catch {
-                // Nije kritično.
-            }
+            await deleteStorageImageFromUrl(
+                NEWS_BUCKET,
+                uploadedImage
+            );
 
         }
 
 
-        let message =
-            "Вест није могуће сачувати.";
-
-
-        if (
-            String(
-                error?.message || ""
-            )
-                .toLowerCase()
-                .includes("duplicate")
-        ) {
-
-            message =
-                "Вест са овим називом већ постоји.";
-
-        }
-
-
-        showNewsFormMessage(
-            message,
+        setNewsFormMessage(
+            getFriendlyError(
+                error,
+                "Вест није сачувана."
+            ),
             "error"
         );
 
@@ -2367,12 +2052,10 @@ async function saveNews(event) {
 
     finally {
 
-        savingNews =
-            false;
-
-
-        setNewsSaveLoading(
-            false
+        setButtonLoading(
+            newsSaveButton,
+            false,
+            "САЧУВАЈ ВЕСТ"
         );
 
     }
@@ -2382,65 +2065,3840 @@ async function saveNews(event) {
 
 
 /* =========================================================
-   MATCH DATA
+   BRISANJE VESTI
 ========================================================= */
 
-function buildMatchData() {
+async function deleteNews(
+    article
+) {
 
-    if (
-        !newsHasMatchInput?.checked
-    ) {
+    const confirmed =
+        window.confirm(
+            `Обрисати вест „${article.title}“?`
+        );
 
-        return null;
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await sb
+            .from(
+                "vesti"
+            )
+            .delete()
+            .eq(
+                "id",
+                article.id
+            );
+
+
+    if (error) {
+
+        window.alert(
+            "Вест није могуће обрисати."
+        );
+
+        console.error(
+            error
+        );
+
+        return;
 
     }
 
 
-    const home =
-        newsHomeInput
-            .value
-            .trim();
+    if (article.image) {
+
+        await deleteStorageImageFromUrl(
+            NEWS_BUCKET,
+            article.image
+        );
+
+    }
 
 
-    const away =
-        newsAwayInput
-            .value
-            .trim();
+    await Promise.allSettled(
+        [
+            loadAdminNews(),
+            loadNewsCount()
+        ]
+    );
+
+}
 
 
-    const homeScore =
-        Number(
-            newsHomeScoreInput.value
+
+/* =========================================================
+   =========================================================
+   IGRAČI
+   =========================================================
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTI - IGRAČI
+========================================================= */
+
+const addPlayerButton =
+    document.querySelector(
+        "#admin-add-player"
+    );
+
+const playersList =
+    document.querySelector(
+        "#admin-players-list"
+    );
+
+const playerModal =
+    document.querySelector(
+        "#admin-player-modal"
+    );
+
+const playerForm =
+    document.querySelector(
+        "#admin-player-form"
+    );
+
+const playerModalTitle =
+    document.querySelector(
+        "#admin-player-modal-title"
+    );
+
+const playerIdInput =
+    document.querySelector(
+        "#admin-player-id"
+    );
+
+const playerCurrentImage =
+    document.querySelector(
+        "#admin-player-current-image"
+    );
+
+const playerNameInput =
+    document.querySelector(
+        "#admin-player-name"
+    );
+
+const playerNumberInput =
+    document.querySelector(
+        "#admin-player-number"
+    );
+
+const playerPositionInput =
+    document.querySelector(
+        "#admin-player-position"
+    );
+
+const playerPositionDetailInput =
+    document.querySelector(
+        "#admin-player-position-detail"
+    );
+
+const playerBirthDateInput =
+    document.querySelector(
+        "#admin-player-birth-date"
+    );
+
+const playerSelectionInput =
+    document.querySelector(
+        "#admin-player-selection"
+    );
+
+const playerOrderInput =
+    document.querySelector(
+        "#admin-player-order"
+    );
+
+const playerImageInput =
+    document.querySelector(
+        "#admin-player-image"
+    );
+
+const playerImagePreview =
+    document.querySelector(
+        "#admin-player-image-preview img"
+    );
+
+const playerImageName =
+    document.querySelector(
+        "#admin-player-image-name"
+    );
+
+const playerActiveInput =
+    document.querySelector(
+        "#admin-player-active"
+    );
+
+const playerFormMessage =
+    document.querySelector(
+        "#admin-player-form-message"
+    );
+
+const playerSaveButton =
+    document.querySelector(
+        "#admin-player-save-button"
+    );
+
+
+
+/* =========================================================
+   PLAYER EVENTS
+========================================================= */
+
+function setupPlayersAdmin() {
+
+    if (addPlayerButton) {
+
+        addPlayerButton.addEventListener(
+            "click",
+            () => {
+
+                openPlayerModal();
+
+            }
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            "[data-close-player-modal]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closePlayerModal
+                );
+
+            }
         );
 
 
-    const awayScore =
-        Number(
-            newsAwayScoreInput.value
+    if (playerImageInput) {
+
+        playerImageInput.addEventListener(
+            "change",
+            previewPlayerImage
+        );
+
+    }
+
+
+    if (playerForm) {
+
+        playerForm.addEventListener(
+            "submit",
+            savePlayer
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                    "Escape" &&
+                playerModal &&
+                !playerModal.hidden
+            ) {
+
+                closePlayerModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   UČITAVANJE IGRAČA
+========================================================= */
+
+async function loadAdminPlayers() {
+
+    if (!playersList) {
+        return;
+    }
+
+
+    playersList.innerHTML = `
+
+        <div class="admin-list-loading">
+            Учитавање играча...
+        </div>
+
+    `;
+
+
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "igraci"
+            )
+            .select(
+                "id,ime_prezime,broj,pozicija,pozicija_detaljno,datum_rodjenja,selekcija,fotografija,redosled,aktivan,created_at"
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Players load error:",
+            error
         );
 
 
-    return {
+        playersList.innerHTML = `
 
-        home,
+            <div class="admin-list-loading">
+                Грешка при учитавању играча.
+            </div>
 
-        away,
+        `;
 
-        homeLogo:
-            getClubLogoPath(
-                home
-            ),
+        return;
 
-        awayLogo:
-            getClubLogoPath(
-                away
-            ),
+    }
 
-        homeScore,
 
-        awayScore
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
+
+        playersList.innerHTML = `
+
+            <div class="admin-players-empty">
+                Још нема унетих играча.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const sortedPlayers =
+        [...data]
+            .sort(
+                sortPlayers
+            );
+
+
+    playersList.innerHTML =
+        renderPlayerGroups(
+            sortedPlayers
+        );
+
+
+    playersList
+        .querySelectorAll(
+            "[data-edit-player]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .editPlayer;
+
+
+                        const player =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+
+                        if (player) {
+
+                            openPlayerModal(
+                                player
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    playersList
+        .querySelectorAll(
+            "[data-delete-player]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .deletePlayer;
+
+
+                        const player =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+
+                        if (player) {
+
+                            deletePlayer(
+                                player
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   SORTIRANJE IGRAČA
+========================================================= */
+
+function sortPlayers(
+    a,
+    b
+) {
+
+    const selectionOrder = {
+
+        "ПРВИ ТИМ":
+            1,
+
+        "ПИОНИРИ":
+            2,
+
+        "ПЕТЛИЋИ":
+            3
 
     };
+
+
+    const positionOrder = {
+
+        "ГОЛМАНИ":
+            1,
+
+        "ОДБРАНА":
+            2,
+
+        "ВЕЗНИ РЕД":
+            3,
+
+        "НАПАД":
+            4
+
+    };
+
+
+    const selectionDifference =
+
+        (
+            selectionOrder[
+                a.selekcija
+            ] || 99
+        ) -
+
+        (
+            selectionOrder[
+                b.selekcija
+            ] || 99
+        );
+
+
+    if (
+        selectionDifference !==
+        0
+    ) {
+
+        return selectionDifference;
+
+    }
+
+
+    const positionDifference =
+
+        (
+            positionOrder[
+                a.pozicija
+            ] || 99
+        ) -
+
+        (
+            positionOrder[
+                b.pozicija
+            ] || 99
+        );
+
+
+    if (
+        positionDifference !==
+        0
+    ) {
+
+        return positionDifference;
+
+    }
+
+
+    const orderDifference =
+
+        Number(
+            a.redosled || 0
+        ) -
+
+        Number(
+            b.redosled || 0
+        );
+
+
+    if (
+        orderDifference !==
+        0
+    ) {
+
+        return orderDifference;
+
+    }
+
+
+    return String(
+        a.ime_prezime ||
+        ""
+    ).localeCompare(
+        String(
+            b.ime_prezime ||
+            ""
+        ),
+        "sr"
+    );
+
+}
+
+
+
+/* =========================================================
+   GRUPE IGRAČA
+========================================================= */
+
+function renderPlayerGroups(
+    players
+) {
+
+    const selections = [
+
+        "ПРВИ ТИМ",
+
+        "ПИОНИРИ",
+
+        "ПЕТЛИЋИ"
+
+    ];
+
+
+    const positions = [
+
+        "ГОЛМАНИ",
+
+        "ОДБРАНА",
+
+        "ВЕЗНИ РЕД",
+
+        "НАПАД"
+
+    ];
+
+
+    let html =
+        "";
+
+
+    selections.forEach(
+        selection => {
+
+            const selectionPlayers =
+                players.filter(
+                    player =>
+                        player.selekcija ===
+                        selection
+                );
+
+
+            if (
+                selectionPlayers.length ===
+                0
+            ) {
+
+                return;
+
+            }
+
+
+            html += `
+
+                <div class="admin-player-selection">
+
+                    <div class="admin-player-group-title">
+                        ${escapeHtml(selection)}
+                    </div>
+
+            `;
+
+
+            positions.forEach(
+                position => {
+
+                    const group =
+                        selectionPlayers.filter(
+                            player =>
+                                player.pozicija ===
+                                position
+                        );
+
+
+                    if (
+                        group.length ===
+                        0
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    html += `
+
+                        <div class="admin-player-group">
+
+                            <div class="admin-player-group-title">
+                                ${escapeHtml(position)}
+                            </div>
+
+                            ${group
+                                .map(
+                                    renderAdminPlayer
+                                )
+                                .join("")}
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+
+            html += `
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    return html;
+
+}
+
+
+
+/* =========================================================
+   KARTICA IGRAČA
+========================================================= */
+
+function renderAdminPlayer(
+    player
+) {
+
+    const photo =
+        player.fotografija ||
+        "images/grb.png";
+
+
+    const number =
+        player.broj !==
+            null &&
+        player.broj !==
+            undefined
+            ? `#${player.broj}`
+            : "БЕЗ БРОЈА";
+
+
+    const positionDetail =
+        player.pozicija_detaljno
+            ? `
+                <span>
+                    ${escapeHtml(player.pozicija_detaljno)}
+                </span>
+            `
+            : "";
+
+
+    const birthDate =
+        player.datum_rodjenja
+            ? `
+                <span>
+                    ${escapeHtml(formatBirthDate(player.datum_rodjenja))}
+                </span>
+            `
+            : "";
+
+
+    return `
+
+        <article class="admin-player-item">
+
+            <div class="admin-player-photo">
+
+                <img
+                    src="${escapeAttribute(photo)}"
+                    alt="${escapeAttribute(player.ime_prezime || "")}"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+
+            <div class="admin-player-info">
+
+                <strong>
+                    ${escapeHtml(player.ime_prezime || "")}
+                </strong>
+
+
+                <div class="admin-player-meta">
+
+                    <span class="admin-player-number">
+                        ${escapeHtml(number)}
+                    </span>
+
+                    ${positionDetail}
+
+                    ${birthDate}
+
+                    <span>
+                        ${escapeHtml(player.selekcija || "")}
+                    </span>
+
+
+                    <span
+                        class="
+                            admin-player-status
+                            ${
+                                player.aktivan
+                                    ? "active"
+                                    : "inactive"
+                            }
+                        "
+                    >
+                        ${
+                            player.aktivan
+                                ? "АКТИВАН"
+                                : "НЕАКТИВАН"
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-player-actions">
+
+                <button
+                    type="button"
+                    class="admin-player-edit"
+                    data-edit-player="${escapeAttribute(player.id)}"
+                >
+                    ИЗМЕНИ
+                </button>
+
+
+                <button
+                    type="button"
+                    class="admin-player-delete"
+                    data-delete-player="${escapeAttribute(player.id)}"
+                >
+                    ОБРИШИ
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   PLAYER MODAL
+========================================================= */
+
+function openPlayerModal(
+    player = null
+) {
+
+    if (
+        !playerModal ||
+        !playerForm
+    ) {
+
+        return;
+
+    }
+
+
+    resetPlayerForm();
+
+
+    if (player) {
+
+        if (playerModalTitle) {
+
+            playerModalTitle.textContent =
+                "Измени играча";
+
+        }
+
+
+        playerIdInput.value =
+            player.id ||
+            "";
+
+
+        playerCurrentImage.value =
+            player.fotografija ||
+            "";
+
+
+        playerNameInput.value =
+            player.ime_prezime ||
+            "";
+
+
+        playerNumberInput.value =
+            player.broj ??
+            "";
+
+
+        playerPositionInput.value =
+            player.pozicija ||
+            "";
+
+
+        playerPositionDetailInput.value =
+            player.pozicija_detaljno ||
+            "";
+
+
+        playerBirthDateInput.value =
+            player.datum_rodjenja ||
+            "";
+
+
+        playerSelectionInput.value =
+            player.selekcija ||
+            "ПРВИ ТИМ";
+
+
+        playerOrderInput.value =
+            player.redosled ??
+            0;
+
+
+        playerActiveInput.checked =
+            player.aktivan !==
+            false;
+
+
+        if (player.fotografija) {
+
+            playerImagePreview.src =
+                player.fotografija;
+
+        }
+
+    }
+
+    else {
+
+        if (playerModalTitle) {
+
+            playerModalTitle.textContent =
+                "Додај играча";
+
+        }
+
+    }
+
+
+    playerModal.hidden =
+        false;
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+
+function closePlayerModal() {
+
+    if (!playerModal) {
+        return;
+    }
+
+
+    playerModal.hidden =
+        true;
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+function resetPlayerForm() {
+
+    if (!playerForm) {
+        return;
+    }
+
+
+    playerForm.reset();
+
+
+    if (playerIdInput) {
+
+        playerIdInput.value =
+            "";
+
+    }
+
+
+    if (playerCurrentImage) {
+
+        playerCurrentImage.value =
+            "";
+
+    }
+
+
+    if (playerImagePreview) {
+
+        playerImagePreview.src =
+            "images/grb.png";
+
+    }
+
+
+    if (playerImageName) {
+
+        playerImageName.textContent =
+            "Није изабрана фотографија";
+
+    }
+
+
+    if (playerSelectionInput) {
+
+        playerSelectionInput.value =
+            "ПРВИ ТИМ";
+
+    }
+
+
+    if (playerOrderInput) {
+
+        playerOrderInput.value =
+            "0";
+
+    }
+
+
+    if (playerActiveInput) {
+
+        playerActiveInput.checked =
+            true;
+
+    }
+
+
+    setPlayerFormMessage(
+        "",
+        ""
+    );
+
+}
+
+
+
+/* =========================================================
+   PLAYER PHOTO PREVIEW
+========================================================= */
+
+function previewPlayerImage() {
+
+    const file =
+        playerImageInput
+            ?.files?.[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    if (
+        playerImageName
+    ) {
+
+        playerImageName.textContent =
+            file.name;
+
+    }
+
+
+    const objectUrl =
+        URL.createObjectURL(
+            file
+        );
+
+
+    playerImagePreview.src =
+        objectUrl;
+
+
+    playerImagePreview.onload =
+        () => {
+
+            URL.revokeObjectURL(
+                objectUrl
+            );
+
+        };
+
+}
+
+
+
+/* =========================================================
+   ČUVANJE IGRAČA
+========================================================= */
+
+async function savePlayer(
+    event
+) {
+
+    event.preventDefault();
+
+
+    setPlayerFormMessage(
+        "",
+        ""
+    );
+
+
+    const id =
+        playerIdInput
+            ?.value
+            .trim();
+
+
+    const name =
+        playerNameInput
+            ?.value
+            .trim();
+
+
+    const numberRaw =
+        playerNumberInput
+            ?.value
+            .trim();
+
+
+    const position =
+        playerPositionInput
+            ?.value;
+
+
+    const positionDetail =
+        playerPositionDetailInput
+            ?.value
+            .trim() ||
+        null;
+
+
+    const birthDate =
+        playerBirthDateInput
+            ?.value ||
+        null;
+
+
+    const selection =
+        playerSelectionInput
+            ?.value ||
+        "ПРВИ ТИМ";
+
+
+    const orderRaw =
+        playerOrderInput
+            ?.value;
+
+
+    if (
+        !name ||
+        !position
+    ) {
+
+        setPlayerFormMessage(
+            "Име и презиме и група су обавезни.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    let number =
+        null;
+
+
+    if (
+        numberRaw !==
+        ""
+    ) {
+
+        number =
+            Number(
+                numberRaw
+            );
+
+
+        if (
+            !Number.isInteger(
+                number
+            ) ||
+            number < 0 ||
+            number > 99
+        ) {
+
+            setPlayerFormMessage(
+                "Број дреса мора бити од 0 до 99.",
+                "error"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const order =
+        Number.isFinite(
+            Number(
+                orderRaw
+            )
+        )
+            ? Number(
+                orderRaw
+            )
+            : 0;
+
+
+    const oldImage =
+        playerCurrentImage
+            ?.value
+            .trim() ||
+        "";
+
+
+    let uploadedImage =
+        null;
+
+
+    setButtonLoading(
+        playerSaveButton,
+        true,
+        "ЧУВАЊЕ..."
+    );
+
+
+    try {
+
+        const selectedFile =
+            playerImageInput
+                ?.files?.[0];
+
+
+        if (selectedFile) {
+
+            uploadedImage =
+                await uploadStorageImage(
+                    PLAYERS_BUCKET,
+                    selectedFile,
+                    name
+                );
+
+        }
+
+
+        const photo =
+            uploadedImage ||
+            oldImage ||
+            null;
+
+
+        const payload = {
+
+            ime_prezime:
+                name,
+
+            broj:
+                number,
+
+            pozicija:
+                position,
+
+            pozicija_detaljno:
+                positionDetail,
+
+            datum_rodjenja:
+                birthDate,
+
+            selekcija:
+                selection,
+
+            fotografija:
+                photo,
+
+            redosled:
+                order,
+
+            aktivan:
+                Boolean(
+                    playerActiveInput
+                        ?.checked
+                )
+
+        };
+
+
+        let error;
+
+
+        if (id) {
+
+            const result =
+                await sb
+                    .from(
+                        "igraci"
+                    )
+                    .update(
+                        payload
+                    )
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+        else {
+
+            const result =
+                await sb
+                    .from(
+                        "igraci"
+                    )
+                    .insert(
+                        payload
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            uploadedImage &&
+            oldImage &&
+            uploadedImage !==
+                oldImage
+        ) {
+
+            await deleteStorageImageFromUrl(
+                PLAYERS_BUCKET,
+                oldImage
+            );
+
+        }
+
+
+        setPlayerFormMessage(
+            "Играч је успешно сачуван.",
+            "success"
+        );
+
+
+        await Promise.allSettled(
+            [
+                loadAdminPlayers(),
+                loadPlayersCount()
+            ]
+        );
+
+
+        setTimeout(
+            closePlayerModal,
+            450
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save player error:",
+            error
+        );
+
+
+        if (uploadedImage) {
+
+            await deleteStorageImageFromUrl(
+                PLAYERS_BUCKET,
+                uploadedImage
+            );
+
+        }
+
+
+        setPlayerFormMessage(
+            getFriendlyError(
+                error,
+                "Играч није сачуван."
+            ),
+            "error"
+        );
+
+    }
+
+    finally {
+
+        setButtonLoading(
+            playerSaveButton,
+            false,
+            "САЧУВАЈ ИГРАЧА"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BRISANJE IGRAČA
+========================================================= */
+
+async function deletePlayer(
+    player
+) {
+
+    const confirmed =
+        window.confirm(
+            `Обрисати играча „${player.ime_prezime}“?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await sb
+            .from(
+                "igraci"
+            )
+            .delete()
+            .eq(
+                "id",
+                player.id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Delete player error:",
+            error
+        );
+
+
+        window.alert(
+            "Играч није могуће обрисати."
+        );
+
+        return;
+
+    }
+
+
+    if (player.fotografija) {
+
+        await deleteStorageImageFromUrl(
+            PLAYERS_BUCKET,
+            player.fotografija
+        );
+
+    }
+
+
+    await Promise.allSettled(
+        [
+            loadAdminPlayers(),
+            loadPlayersCount()
+        ]
+    );
+
+}
+
+/* =========================================================
+   =========================================================
+   STRUČNI ŠTAB
+   =========================================================
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTI
+========================================================= */
+
+const addStaffButton =
+    document.querySelector(
+        "#admin-add-staff"
+    );
+
+const staffList =
+    document.querySelector(
+        "#admin-staff-list"
+    );
+
+const staffModal =
+    document.querySelector(
+        "#admin-staff-modal"
+    );
+
+const staffForm =
+    document.querySelector(
+        "#admin-staff-form"
+    );
+
+const staffModalTitle =
+    document.querySelector(
+        "#admin-staff-modal-title"
+    );
+
+const staffIdInput =
+    document.querySelector(
+        "#admin-staff-id"
+    );
+
+const staffCurrentImage =
+    document.querySelector(
+        "#admin-staff-current-image"
+    );
+
+const staffNameInput =
+    document.querySelector(
+        "#admin-staff-name"
+    );
+
+const staffRoleInput =
+    document.querySelector(
+        "#admin-staff-role"
+    );
+
+const staffSelectionInput =
+    document.querySelector(
+        "#admin-staff-selection"
+    );
+
+const staffBirthDateInput =
+    document.querySelector(
+        "#admin-staff-birth-date"
+    );
+
+const staffOrderInput =
+    document.querySelector(
+        "#admin-staff-order"
+    );
+
+const staffImageInput =
+    document.querySelector(
+        "#admin-staff-image"
+    );
+
+const staffImagePreview =
+    document.querySelector(
+        "#admin-staff-image-preview img"
+    );
+
+const staffImageName =
+    document.querySelector(
+        "#admin-staff-image-name"
+    );
+
+const staffActiveInput =
+    document.querySelector(
+        "#admin-staff-active"
+    );
+
+const staffFormMessage =
+    document.querySelector(
+        "#admin-staff-form-message"
+    );
+
+const staffSaveButton =
+    document.querySelector(
+        "#admin-staff-save-button"
+    );
+
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function setupStaffAdmin() {
+
+    if (addStaffButton) {
+
+        addStaffButton.addEventListener(
+            "click",
+            () => {
+
+                openStaffModal();
+
+            }
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            "[data-close-staff-modal]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closeStaffModal
+                );
+
+            }
+        );
+
+
+    if (staffImageInput) {
+
+        staffImageInput.addEventListener(
+            "change",
+            previewStaffImage
+        );
+
+    }
+
+
+    if (staffForm) {
+
+        staffForm.addEventListener(
+            "submit",
+            saveStaffMember
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                staffModal &&
+                !staffModal.hidden
+            ) {
+
+                closeStaffModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   UČITAVANJE
+========================================================= */
+
+async function loadAdminStaff() {
+
+    if (!staffList) {
+        return;
+    }
+
+
+    staffList.innerHTML = `
+
+        <div class="admin-list-loading">
+            Учитавање стручног штаба...
+        </div>
+
+    `;
+
+
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "strucni_stab"
+            )
+            .select(
+                "id,ime_prezime,uloga,selekcija,datum_rodjenja,fotografija,redosled,aktivan,created_at"
+            )
+            .order(
+                "redosled",
+                {
+                    ascending: true
+                }
+            )
+            .order(
+                "ime_prezime",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Staff load error:",
+            error
+        );
+
+
+        staffList.innerHTML = `
+
+            <div class="admin-list-loading">
+                Грешка при учитавању стручног штаба.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
+
+        staffList.innerHTML = `
+
+            <div class="admin-staff-empty">
+                Још нема унетих чланова стручног штаба.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    staffList.innerHTML =
+        data
+            .map(
+                renderAdminStaffMember
+            )
+            .join("");
+
+
+    staffList
+        .querySelectorAll(
+            "[data-edit-staff]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .editStaff;
+
+
+                        const member =
+                            data.find(
+                                item =>
+                                    item.id === id
+                            );
+
+
+                        if (member) {
+
+                            openStaffModal(
+                                member
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    staffList
+        .querySelectorAll(
+            "[data-delete-staff]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .deleteStaff;
+
+
+                        const member =
+                            data.find(
+                                item =>
+                                    item.id === id
+                            );
+
+
+                        if (member) {
+
+                            deleteStaffMember(
+                                member
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   KARTICA
+========================================================= */
+
+function renderAdminStaffMember(
+    member
+) {
+
+    const photo =
+        member.fotografija ||
+        "images/grb.png";
+
+
+    const birthDate =
+        member.datum_rodjenja
+            ? `
+                <span>
+                    ${escapeHtml(
+                        formatBirthDate(
+                            member.datum_rodjenja
+                        )
+                    )}
+                </span>
+            `
+            : "";
+
+
+    return `
+
+        <article class="admin-staff-item">
+
+
+            <div class="admin-staff-photo">
+
+                <img
+                    src="${escapeAttribute(photo)}"
+                    alt="${escapeAttribute(member.ime_prezime || "")}"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+
+            <div class="admin-staff-info">
+
+                <strong>
+                    ${escapeHtml(member.ime_prezime || "")}
+                </strong>
+
+
+                <div class="admin-staff-meta">
+
+                    <span class="admin-staff-role">
+                        ${escapeHtml(member.uloga || "")}
+                    </span>
+
+
+                    <span>
+                        ${escapeHtml(member.selekcija || "")}
+                    </span>
+
+
+                    ${birthDate}
+
+
+                    <span
+                        class="
+                            admin-staff-status
+                            ${
+                                member.aktivan
+                                    ? "active"
+                                    : "inactive"
+                            }
+                        "
+                    >
+                        ${
+                            member.aktivan
+                                ? "АКТИВАН"
+                                : "НЕАКТИВАН"
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-staff-actions">
+
+                <button
+                    type="button"
+                    class="admin-staff-edit"
+                    data-edit-staff="${escapeAttribute(member.id)}"
+                >
+                    ИЗМЕНИ
+                </button>
+
+
+                <button
+                    type="button"
+                    class="admin-staff-delete"
+                    data-delete-staff="${escapeAttribute(member.id)}"
+                >
+                    ОБРИШИ
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openStaffModal(
+    member = null
+) {
+
+    if (
+        !staffModal ||
+        !staffForm
+    ) {
+        return;
+    }
+
+
+    resetStaffForm();
+
+
+    if (member) {
+
+        staffModalTitle.textContent =
+            "Измени члана";
+
+
+        staffIdInput.value =
+            member.id ||
+            "";
+
+
+        staffCurrentImage.value =
+            member.fotografija ||
+            "";
+
+
+        staffNameInput.value =
+            member.ime_prezime ||
+            "";
+
+
+        staffRoleInput.value =
+            member.uloga ||
+            "";
+
+
+        staffSelectionInput.value =
+            member.selekcija ||
+            "ПРВИ ТИМ";
+
+
+        staffBirthDateInput.value =
+            member.datum_rodjenja ||
+            "";
+
+
+        staffOrderInput.value =
+            member.redosled ??
+            0;
+
+
+        staffActiveInput.checked =
+            member.aktivan !== false;
+
+
+        if (
+            member.fotografija
+        ) {
+
+            staffImagePreview.src =
+                member.fotografija;
+
+        }
+
+    }
+
+    else {
+
+        staffModalTitle.textContent =
+            "Додај члана";
+
+    }
+
+
+    staffModal.hidden =
+        false;
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+
+function closeStaffModal() {
+
+    if (!staffModal) {
+        return;
+    }
+
+
+    staffModal.hidden =
+        true;
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+function resetStaffForm() {
+
+    if (!staffForm) {
+        return;
+    }
+
+
+    staffForm.reset();
+
+
+    staffIdInput.value =
+        "";
+
+
+    staffCurrentImage.value =
+        "";
+
+
+    staffSelectionInput.value =
+        "ПРВИ ТИМ";
+
+
+    staffOrderInput.value =
+        "0";
+
+
+    staffActiveInput.checked =
+        true;
+
+
+    staffImagePreview.src =
+        "images/grb.png";
+
+
+    staffImageName.textContent =
+        "Није изабрана фотографија";
+
+
+    setStaffFormMessage(
+        "",
+        ""
+    );
+
+}
+
+
+
+/* =========================================================
+   PREVIEW FOTOGRAFIJE
+========================================================= */
+
+function previewStaffImage() {
+
+    const file =
+        staffImageInput
+            ?.files?.[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    staffImageName.textContent =
+        file.name;
+
+
+    const objectUrl =
+        URL.createObjectURL(
+            file
+        );
+
+
+    staffImagePreview.src =
+        objectUrl;
+
+
+    staffImagePreview.onload =
+        () => {
+
+            URL.revokeObjectURL(
+                objectUrl
+            );
+
+        };
+
+}
+
+
+
+/* =========================================================
+   ČUVANJE
+========================================================= */
+
+async function saveStaffMember(
+    event
+) {
+
+    event.preventDefault();
+
+
+    setStaffFormMessage(
+        "",
+        ""
+    );
+
+
+    const id =
+        staffIdInput
+            ?.value
+            .trim();
+
+
+    const name =
+        staffNameInput
+            ?.value
+            .trim();
+
+
+    const role =
+        staffRoleInput
+            ?.value
+            .trim();
+
+
+    const selection =
+        staffSelectionInput
+            ?.value ||
+        "ПРВИ ТИМ";
+
+
+    const birthDate =
+        staffBirthDateInput
+            ?.value ||
+        null;
+
+
+    const order =
+        Number(
+            staffOrderInput
+                ?.value ||
+            0
+        );
+
+
+    if (
+        !name ||
+        !role
+    ) {
+
+        setStaffFormMessage(
+            "Име и презиме и улога су обавезни.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const oldImage =
+        staffCurrentImage
+            ?.value
+            .trim() ||
+        "";
+
+
+    let uploadedImage =
+        null;
+
+
+    setButtonLoading(
+        staffSaveButton,
+        true,
+        "ЧУВАЊЕ..."
+    );
+
+
+    try {
+
+        const selectedFile =
+            staffImageInput
+                ?.files?.[0];
+
+
+        if (selectedFile) {
+
+            uploadedImage =
+                await uploadStorageImage(
+                    STAFF_BUCKET,
+                    selectedFile,
+                    name
+                );
+
+        }
+
+
+        const photo =
+            uploadedImage ||
+            oldImage ||
+            null;
+
+
+        const payload = {
+
+            ime_prezime:
+                name,
+
+            uloga:
+                role,
+
+            selekcija:
+                selection,
+
+            datum_rodjenja:
+                birthDate,
+
+            fotografija:
+                photo,
+
+            redosled:
+                Number.isFinite(order)
+                    ? order
+                    : 0,
+
+            aktivan:
+                Boolean(
+                    staffActiveInput
+                        ?.checked
+                )
+
+        };
+
+
+        let error;
+
+
+        if (id) {
+
+            const result =
+                await sb
+                    .from(
+                        "strucni_stab"
+                    )
+                    .update(
+                        payload
+                    )
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+        else {
+
+            const result =
+                await sb
+                    .from(
+                        "strucni_stab"
+                    )
+                    .insert(
+                        payload
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            uploadedImage &&
+            oldImage &&
+            uploadedImage !== oldImage
+        ) {
+
+            await deleteStorageImageFromUrl(
+                STAFF_BUCKET,
+                oldImage
+            );
+
+        }
+
+
+        setStaffFormMessage(
+            "Члан стручног штаба је успешно сачуван.",
+            "success"
+        );
+
+
+        await loadAdminStaff();
+
+
+        setTimeout(
+            closeStaffModal,
+            450
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save staff error:",
+            error
+        );
+
+
+        if (uploadedImage) {
+
+            await deleteStorageImageFromUrl(
+                STAFF_BUCKET,
+                uploadedImage
+            );
+
+        }
+
+
+        setStaffFormMessage(
+            getFriendlyError(
+                error,
+                "Подаци нису сачувани."
+            ),
+            "error"
+        );
+
+    }
+
+    finally {
+
+        setButtonLoading(
+            staffSaveButton,
+            false,
+            "САЧУВАЈ"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BRISANJE
+========================================================= */
+
+async function deleteStaffMember(
+    member
+) {
+
+    const confirmed =
+        window.confirm(
+            `Обрисати члана „${member.ime_prezime}“?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await sb
+            .from(
+                "strucni_stab"
+            )
+            .delete()
+            .eq(
+                "id",
+                member.id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Delete staff error:",
+            error
+        );
+
+
+        window.alert(
+            "Члана није могуће обрисати."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        member.fotografija
+    ) {
+
+        await deleteStorageImageFromUrl(
+            STAFF_BUCKET,
+            member.fotografija
+        );
+
+    }
+
+
+    await loadAdminStaff();
+
+}
+
+
+
+/* =========================================================
+   PORUKA FORME
+========================================================= */
+
+function setStaffFormMessage(
+    message,
+    type
+) {
+
+    if (!staffFormMessage) {
+        return;
+    }
+
+
+    staffFormMessage.textContent =
+        message;
+
+
+    staffFormMessage.className =
+        "admin-form-message";
+
+
+    if (type) {
+
+        staffFormMessage
+            .classList
+            .add(
+                type
+            );
+
+    }
+
+}
+
+/* =========================================================
+   =========================================================
+   UPRAVA KLUBA
+   =========================================================
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTI
+========================================================= */
+
+const addManagementButton =
+    document.querySelector(
+        "#admin-add-management"
+    );
+
+const managementList =
+    document.querySelector(
+        "#admin-management-list"
+    );
+
+const managementModal =
+    document.querySelector(
+        "#admin-management-modal"
+    );
+
+const managementForm =
+    document.querySelector(
+        "#admin-management-form"
+    );
+
+const managementModalTitle =
+    document.querySelector(
+        "#admin-management-modal-title"
+    );
+
+const managementIdInput =
+    document.querySelector(
+        "#admin-management-id"
+    );
+
+const managementCurrentImage =
+    document.querySelector(
+        "#admin-management-current-image"
+    );
+
+const managementNameInput =
+    document.querySelector(
+        "#admin-management-name"
+    );
+
+const managementRoleInput =
+    document.querySelector(
+        "#admin-management-role"
+    );
+
+const managementOrderInput =
+    document.querySelector(
+        "#admin-management-order"
+    );
+
+const managementImageInput =
+    document.querySelector(
+        "#admin-management-image"
+    );
+
+const managementImagePreview =
+    document.querySelector(
+        "#admin-management-image-preview img"
+    );
+
+const managementImageName =
+    document.querySelector(
+        "#admin-management-image-name"
+    );
+
+const managementFeaturedInput =
+    document.querySelector(
+        "#admin-management-featured"
+    );
+
+const managementActiveInput =
+    document.querySelector(
+        "#admin-management-active"
+    );
+
+const managementFormMessage =
+    document.querySelector(
+        "#admin-management-form-message"
+    );
+
+const managementSaveButton =
+    document.querySelector(
+        "#admin-management-save-button"
+    );
+
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function setupManagementAdmin() {
+
+    if (addManagementButton) {
+
+        addManagementButton.addEventListener(
+            "click",
+            () => {
+
+                openManagementModal();
+
+            }
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            "[data-close-management-modal]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closeManagementModal
+                );
+
+            }
+        );
+
+
+    if (managementImageInput) {
+
+        managementImageInput.addEventListener(
+            "change",
+            previewManagementImage
+        );
+
+    }
+
+
+    if (managementForm) {
+
+        managementForm.addEventListener(
+            "submit",
+            saveManagementMember
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                managementModal &&
+                !managementModal.hidden
+            ) {
+
+                closeManagementModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   UČITAVANJE UPRAVE
+========================================================= */
+
+async function loadAdminManagement() {
+
+    if (!managementList) {
+        return;
+    }
+
+
+    managementList.innerHTML = `
+
+        <div class="admin-list-loading">
+            Учитавање управе...
+        </div>
+
+    `;
+
+
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "uprava"
+            )
+            .select(
+                "id,ime_prezime,funkcija,fotografija,istaknut,redosled,aktivan,created_at"
+            )
+            .order(
+                "istaknut",
+                {
+                    ascending: false
+                }
+            )
+            .order(
+                "redosled",
+                {
+                    ascending: true
+                }
+            )
+            .order(
+                "ime_prezime",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Management load error:",
+            error
+        );
+
+
+        managementList.innerHTML = `
+
+            <div class="admin-list-loading">
+                Грешка при учитавању управе.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
+
+        managementList.innerHTML = `
+
+            <div class="admin-management-empty">
+                Још нема унетих чланова управе.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    managementList.innerHTML =
+        data
+            .map(
+                renderAdminManagementMember
+            )
+            .join("");
+
+
+    managementList
+        .querySelectorAll(
+            "[data-edit-management]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .editManagement;
+
+
+                        const member =
+                            data.find(
+                                item =>
+                                    item.id === id
+                            );
+
+
+                        if (member) {
+
+                            openManagementModal(
+                                member
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    managementList
+        .querySelectorAll(
+            "[data-delete-management]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .deleteManagement;
+
+
+                        const member =
+                            data.find(
+                                item =>
+                                    item.id === id
+                            );
+
+
+                        if (member) {
+
+                            deleteManagementMember(
+                                member
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   KARTICA ČLANA UPRAVE
+========================================================= */
+
+function renderAdminManagementMember(
+    member
+) {
+
+    const photo =
+        member.fotografija ||
+        "images/grb.png";
+
+
+    return `
+
+        <article
+            class="
+                admin-management-item
+                ${member.istaknut ? "featured" : ""}
+            "
+        >
+
+
+            <div class="admin-management-photo">
+
+                <img
+                    src="${escapeAttribute(photo)}"
+                    alt="${escapeAttribute(member.ime_prezime || "")}"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+
+            <div class="admin-management-info">
+
+                <strong>
+                    ${escapeHtml(member.ime_prezime || "")}
+                </strong>
+
+
+                <div class="admin-management-meta">
+
+                    <span class="admin-management-role">
+                        ${escapeHtml(member.funkcija || "")}
+                    </span>
+
+
+                    ${
+                        member.istaknut
+
+                        ? `
+
+                            <span class="admin-management-featured">
+                                ИСТАКНУТ
+                            </span>
+
+                        `
+
+                        : ""
+                    }
+
+
+                    <span
+                        class="
+                            admin-management-status
+                            ${
+                                member.aktivan
+                                    ? "active"
+                                    : "inactive"
+                            }
+                        "
+                    >
+                        ${
+                            member.aktivan
+                                ? "АКТИВАН"
+                                : "НЕАКТИВАН"
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-management-actions">
+
+                <button
+                    type="button"
+                    class="admin-management-edit"
+                    data-edit-management="${escapeAttribute(member.id)}"
+                >
+                    ИЗМЕНИ
+                </button>
+
+
+                <button
+                    type="button"
+                    class="admin-management-delete"
+                    data-delete-management="${escapeAttribute(member.id)}"
+                >
+                    ОБРИШИ
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openManagementModal(
+    member = null
+) {
+
+    if (
+        !managementModal ||
+        !managementForm
+    ) {
+        return;
+    }
+
+
+    resetManagementForm();
+
+
+    if (member) {
+
+        managementModalTitle.textContent =
+            "Измени члана управе";
+
+
+        managementIdInput.value =
+            member.id ||
+            "";
+
+
+        managementCurrentImage.value =
+            member.fotografija ||
+            "";
+
+
+        managementNameInput.value =
+            member.ime_prezime ||
+            "";
+
+
+        managementRoleInput.value =
+            member.funkcija ||
+            "";
+
+
+        managementOrderInput.value =
+            member.redosled ??
+            0;
+
+
+        managementFeaturedInput.checked =
+            member.istaknut === true;
+
+
+        managementActiveInput.checked =
+            member.aktivan !== false;
+
+
+        if (
+            member.fotografija
+        ) {
+
+            managementImagePreview.src =
+                member.fotografija;
+
+        }
+
+    }
+
+    else {
+
+        managementModalTitle.textContent =
+            "Додај члана управе";
+
+    }
+
+
+    managementModal.hidden =
+        false;
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+
+function closeManagementModal() {
+
+    if (!managementModal) {
+        return;
+    }
+
+
+    managementModal.hidden =
+        true;
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+/* =========================================================
+   RESET FORME
+========================================================= */
+
+function resetManagementForm() {
+
+    if (!managementForm) {
+        return;
+    }
+
+
+    managementForm.reset();
+
+
+    managementIdInput.value =
+        "";
+
+
+    managementCurrentImage.value =
+        "";
+
+
+    managementOrderInput.value =
+        "0";
+
+
+    managementFeaturedInput.checked =
+        false;
+
+
+    managementActiveInput.checked =
+        true;
+
+
+    managementImagePreview.src =
+        "images/grb.png";
+
+
+    managementImageName.textContent =
+        "Није изабрана фотографија";
+
+
+    setManagementFormMessage(
+        "",
+        ""
+    );
+
+}
+
+
+
+/* =========================================================
+   PREVIEW FOTOGRAFIJE
+========================================================= */
+
+function previewManagementImage() {
+
+    const file =
+        managementImageInput
+            ?.files?.[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    managementImageName.textContent =
+        file.name;
+
+
+    const objectUrl =
+        URL.createObjectURL(
+            file
+        );
+
+
+    managementImagePreview.src =
+        objectUrl;
+
+
+    managementImagePreview.onload =
+        () => {
+
+            URL.revokeObjectURL(
+                objectUrl
+            );
+
+        };
+
+}
+
+
+
+/* =========================================================
+   ČUVANJE
+========================================================= */
+
+async function saveManagementMember(
+    event
+) {
+
+    event.preventDefault();
+
+
+    setManagementFormMessage(
+        "",
+        ""
+    );
+
+
+    const id =
+        managementIdInput
+            ?.value
+            .trim();
+
+
+    const name =
+        managementNameInput
+            ?.value
+            .trim();
+
+
+    const role =
+        managementRoleInput
+            ?.value
+            .trim();
+
+
+    const order =
+        Number(
+            managementOrderInput
+                ?.value ||
+            0
+        );
+
+
+    if (
+        !name ||
+        !role
+    ) {
+
+        setManagementFormMessage(
+            "Име и презиме и функција су обавезни.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const oldImage =
+        managementCurrentImage
+            ?.value
+            .trim() ||
+        "";
+
+
+    let uploadedImage =
+        null;
+
+
+    setButtonLoading(
+        managementSaveButton,
+        true,
+        "ЧУВАЊЕ..."
+    );
+
+
+    try {
+
+        const selectedFile =
+            managementImageInput
+                ?.files?.[0];
+
+
+        if (selectedFile) {
+
+            uploadedImage =
+                await uploadStorageImage(
+                    MANAGEMENT_BUCKET,
+                    selectedFile,
+                    name
+                );
+
+        }
+
+
+        const photo =
+            uploadedImage ||
+            oldImage ||
+            null;
+
+
+        const payload = {
+
+            ime_prezime:
+                name,
+
+            funkcija:
+                role,
+
+            fotografija:
+                photo,
+
+            istaknut:
+                Boolean(
+                    managementFeaturedInput
+                        ?.checked
+                ),
+
+            redosled:
+                Number.isFinite(order)
+                    ? order
+                    : 0,
+
+            aktivan:
+                Boolean(
+                    managementActiveInput
+                        ?.checked
+                )
+
+        };
+
+
+        let error;
+
+
+        if (id) {
+
+            const result =
+                await sb
+                    .from(
+                        "uprava"
+                    )
+                    .update(
+                        payload
+                    )
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+        else {
+
+            const result =
+                await sb
+                    .from(
+                        "uprava"
+                    )
+                    .insert(
+                        payload
+                    );
+
+
+            error =
+                result.error;
+
+        }
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            uploadedImage &&
+            oldImage &&
+            uploadedImage !== oldImage
+        ) {
+
+            await deleteStorageImageFromUrl(
+                MANAGEMENT_BUCKET,
+                oldImage
+            );
+
+        }
+
+
+        setManagementFormMessage(
+            "Члан управе је успешно сачуван.",
+            "success"
+        );
+
+
+        await loadAdminManagement();
+
+
+        setTimeout(
+            closeManagementModal,
+            450
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save management error:",
+            error
+        );
+
+
+        if (uploadedImage) {
+
+            await deleteStorageImageFromUrl(
+                MANAGEMENT_BUCKET,
+                uploadedImage
+            );
+
+        }
+
+
+        setManagementFormMessage(
+            getFriendlyError(
+                error,
+                "Подаци нису сачувани."
+            ),
+            "error"
+        );
+
+    }
+
+    finally {
+
+        setButtonLoading(
+            managementSaveButton,
+            false,
+            "САЧУВАЈ"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BRISANJE
+========================================================= */
+
+async function deleteManagementMember(
+    member
+) {
+
+    const confirmed =
+        window.confirm(
+            `Обрисати члана управе „${member.ime_prezime}“?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await sb
+            .from(
+                "uprava"
+            )
+            .delete()
+            .eq(
+                "id",
+                member.id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Delete management error:",
+            error
+        );
+
+
+        window.alert(
+            "Члана управе није могуће обрисати."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        member.fotografija
+    ) {
+
+        await deleteStorageImageFromUrl(
+            MANAGEMENT_BUCKET,
+            member.fotografija
+        );
+
+    }
+
+
+    await loadAdminManagement();
+
+}
+
+
+
+/* =========================================================
+   PORUKA FORME
+========================================================= */
+
+function setManagementFormMessage(
+    message,
+    type
+) {
+
+    if (!managementFormMessage) {
+        return;
+    }
+
+
+    managementFormMessage.textContent =
+        message;
+
+
+    managementFormMessage.className =
+        "admin-form-message";
+
+
+    if (type) {
+
+        managementFormMessage
+            .classList
+            .add(
+                type
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   =========================================================
+   STORAGE
+   =========================================================
+========================================================= */
+
+
+/* =========================================================
+   UPLOAD SLIKE
+========================================================= */
+
+async function uploadStorageImage(
+    bucket,
+    file,
+    title
+) {
+
+    validateImageFile(
+        file
+    );
+
+
+    const extension =
+        getFileExtension(
+            file.name,
+            file.type
+        );
+
+
+    const safeName =
+        createSlug(
+            title
+        ) ||
+        "slika";
+
+
+    const path =
+        `slike/${Date.now()}-${safeName}.${extension}`;
+
+
+    const {
+        error
+    } =
+        await sb
+            .storage
+            .from(
+                bucket
+            )
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false,
+
+                    contentType:
+                        file.type
+                }
+            );
+
+
+    if (error) {
+
+        throw error;
+
+    }
+
+
+    const {
+        data
+    } =
+        sb
+            .storage
+            .from(
+                bucket
+            )
+            .getPublicUrl(
+                path
+            );
+
+
+    if (
+        !data ||
+        !data.publicUrl
+    ) {
+
+        throw new Error(
+            "Није добијена јавна адреса фотографије."
+        );
+
+    }
+
+
+    return data.publicUrl;
+
+}
+
+
+
+/* =========================================================
+   BRISANJE SLIKE
+========================================================= */
+
+async function deleteStorageImageFromUrl(
+    bucket,
+    url
+) {
+
+    const path =
+        getStoragePathFromPublicUrl(
+            bucket,
+            url
+        );
+
+
+    if (!path) {
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await sb
+            .storage
+            .from(
+                bucket
+            )
+            .remove(
+                [
+                    path
+                ]
+            );
+
+
+    if (error) {
+
+        console.warn(
+            "Storage delete warning:",
+            error
+        );
+
+    }
+
+}
+
+
+
+function getStoragePathFromPublicUrl(
+    bucket,
+    url
+) {
+
+    if (!url) {
+        return "";
+    }
+
+
+    try {
+
+        const parsed =
+            new URL(
+                url
+            );
+
+
+        const marker =
+            `/storage/v1/object/public/${bucket}/`;
+
+
+        const index =
+            parsed.pathname
+                .indexOf(
+                    marker
+                );
+
+
+        if (
+            index === -1
+        ) {
+
+            return "";
+
+        }
+
+
+        return decodeURIComponent(
+            parsed.pathname
+                .slice(
+                    index +
+                    marker.length
+                )
+        );
+
+    }
+
+    catch {
+
+        return "";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   VALIDACIJA SLIKE
+========================================================= */
+
+function validateImageFile(
+    file
+) {
+
+    const allowedTypes =
+        [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+
+    if (
+        !allowedTypes.includes(
+            file.type
+        )
+    ) {
+
+        throw new Error(
+            "Фотографија мора бити JPG, PNG или WebP."
+        );
+
+    }
+
+
+    const maxSize =
+        8 *
+        1024 *
+        1024;
+
+
+    if (
+        file.size >
+        maxSize
+    ) {
+
+        throw new Error(
+            "Фотографија не сме бити већа од 8 MB."
+        );
+
+    }
+
+}
+
+
+
+function getFileExtension(
+    fileName,
+    mimeType
+) {
+
+    const extension =
+        String(
+            fileName ||
+            ""
+        )
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    if (
+        [
+            "jpg",
+            "jpeg",
+            "png",
+            "webp"
+        ].includes(
+            extension
+        )
+    ) {
+
+        return extension ===
+            "jpeg"
+            ? "jpg"
+            : extension;
+
+    }
+
+
+    const map = {
+
+        "image/jpeg":
+            "jpg",
+
+        "image/png":
+            "png",
+
+        "image/webp":
+            "webp"
+
+    };
+
+
+    return (
+        map[mimeType] ||
+        "jpg"
+    );
 
 }
 
@@ -2450,10 +5908,12 @@ function buildMatchData() {
    GRBOVI KLUBOVA
 ========================================================= */
 
-function getClubLogoPath(teamName = "") {
+function getClubLogoPath(
+    teamName
+) {
 
-    const team =
-        normalizeTeamName(
+    const name =
+        normalizeText(
             teamName
         );
 
@@ -2463,11 +5923,17 @@ function getClubLogoPath(teamName = "") {
         "obilic":
             "images/grbovi/obilic.webp",
 
-        "potisje":
-            "images/grbovi/potisje.webp",
+        "fk obilic":
+            "images/grbovi/obilic.webp",
 
         "djala 1922":
             "images/grbovi/djala-1922.webp",
+
+        "dj ala 1922":
+            "images/grbovi/djala-1922.webp",
+
+        "potisje":
+            "images/grbovi/potisje.webp",
 
         "horgos 1911":
             "images/grbovi/horgos-1911.webp",
@@ -2502,355 +5968,136 @@ function getClubLogoPath(teamName = "") {
     };
 
 
-    return logos[team] ||
-        "";
+    return (
+        logos[name] ||
+        ""
+    );
 
 }
 
 
 
 /* =========================================================
-   UPLOAD FOTOGRAFIJE
+   DATUM
 ========================================================= */
 
-async function uploadNewsImage(
-    file,
-    slug
+function formatDateDisplay(
+    dateString
 ) {
 
-    const extension =
-        getFileExtension(
-            file
+    if (!dateString) {
+        return "";
+    }
+
+
+    const date =
+        new Date(
+            `${dateString}T12:00:00`
         );
 
 
-    const safeSlug =
-        slug
-            .slice(0, 70) ||
-        "vest";
-
-
-    const path =
-        `slike/${Date.now()}-${safeSlug}.${extension}`;
-
-
-    const {
-        error
-    } =
-        await supabaseClient
-            .storage
-            .from(
-                NEWS_BUCKET
-            )
-            .upload(
-                path,
-                file,
-                {
-                    cacheControl:
-                        "3600",
-
-                    upsert:
-                        false,
-
-                    contentType:
-                        file.type
-                }
-            );
-
-
-    if (error) {
-
-        throw error;
-
-    }
-
-
-    const {
-        data
-    } =
-        supabaseClient
-            .storage
-            .from(
-                NEWS_BUCKET
-            )
-            .getPublicUrl(
-                path
-            );
-
-
-    if (!data?.publicUrl) {
-
-        throw new Error(
-            "Јавни URL фотографије није добијен."
-        );
-
-    }
-
-
-    return {
-
-        path,
-
-        publicUrl:
-            data.publicUrl
-
-    };
-
-}
-
-
-
-function getFileExtension(file) {
-
-    const type =
-        file?.type ||
-        "";
-
-
     if (
-        type === "image/jpeg"
-    ) {
-
-        return "jpg";
-
-    }
-
-
-    if (
-        type === "image/png"
-    ) {
-
-        return "png";
-
-    }
-
-
-    if (
-        type === "image/webp"
-    ) {
-
-        return "webp";
-
-    }
-
-
-    const nameExtension =
-        String(
-            file?.name || ""
+        Number.isNaN(
+            date.getTime()
         )
-            .split(".")
-            .pop()
-            .toLowerCase();
+    ) {
 
-
-    return nameExtension ||
-        "jpg";
-
-}
-
-
-
-/* =========================================================
-   BRISANJE VESTI
-========================================================= */
-
-async function deleteNews(
-    newsId,
-    button
-) {
-
-    if (!newsId) {
-        return;
-    }
-
-
-    if (button) {
-
-        button.disabled =
-            true;
-
-
-        button.textContent =
-            "БРИСАЊЕ...";
+        return "";
 
     }
 
 
-    try {
+    const result =
+        new Intl.DateTimeFormat(
+            "sr-Cyrl-RS",
+            {
+                day:
+                    "numeric",
 
-        /*
-         * Prvo učitamo vest da bismo znali
-         * da li ima fotografiju u Supabase Storage-u.
-         */
+                month:
+                    "long",
 
-        const {
-            data: article,
-            error: readError
-        } =
-            await supabaseClient
-                .from("vesti")
-                .select(
-                    "id, image"
-                )
-                .eq(
-                    "id",
-                    newsId
-                )
-                .single();
+                year:
+                    "numeric",
 
-
-        if (readError) {
-            throw readError;
-        }
-
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("vesti")
-                .delete()
-                .eq(
-                    "id",
-                    newsId
-                );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        /*
-         * Lokalnu sliku iz images/vesti ne diramo.
-         * Brišemo samo sliku koja pripada našem
-         * Supabase bucket-u.
-         */
-
-        const storagePath =
-            extractNewsStoragePath(
-                article?.image
-            );
-
-
-        if (storagePath) {
-
-            const {
-                error: storageError
-            } =
-                await supabaseClient
-                    .storage
-                    .from(
-                        NEWS_BUCKET
-                    )
-                    .remove([
-                        storagePath
-                    ]);
-
-
-            if (storageError) {
-
-                console.warn(
-                    "Вест је обрисана, али слика није уклоњена:",
-                    storageError
-                );
-
+                timeZone:
+                    "Europe/Belgrade"
             }
-
-        }
-
-
-        await Promise.all([
-
-            loadAdminNews(),
-
-            loadNewsCount()
-
-        ]);
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Грешка при брисању вести:",
-            error
+        ).format(
+            date
         );
 
 
-        alert(
-            "Вест није могуће обрисати."
-        );
-
-
-        if (button) {
-
-            button.disabled =
-                false;
-
-
-            button.textContent =
-                "ОБРИШИ";
-
-        }
-
-    }
+    return `${result}.`;
 
 }
 
 
 
-/* =========================================================
-   STORAGE PATH
-========================================================= */
+function formatBirthDate(
+    dateString
+) {
 
-function extractNewsStoragePath(url = "") {
+    if (!dateString) {
+        return "";
+    }
 
-    const marker =
-        `/storage/v1/object/public/${NEWS_BUCKET}/`;
 
-
-    const value =
-        String(
-            url || ""
-        );
+    const parts =
+        dateString
+            .split(
+                "-"
+            );
 
 
     if (
-        !value.includes(
-            marker
-        )
+        parts.length !==
+        3
     ) {
 
-        return null;
+        return dateString;
 
     }
 
 
-    const path =
-        value
-            .split(marker)[1]
-            ?.split("?")[0];
+    return (
+        `${parts[2]}.` +
+        `${parts[1]}.` +
+        `${parts[0]}.`
+    );
+
+}
 
 
-    if (!path) {
-        return null;
-    }
+
+function getTodayInputValue() {
+
+    const now =
+        new Date();
 
 
-    try {
+    const formatter =
+        new Intl.DateTimeFormat(
+            "en-CA",
+            {
+                year:
+                    "numeric",
 
-        return decodeURIComponent(
-            path
+                month:
+                    "2-digit",
+
+                day:
+                    "2-digit",
+
+                timeZone:
+                    "Europe/Belgrade"
+            }
         );
 
-    }
 
-    catch {
-
-        return path;
-
-    }
+    return formatter.format(
+        now
+    );
 
 }
 
@@ -2860,85 +6107,17 @@ function extractNewsStoragePath(url = "") {
    SLUG
 ========================================================= */
 
-async function createUniqueSlug(
-    title
+function createSlug(
+    value
 ) {
 
-    let base =
-        createSlug(
-            title
-        );
-
-
-    if (!base) {
-
-        base =
-            `vest-${Date.now()}`;
-
-    }
-
-
-    let candidate =
-        base;
-
-
-    for (
-        let attempt = 0;
-        attempt < 50;
-        attempt++
-    ) {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("vesti")
-                .select(
-                    "id"
-                )
-                .eq(
-                    "slug",
-                    candidate
-                )
-                .maybeSingle();
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        if (!data) {
-
-            return candidate;
-
-        }
-
-
-        candidate =
-            `${base}-${attempt + 2}`;
-
-    }
-
-
-    return `${base}-${Date.now()}`;
-
-}
-
-
-
-function createSlug(value = "") {
-
-    return transliterateSerbian(
-        value
-    )
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(
-            /[\u0300-\u036f]/g,
+    return latinize(
+        String(
+            value ||
             ""
         )
+    )
+        .toLowerCase()
         .replace(
             /[^a-z0-9]+/g,
             "-"
@@ -2947,91 +6126,51 @@ function createSlug(value = "") {
             /^-+|-+$/g,
             ""
         )
-        .replace(
-            /-+/g,
-            "-"
+        .slice(
+            0,
+            80
         );
 
 }
 
 
 
-/* =========================================================
-   PRETVARANJE ĆIRILICE
-========================================================= */
-
-function transliterateSerbian(
-    value = ""
+function latinize(
+    value
 ) {
 
     const map = {
 
-        А: "A",
-        Б: "B",
-        В: "V",
-        Г: "G",
-        Д: "D",
-        Ђ: "Dj",
-        Е: "E",
-        Ж: "Z",
-        З: "Z",
-        И: "I",
-        Ј: "J",
-        К: "K",
-        Л: "L",
-        Љ: "Lj",
-        М: "M",
-        Н: "N",
-        Њ: "Nj",
-        О: "O",
-        П: "P",
-        Р: "R",
-        С: "S",
-        Т: "T",
-        Ћ: "C",
-        У: "U",
-        Ф: "F",
-        Х: "H",
-        Ц: "C",
-        Ч: "C",
-        Џ: "Dz",
-        Ш: "S",
+        "А":"A","Б":"B","В":"V","Г":"G",
+        "Д":"D","Ђ":"Dj","Е":"E","Ж":"Z",
+        "З":"Z","И":"I","Ј":"J","К":"K",
+        "Л":"L","Љ":"Lj","М":"M","Н":"N",
+        "Њ":"Nj","О":"O","П":"P","Р":"R",
+        "С":"S","Т":"T","Ћ":"C","У":"U",
+        "Ф":"F","Х":"H","Ц":"C","Ч":"C",
+        "Џ":"Dz","Ш":"S",
 
-        а: "a",
-        б: "b",
-        в: "v",
-        г: "g",
-        д: "d",
-        ђ: "dj",
-        е: "e",
-        ж: "z",
-        з: "z",
-        и: "i",
-        ј: "j",
-        к: "k",
-        л: "l",
-        љ: "lj",
-        м: "m",
-        н: "n",
-        њ: "nj",
-        о: "o",
-        п: "p",
-        р: "r",
-        с: "s",
-        т: "t",
-        ћ: "c",
-        у: "u",
-        ф: "f",
-        х: "h",
-        ц: "c",
-        ч: "c",
-        џ: "dz",
-        ш: "s"
+        "а":"a","б":"b","в":"v","г":"g",
+        "д":"d","ђ":"dj","е":"e","ж":"z",
+        "з":"z","и":"i","ј":"j","к":"k",
+        "л":"l","љ":"lj","м":"m","н":"n",
+        "њ":"nj","о":"o","п":"p","р":"r",
+        "с":"s","т":"t","ћ":"c","у":"u",
+        "ф":"f","х":"h","ц":"c","ч":"c",
+        "џ":"dz","ш":"s",
+
+        "Č":"C","Ć":"C","Đ":"Dj",
+        "Š":"S","Ž":"Z",
+
+        "č":"c","ć":"c","đ":"dj",
+        "š":"s","ž":"z"
 
     };
 
 
-    return String(value)
+    return String(
+        value
+    )
         .split("")
         .map(
             character =>
@@ -3045,26 +6184,20 @@ function transliterateSerbian(
 
 
 /* =========================================================
-   NORMALIZACIJA NAZIVA KLUBA
+   NORMALIZACIJA
 ========================================================= */
 
-function normalizeTeamName(
-    value = ""
+function normalizeText(
+    value
 ) {
 
-    return transliterateSerbian(
-        value
-    )
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(
-            /[\u0300-\u036f]/g,
+    return latinize(
+        String(
+            value ||
             ""
         )
-        .replace(
-            /đ/g,
-            "dj"
-        )
+    )
+        .toLowerCase()
         .replace(
             /[^a-z0-9]+/g,
             " "
@@ -3076,148 +6209,41 @@ function normalizeTeamName(
 
 
 /* =========================================================
-   DATUM
+   PORUKE
 ========================================================= */
 
-function getTodayDateValue() {
-
-    const date =
-        new Date();
-
-
-    const local =
-        new Date(
-            date.getTime() -
-            date.getTimezoneOffset() *
-            60000
-        );
-
-
-    return local
-        .toISOString()
-        .slice(
-            0,
-            10
-        );
-
-}
-
-
-
-function formatDateDisplay(
-    dateString
+function setLoginMessage(
+    message,
+    type
 ) {
 
-    if (!dateString) {
-        return "";
+    if (!loginMessage) {
+        return;
     }
 
 
-    const parts =
-        String(dateString)
-            .split("-");
+    loginMessage.textContent =
+        message;
 
 
-    if (
-        parts.length !== 3
-    ) {
-
-        return dateString;
-
-    }
+    loginMessage.className =
+        "admin-login-message";
 
 
-    const year =
-        Number(parts[0]);
+    if (type) {
 
-    const month =
-        Number(parts[1]);
-
-    const day =
-        Number(parts[2]);
-
-
-    const months = [
-
-        "јануар",
-        "фебруар",
-        "март",
-        "април",
-        "мај",
-        "јун",
-        "јул",
-        "август",
-        "септембар",
-        "октобар",
-        "новембар",
-        "децембар"
-
-    ];
-
-
-    if (
-        !year ||
-        !month ||
-        !day ||
-        !months[
-            month - 1
-        ]
-    ) {
-
-        return dateString;
+        loginMessage.classList
+            .add(
+                type
+            );
 
     }
-
-
-    return `${day}. ${months[month - 1]} ${year}.`;
 
 }
 
 
 
-/* =========================================================
-   SLIKA VESTI
-========================================================= */
-
-function getNewsImage(value) {
-
-    const image =
-        String(
-            value || ""
-        ).trim();
-
-
-    if (!image) {
-
-        return "images/grb.png";
-
-    }
-
-
-    if (
-        image.startsWith("images/") ||
-        image.startsWith("./images/") ||
-        /^https?:\/\//i.test(
-            image
-        )
-    ) {
-
-        return image;
-
-    }
-
-
-    return "images/grb.png";
-
-}
-
-
-
-/* =========================================================
-   FORMA - PORUKE
-========================================================= */
-
-function showNewsFormMessage(
+function setNewsFormMessage(
     message,
     type
 ) {
@@ -3227,83 +6253,67 @@ function showNewsFormMessage(
     }
 
 
+    newsFormMessage.textContent =
+        message;
+
+
     newsFormMessage.className =
-        "admin-news-form-message";
+        "admin-form-message";
 
 
     if (type) {
 
-        newsFormMessage.classList.add(
-            type
-        );
+        newsFormMessage.classList
+            .add(
+                type
+            );
 
     }
 
+}
 
-    newsFormMessage.textContent =
+
+
+function setPlayerFormMessage(
+    message,
+    type
+) {
+
+    if (!playerFormMessage) {
+        return;
+    }
+
+
+    playerFormMessage.textContent =
         message;
 
-}
+
+    playerFormMessage.className =
+        "admin-form-message";
 
 
+    if (type) {
 
-function clearNewsFormMessage() {
+        playerFormMessage.classList
+            .add(
+                type
+            );
 
-    if (!newsFormMessage) {
-        return;
     }
-
-
-    newsFormMessage.className =
-        "admin-news-form-message";
-
-
-    newsFormMessage.textContent =
-        "";
 
 }
 
 
 
 /* =========================================================
-   SAVE LOADING
+   BUTTON LOADING
 ========================================================= */
 
-function setNewsSaveLoading(
-    loading
+function setButtonLoading(
+    button,
+    loading,
+    text
 ) {
-
-    if (!newsSaveButton) {
-        return;
-    }
-
-
-    newsSaveButton.disabled =
-        loading;
-
-
-    newsSaveButton.textContent =
-        loading
-            ? "ЧУВАЊЕ..."
-            : "САЧУВАЈ ВЕСТ";
-
-}
-
-
-
-/* =========================================================
-   LOGIN LOADING
-========================================================= */
-
-function setLoginLoading(
-    loading
-) {
-
-    const button =
-        loginForm?.querySelector(
-            ".admin-login-button"
-        );
-
 
     if (!button) {
         return;
@@ -3314,144 +6324,98 @@ function setLoginLoading(
         loading;
 
 
-    const span =
-        button.querySelector(
-            "span"
-        );
-
-
-    if (!span) {
-        return;
-    }
-
-
-    span.textContent =
-        loading
-            ? "ПРИЈАВА..."
-            : "ПРИЈАВИ СЕ";
+    button.textContent =
+        text;
 
 }
 
 
 
 /* =========================================================
-   LOGIN PORUKE
+   GREŠKE
 ========================================================= */
 
-function showLoginMessage(
-    message
-) {
-
-    if (!loginMessage) {
-        return;
-    }
-
-
-    loginMessage.textContent =
-        message;
-
-}
-
-
-
-function clearLoginMessage() {
-
-    if (!loginMessage) {
-        return;
-    }
-
-
-    loginMessage.textContent =
-        "";
-
-}
-
-
-
-/* =========================================================
-   LOGIN GREŠKE
-========================================================= */
-
-function getLoginErrorMessage(
-    error
+function getFriendlyError(
+    error,
+    fallback
 ) {
 
     const message =
         String(
             error?.message ||
             ""
-        ).toLowerCase();
+        );
 
 
     if (
         message.includes(
-            "invalid login credentials"
+            "duplicate key"
         )
     ) {
 
-        return "Погрешан е-маил или лозинка.";
+        return "Већ постоји исти запис.";
 
     }
 
 
     if (
         message.includes(
-            "email not confirmed"
+            "row-level security"
         )
     ) {
 
-        return "Е-маил адреса још није потврђена.";
+        return "Немате дозволу за ову операцију.";
 
     }
 
 
     if (
         message.includes(
-            "too many requests"
+            "Bucket not found"
         )
     ) {
 
-        return "Превише покушаја. Покушајте поново мало касније.";
+        return "Storage bucket није пронађен.";
 
     }
 
 
-    return "Пријава није успела. Проверите податке и покушајте поново.";
+    return (
+        message ||
+        fallback
+    );
 
 }
 
 
 
 /* =========================================================
-   ESCAPE
+   BEZBEDAN ISPIS
 ========================================================= */
 
 function escapeHtml(
     value = ""
 ) {
 
-    return String(value)
-
+    return String(
+        value
+    )
         .replaceAll(
             "&",
             "&amp;"
         )
-
         .replaceAll(
             "<",
             "&lt;"
         )
-
         .replaceAll(
             ">",
             "&gt;"
         )
-
         .replaceAll(
             '"',
             "&quot;"
         )
-
         .replaceAll(
             "'",
             "&#039;"

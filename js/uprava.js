@@ -1,92 +1,208 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEZEVAC
-   UPRAVA KLUBA
+   FK OBILIĆ NOVI KNEŽEVAC
+   UPRAVA KLUBA - SUPABASE
 ========================================================= */
 
-async function loadClubManagement() {
-    const container = document.querySelector("#uprava-grid");
 
-    if (!container) return;
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-    try {
-        const response = await fetch("data/uprava.json", {
-            cache: "no-store"
-        });
+const MANAGEMENT_SUPABASE_URL =
+    "https://uvevthgxlnzzkapkjxky.supabase.co";
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        const members =
-            Array.isArray(data?.uprava?.clanovi)
-                ? data.uprava.clanovi
-                : [];
-
-        if (members.length === 0) {
-            container.innerHTML = `
-                <div class="club-management-empty">
-
-                    <img
-                        src="images/grb.png"
-                        alt=""
-                    >
-
-                    <div>
-
-                        <strong>
-                            УПРАВА ФК ОБИЛИЋ
-                        </strong>
-
-                        <p>
-                            Подаци о члановима управе биће додати након уноса званичних података.
-                        </p>
-
-                    </div>
-
-                </div>
-            `;
-
-            return;
-        }
+const MANAGEMENT_SUPABASE_KEY =
+    "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
 
-        /* Predsednik automatski ide prvi */
 
-        const sortedMembers = [...members].sort((a, b) => {
-            const aPresident =
-                isPresidentRole(a.funkcija);
+/* =========================================================
+   START
+========================================================= */
 
-            const bPresident =
-                isPresidentRole(b.funkcija);
-
-            return Number(bPresident) - Number(aPresident);
-        });
+document.addEventListener(
+    "DOMContentLoaded",
+    loadManagement
+);
 
 
-        container.innerHTML =
-            sortedMembers
-                .map(member => createManagementCard(member))
-                .join("");
 
-    } catch (error) {
+/* =========================================================
+   UČITAVANJE UPRAVE
+========================================================= */
 
-        console.error(
-            "Грешка при учитавању управе клуба:",
-            error
+async function loadManagement() {
+
+    const container =
+        document.querySelector(
+            ".management-grid"
         );
 
-        container.innerHTML = `
-            <div class="club-management-empty">
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="club-management-empty">
+
+            <img
+                src="images/grb.png"
+                alt=""
+            >
+
+            <div>
+
+                <strong>
+                    УЧИТАВАЊЕ УПРАВЕ
+                </strong>
 
                 <p>
-                    Подаци о управи тренутно нису доступни.
+                    Молимо сачекајте...
                 </p>
 
             </div>
-        `;
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const url =
+            new URL(
+                `${MANAGEMENT_SUPABASE_URL}/rest/v1/uprava`
+            );
+
+
+        url.searchParams.set(
+            "select",
+            [
+                "id",
+                "ime_prezime",
+                "funkcija",
+                "fotografija",
+                "istaknut",
+                "redosled",
+                "aktivan"
+            ].join(",")
+        );
+
+
+        url.searchParams.set(
+            "aktivan",
+            "eq.true"
+        );
+
+
+        url.searchParams.set(
+            "order",
+            "istaknut.desc,redosled.asc,ime_prezime.asc"
+        );
+
+
+        const response =
+            await fetch(
+                url.toString(),
+                {
+
+                    method:
+                        "GET",
+
+                    headers: {
+
+                        "apikey":
+                            MANAGEMENT_SUPABASE_KEY,
+
+                        "Authorization":
+                            `Bearer ${MANAGEMENT_SUPABASE_KEY}`,
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    cache:
+                        "no-store"
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const management =
+            await response.json();
+
+
+        if (
+            !Array.isArray(management) ||
+            management.length === 0
+        ) {
+
+            showManagementEmpty(
+                container
+            );
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            management
+                .map(
+                    createManagementCard
+                )
+                .join("");
+
     }
+
+    catch (error) {
+
+        console.error(
+            "Грешка при учитавању управе:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="club-management-empty">
+
+                <img
+                    src="images/grb.png"
+                    alt=""
+                >
+
+                <div>
+
+                    <strong>
+                        УПРАВА КЛУБА
+                    </strong>
+
+                    <p>
+                        Подаци тренутно нису доступни.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
 }
 
 
@@ -95,147 +211,165 @@ async function loadClubManagement() {
    KARTICA ČLANA UPRAVE
 ========================================================= */
 
-function createManagementCard(member) {
-
-    const rawName =
-        member.ime || "Име није унето";
-
-
-    const rawRole =
-        member.funkcija || "";
-
+function createManagementCard(
+    member
+) {
 
     const name =
-        escapeManagementHtml(rawName);
+        member.ime_prezime ||
+        "";
 
 
     const role =
-        escapeManagementHtml(rawRole);
+        member.funkcija ||
+        "";
 
 
-    const image =
-        escapeManagementHtml(
-            member.slika || ""
-        );
+    const photo =
+        member.fotografija ||
+        "";
 
 
-    const initials =
-        escapeManagementHtml(
-            getManagementInitials(rawName)
-        );
+    const featuredClass =
+        member.istaknut
+            ? "management-president"
+            : "";
 
-
-    const isPresident =
-        isPresidentRole(rawRole);
-
-
-
-    /* =====================================================
-       FOTOGRAFIJA / PLACEHOLDER
-    ===================================================== */
-
-    const visual = image
-        ? `
-            <img
-                src="${image}"
-                alt="${name}"
-                class="management-photo"
-                loading="lazy"
-                onerror="
-                    this.style.display='none';
-                    this.nextElementSibling.style.display='flex';
-                "
-            >
-
-            <div
-                class="management-placeholder"
-                style="display:none;"
-            >
-
-                <img
-                    src="images/grb.png"
-                    alt=""
-                    class="management-placeholder-crest"
-                >
-
-                <strong>
-                    ${initials}
-                </strong>
-
-            </div>
-        `
-        : `
-            <div class="management-placeholder">
-
-                <img
-                    src="images/grb.png"
-                    alt=""
-                    class="management-placeholder-crest"
-                >
-
-                <strong>
-                    ${initials}
-                </strong>
-
-            </div>
-        `;
-
-
-
-    /* =====================================================
-       KARTICA
-    ===================================================== */
 
     return `
+
         <article
-            class="management-card ${
-                isPresident
-                    ? "management-president"
-                    : "management-member"
-            }"
+            class="
+                management-card
+                ${featuredClass}
+            "
         >
+
 
             <div class="management-photo-wrap">
 
-                ${visual}
+                ${
+                    photo
+
+                    ? `
+
+                        <img
+                            src="${escapeManagementAttribute(photo)}"
+                            alt="${escapeManagementAttribute(name)}"
+                            class="management-photo"
+                            loading="lazy"
+
+                            onerror="
+                                this.style.display='none';
+                                this.nextElementSibling.style.display='flex';
+                            "
+                        >
+
+
+                        <div
+                            class="management-placeholder"
+                            style="display:none;"
+                        >
+
+                            <img
+                                src="images/grb.png"
+                                class="management-placeholder-crest"
+                                alt=""
+                            >
+
+                            <strong>
+                                ${escapeManagementHtml(
+                                    getManagementInitials(
+                                        name
+                                    )
+                                )}
+                            </strong>
+
+                        </div>
+
+                    `
+
+                    : `
+
+                        <div class="management-placeholder">
+
+                            <img
+                                src="images/grb.png"
+                                class="management-placeholder-crest"
+                                alt=""
+                            >
+
+                            <strong>
+                                ${escapeManagementHtml(
+                                    getManagementInitials(
+                                        name
+                                    )
+                                )}
+                            </strong>
+
+                        </div>
+
+                    `
+                }
 
             </div>
+
 
 
             <div class="management-card-info">
 
-                ${
-                    role
-                        ? `
-                            <span class="management-role">
-                                ${role}
-                            </span>
-                        `
-                        : ""
-                }
+                <span class="management-role">
+                    ${escapeManagementHtml(role)}
+                </span>
 
                 <h3>
-                    ${name}
+                    ${escapeManagementHtml(name)}
                 </h3>
 
             </div>
 
+
         </article>
+
     `;
+
 }
 
 
 
 /* =========================================================
-   PROVERA DA LI JE PREDSEDNIK
+   PRAZNO STANJE
 ========================================================= */
 
-function isPresidentRole(role = "") {
+function showManagementEmpty(
+    container
+) {
 
-    return String(role)
-        .trim()
-        .toLocaleLowerCase("sr")
-        .includes("председник");
+    container.innerHTML = `
+
+        <div class="club-management-empty">
+
+            <img
+                src="images/grb.png"
+                alt=""
+            >
+
+            <div>
+
+                <strong>
+                    УПРАВА КЛУБА
+                </strong>
+
+                <p>
+                    Подаци о управи биће објављени ускоро.
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
 }
 
 
@@ -244,50 +378,101 @@ function isPresidentRole(role = "") {
    INICIJALI
 ========================================================= */
 
-function getManagementInitials(name = "") {
+function getManagementInitials(
+    name
+) {
 
     const parts =
-        String(name)
+        String(
+            name ||
+            ""
+        )
             .trim()
-            .split(/\s+/)
+            .split(
+                /\s+/
+            )
             .filter(Boolean);
 
 
-    if (parts.length === 0) {
-        return "ФК";
+    if (
+        parts.length ===
+        0
+    ) {
+
+        return "О";
+
     }
 
 
-    return parts
-        .slice(0, 2)
-        .map(part => part.charAt(0))
-        .join("")
-        .toUpperCase();
+    if (
+        parts.length ===
+        1
+    ) {
+
+        return parts[0]
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        parts[0]
+            .charAt(0) +
+
+        parts[
+            parts.length - 1
+        ]
+            .charAt(0)
+
+    ).toUpperCase();
+
 }
 
 
 
 /* =========================================================
-   ZAŠTITA TEKSTA
+   BEZBEDAN ISPIS
 ========================================================= */
 
-function escapeManagementHtml(value = "") {
+function escapeManagementHtml(
+    value = ""
+) {
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    return String(
+        value
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
 }
 
 
 
-/* =========================================================
-   POKRETANJE
-========================================================= */
+function escapeManagementAttribute(
+    value = ""
+) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadClubManagement
-);
+    return escapeManagementHtml(
+        value
+    );
+
+}
