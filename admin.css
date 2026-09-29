@@ -4198,3 +4198,860 @@ body.admin-modal-open {
     }
 
 }
+
+/* =========================================================
+   ADMIN - SELEKCIJE
+========================================================= */
+
+.admin-selections-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+
+/* =========================================================
+   KARTICA SELEKCIJE
+========================================================= */
+
+.admin-selection-item {
+    min-height: 105px;
+
+    display: grid;
+    grid-template-columns:
+        110px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 12px 16px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #202124,
+            #18191b
+        );
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.admin-selection-item:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(183,25,45,0.35);
+
+    box-shadow:
+        0 12px 26px rgba(0,0,0,0.20);
+}
+
+
+/* =========================================================
+   FOTOGRAFIJA
+========================================================= */
+
+.admin-selection-photo {
+    width: 105px;
+    height: 78px;
+
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    background: #111214;
+}
+
+
+.admin-selection-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.admin-selection-photo img[src$="grb.png"] {
+    object-fit: contain;
+
+    padding: 10px;
+}
+
+
+/* =========================================================
+   PODACI
+========================================================= */
+
+.admin-selection-info {
+    min-width: 0;
+}
+
+
+.admin-selection-info strong {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    line-height: 1.25;
+}
+
+
+.admin-selection-description {
+    margin: 0 0 8px;
+
+    max-width: 650px;
+
+    color:
+        rgba(255,255,255,0.56);
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+.admin-selection-meta {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+
+.admin-selection-meta span {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 23px;
+
+    padding: 4px 8px;
+
+    border-radius: 4px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color:
+        rgba(255,255,255,0.60);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+}
+
+
+/* GODIŠTE */
+
+.admin-selection-year {
+    color: #ef6074 !important;
+
+    background:
+        rgba(183,25,45,0.15) !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.admin-selection-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+}
+
+
+.admin-selection-status::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+}
+
+
+.admin-selection-status.active {
+    color: #67d391;
+}
+
+
+.admin-selection-status.active::before {
+    background: #67d391;
+}
+
+
+.admin-selection-status.inactive {
+    color: #9d9d9d;
+}
+
+
+.admin-selection-status.inactive::before {
+    background: #777777;
+}
+
+
+/* =========================================================
+   AKCIJE
+========================================================= */
+
+.admin-selection-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.admin-selection-actions button {
+    min-height: 36px;
+
+    padding: 0 12px;
+
+    border:
+        1px solid rgba(255,255,255,0.10);
+
+    border-radius: 6px;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    color: #ffffff;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.admin-selection-edit:hover {
+    border-color:
+        rgba(255,255,255,0.28);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+
+.admin-selection-delete:hover {
+    border-color:
+        rgba(183,25,45,0.45);
+
+    background:
+        rgba(183,25,45,0.12);
+
+    color: #ff6679;
+}
+
+
+/* =========================================================
+   PRAZNA LISTA
+========================================================= */
+
+.admin-selections-empty {
+    min-height: 150px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 25px;
+
+    border:
+        1px dashed rgba(255,255,255,0.10);
+
+    border-radius: 10px;
+
+    color:
+        rgba(255,255,255,0.45);
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   PREVIEW FOTOGRAFIJE U MODALU
+========================================================= */
+
+#admin-selection-image-preview {
+    width: 210px;
+    height: 135px;
+}
+
+
+#admin-selection-image-preview img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+#admin-selection-image-preview img[src$="grb.png"] {
+    object-fit: contain;
+
+    padding: 20px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .admin-selection-item {
+        grid-template-columns:
+            82px
+            minmax(0, 1fr);
+
+        gap: 12px;
+
+        padding: 12px;
+    }
+
+
+    .admin-selection-photo {
+        width: 78px;
+        height: 62px;
+    }
+
+
+    .admin-selection-description {
+        font-size: 10px;
+    }
+
+
+    .admin-selection-actions {
+        grid-column: 1 / -1;
+
+        justify-content: flex-end;
+
+        padding-top: 4px;
+    }
+
+
+    .admin-selection-actions button {
+        flex: 1;
+
+        max-width: 135px;
+    }
+
+}
+
+/* =========================================================
+   ADMIN - GALERIJA
+========================================================= */
+
+.admin-gallery-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 18px;
+
+    margin-top: 24px;
+}
+
+
+/* =========================================================
+   KARTICA FOTOGRAFIJE
+========================================================= */
+
+.admin-gallery-item {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #202124,
+            #17181a
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,0.12);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.admin-gallery-item:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(183,25,45,0.30);
+
+    box-shadow:
+        0 16px 32px
+        rgba(0,0,0,0.20);
+}
+
+
+/* ISTAKNUTA */
+
+.admin-gallery-item.featured {
+    border-color:
+        rgba(183,25,45,0.42);
+
+    box-shadow:
+        0 12px 30px
+        rgba(183,25,45,0.08);
+}
+
+
+/* =========================================================
+   FOTOGRAFIJA
+========================================================= */
+
+.admin-gallery-photo {
+    position: relative;
+
+    width: 100%;
+    height: 185px;
+
+    overflow: hidden;
+
+    background: #101113;
+}
+
+
+.admin-gallery-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   ISTAKNUTA OZNAKA
+========================================================= */
+
+.admin-gallery-featured-badge {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 2;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 24px;
+
+    padding: 4px 8px;
+
+    border-radius: 4px;
+
+    background:
+        rgba(183,25,45,0.92);
+
+    color: #ffffff;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    box-shadow:
+        0 5px 14px
+        rgba(0,0,0,0.22);
+}
+
+
+/* =========================================================
+   SADRŽAJ KARTICE
+========================================================= */
+
+.admin-gallery-info {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    padding: 16px;
+}
+
+
+.admin-gallery-info strong {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+
+.admin-gallery-description {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    margin:
+        0 0 12px;
+
+    color:
+        rgba(255,255,255,0.50);
+
+    font-size: 10px;
+    line-height: 1.55;
+
+    -webkit-box-orient:
+        vertical;
+
+    -webkit-line-clamp:
+        2;
+}
+
+
+/* =========================================================
+   META PODACI
+========================================================= */
+
+.admin-gallery-meta {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: auto;
+}
+
+
+.admin-gallery-meta span {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 22px;
+
+    padding: 4px 7px;
+
+    border-radius: 4px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color:
+        rgba(255,255,255,0.60);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* KATEGORIJA */
+
+.admin-gallery-category {
+    background:
+        rgba(183,25,45,0.13) !important;
+
+    color:
+        #ed6a7c !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.admin-gallery-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.admin-gallery-status::before {
+    content: "";
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+}
+
+
+.admin-gallery-status.active {
+    color:
+        #67d391 !important;
+}
+
+
+.admin-gallery-status.active::before {
+    background:
+        #67d391;
+}
+
+
+.admin-gallery-status.inactive {
+    color:
+        #9a9a9a !important;
+}
+
+
+.admin-gallery-status.inactive::before {
+    background:
+        #777777;
+}
+
+
+/* =========================================================
+   AKCIJE
+========================================================= */
+
+.admin-gallery-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap: 8px;
+
+    padding:
+        0 16px 16px;
+}
+
+
+.admin-gallery-actions button {
+    min-height: 36px;
+
+    border:
+        1px solid rgba(255,255,255,0.10);
+
+    border-radius: 6px;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    color: #ffffff;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.admin-gallery-edit:hover {
+    border-color:
+        rgba(255,255,255,0.30);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+
+.admin-gallery-delete:hover {
+    border-color:
+        rgba(183,25,45,0.45);
+
+    background:
+        rgba(183,25,45,0.12);
+
+    color:
+        #ff6679;
+}
+
+
+/* =========================================================
+   PRAZNA GALERIJA
+========================================================= */
+
+.admin-gallery-empty {
+    grid-column:
+        1 / -1;
+
+    min-height: 170px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    border:
+        1px dashed rgba(255,255,255,0.10);
+
+    border-radius: 10px;
+
+    color:
+        rgba(255,255,255,0.45);
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   PREVIEW U MODALU
+========================================================= */
+
+#admin-gallery-image-preview {
+    width: 260px;
+    height: 175px;
+
+    overflow: hidden;
+}
+
+
+#admin-gallery-image-preview img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* AKO JOŠ NIJE IZABRANA FOTOGRAFIJA */
+
+#admin-gallery-image-preview img[src$="grb.png"] {
+    object-fit: contain;
+
+    padding: 28px;
+
+    background:
+        #111214;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .admin-gallery-list {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+
+/* =========================================================
+   TELEFON
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .admin-gallery-list {
+        grid-template-columns:
+            1fr;
+
+        gap: 14px;
+    }
+
+
+    .admin-gallery-photo {
+        height: 210px;
+    }
+
+
+    #admin-gallery-image-preview {
+        width: 100%;
+        max-width: 300px;
+
+        height: 190px;
+    }
+
+}

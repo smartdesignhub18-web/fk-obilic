@@ -11,17 +11,17 @@
     >
 
     <title>
-        Галерија | ФК Обилић Нови Кнежевац
+        Селекција | ФК Обилић Нови Кнежевац
     </title>
 
     <meta
         name="description"
-        content="Галерија ФК Обилић Нови Кнежевац — фотографије са утакмица, тренинга и дешавања у клубу."
+        content="Селекције ФК Обилић Нови Кнежевац."
     >
 
     <link
         rel="stylesheet"
-        href="style.css?v=28"
+        href="style.css"
     >
 
 </head>
@@ -38,7 +38,6 @@
 
     <div class="container nav-container">
 
-
         <a
             href="index.html"
             class="club-brand"
@@ -46,7 +45,7 @@
 
             <img
                 src="images/grb.png"
-                alt="ФК Обилић Нови Кнежевац"
+                alt="ФК Обилић"
                 class="nav-logo"
             >
 
@@ -83,7 +82,10 @@
                 ВЕСТИ
             </a>
 
-            <a href="ekipe.html">
+            <a
+                href="ekipe.html"
+                class="active"
+            >
                 ЕКИПЕ
             </a>
 
@@ -95,22 +97,19 @@
                 ТАБЕЛА
             </a>
 
-            <a href="klub.html">
+            <a href="index.html#klub">
                 КЛУБ
             </a>
 
-            <a
-                href="galerija.html"
-                class="active"
-            >
+            <a href="index.html#galerija">
                 ГАЛЕРИЈА
             </a>
 
-            <a href="partneri.html">
+            <a href="index.html#partneri">
                 ПАРТНЕРИ
             </a>
 
-            <a href="kontakt.html">
+            <a href="index.html#kontakt">
                 КОНТАКТ
             </a>
 
@@ -126,7 +125,7 @@
      HERO
 ===================================================== -->
 
-<section class="page-hero teams-page-hero gallery-page-hero">
+<section class="page-hero teams-page-hero">
 
     <div class="page-hero-overlay"></div>
 
@@ -144,12 +143,12 @@
             ФК ОБИЛИЋ • НОВИ КНЕЖЕВАЦ
         </span>
 
-        <h1>
-            ГАЛЕРИЈА
+        <h1 id="selection-hero-title">
+            СЕЛЕКЦИЈА
         </h1>
 
-        <p>
-            Тренуци са терена и из живота клуба
+        <p id="selection-hero-year">
+            Учитавање...
         </p>
 
     </div>
@@ -158,65 +157,159 @@
 
 
 
-<!-- =====================================================
-     GLAVNI SADRŽAJ
-===================================================== -->
-
 <main>
 
 
-    <section class="section gallery-page-section">
+<!-- =====================================================
+     PODACI O SELEKCIJI
+===================================================== -->
 
-        <div class="container">
+<section
+    class="section selection-detail-section"
+    id="selection-detail"
+>
+
+    <div class="container">
 
 
-            <div class="section-heading">
+        <div
+            id="selection-loading"
+            class="team-data-empty"
+        >
+            Учитавање селекције...
+        </div>
 
-                <span>
-                    НАШ КЛУБ
-                </span>
 
-                <h2>
-                    ФОТОГРАФИЈЕ
-                </h2>
+        <div
+            id="selection-content"
+            hidden
+        >
 
-                <p>
-                    Фотографије са утакмица,
-                    тренинга и дешавања у ФК Обилић.
-                </p>
+
+            <div class="selection-detail-header">
+
+
+                <div
+                    id="selection-photo-wrap"
+                    class="selection-detail-photo"
+                >
+
+                    <img
+                        id="selection-photo"
+                        src="images/grb.png"
+                        alt=""
+                    >
+
+                </div>
+
+
+                <div class="selection-detail-info">
+
+                    <span>
+                        ФК ОБИЛИЋ
+                    </span>
+
+
+                    <h2 id="selection-name">
+                        СЕЛЕКЦИЈА
+                    </h2>
+
+
+                    <div
+                        id="selection-year"
+                        class="selection-detail-year"
+                        hidden
+                    ></div>
+
+
+                    <p id="selection-description"></p>
+
+                </div>
+
 
             </div>
 
 
 
             <!-- =============================================
-                 GALERIJA
+                 IGRAČI
             ============================================== -->
 
-            <div
-                id="gallery-page-grid"
-                class="gallery-page-grid"
-            >
+            <section class="first-team-roster">
 
-                <div class="gallery-page-empty">
+                <div class="first-team-heading">
 
-                    <img
-                        src="images/grb.png"
-                        alt=""
-                    >
-
-                    <span>
-                        Учитавање фотографија...
+                    <span id="players-selection-label">
+                        СЕЛЕКЦИЈА
                     </span>
+
+                    <h2>
+                        ИГРАЧКИ КАДАР
+                    </h2>
 
                 </div>
 
-            </div>
+
+                <div
+                    id="selection-players-grid"
+                    class="players-grid"
+                >
+
+                    <div class="team-data-empty">
+                        Учитавање играча...
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     STRUČNI ŠTAB
+                ========================================== -->
+
+                <div class="first-team-heading staff-heading">
+
+                    <span>
+                        ФК ОБИЛИЋ
+                    </span>
+
+                    <h2>
+                        СТРУЧНИ ШТАБ
+                    </h2>
+
+                </div>
+
+
+                <div
+                    id="selection-staff-grid"
+                    class="players-grid staff-grid"
+                >
+
+                    <div class="team-data-empty">
+                        Учитавање стручног штаба...
+                    </div>
+
+                </div>
+
+            </section>
 
 
         </div>
 
-    </section>
+
+
+        <div
+            id="selection-error"
+            class="team-data-empty"
+            hidden
+        >
+            Селекција није пронађена.
+        </div>
+
+
+    </div>
+
+</section>
 
 
 </main>
@@ -298,21 +391,10 @@
 
 
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script src="script.js"></script>
 
-<script src="js/galerija.js?v=3"></script>
-
-<script src="js/footer.js?v=1"></script>
-
-<script src="js/pesma.js?v=1"></script>
-
-<script src="js/footer-kontakt.js?v=2"></script>
+<script src="js/selekcija.js?v=1"></script>
 
 
 </body>
-
 </html>

@@ -1,85 +1,282 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEZEVAC
+   FK OBILIĆ NOVI KNEŽEVAC
    PARTNERI
 ========================================================= */
 
-async function loadPartners() {
+(() => {
 
-    const pageContainer =
-        document.querySelector("#partners-page-grid");
+    const SUPABASE_URL =
+        "https://uvevthgxlnzzkapkjxky.supabase.co";
 
-    const homeContainer =
-        document.querySelector("#home-partners-grid");
-
-
-    if (!pageContainer && !homeContainer) return;
+    const SUPABASE_KEY =
+        "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
 
-    try {
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadPartners
+    );
 
-        const response = await fetch(
-            "data/partneri.json",
-            {
-                cache: "no-store"
+
+
+    /* =====================================================
+       UČITAVANJE
+    ===================================================== */
+
+    async function loadPartners() {
+
+        try {
+
+            const url =
+                `${SUPABASE_URL}/rest/v1/partneri` +
+                `?select=id,naziv,opis,logo,link,istaknut,redosled,aktivan` +
+                `&aktivan=eq.true` +
+                `&order=redosled.asc,naziv.asc`;
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        headers: {
+
+                            apikey:
+                                SUPABASE_KEY,
+
+                            Authorization:
+                                `Bearer ${SUPABASE_KEY}`
+
+                        },
+
+                        cache:
+                            "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+
             }
-        );
 
 
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
+            const partners =
+                await response.json();
 
 
-        const data = await response.json();
+            if (
+                !Array.isArray(
+                    partners
+                )
+            ) {
 
+                throw new Error(
+                    "Неисправан формат партнера."
+                );
 
-        const partners =
-            Array.isArray(data?.partneri)
-                ? data.partneri
-                : [];
+            }
 
-
-        /* =====================================================
-           POSEBNA STRANICA PARTNERA
-        ===================================================== */
-
-        if (pageContainer) {
-
-            renderPartnersPage(
-                pageContainer,
-                partners
-            );
-
-        }
-
-
-        /* =====================================================
-           PARTNERI NA POČETNOJ
-        ===================================================== */
-
-        if (homeContainer) {
 
             renderHomePartners(
-                homeContainer,
+                partners
+            );
+
+
+            renderPartnersPage(
                 partners
             );
 
         }
 
+        catch (error) {
 
-    } catch (error) {
-
-        console.error(
-            "Грешка при учитавању партнера:",
-            error
-        );
+            console.error(
+                "Greška pri učitavanju partnera:",
+                error
+            );
 
 
-        if (pageContainer) {
+            renderPartnersError();
 
-            pageContainer.innerHTML = `
+        }
+
+    }
+
+
+
+    /* =====================================================
+       POČETNA STRANA
+    ===================================================== */
+
+    function renderHomePartners(
+        partners
+    ) {
+
+        const container =
+            document.querySelector(
+                "#home-partners-grid"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        if (!partners.length) {
+
+            container.innerHTML = `
+
+                <div class="home-partners-empty">
+
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
+
+                    <span>
+                        Партнери клуба ће бити додати ускоро.
+                    </span>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /*
+            Na početnoj prvo prikazujemo
+            istaknute partnere.
+
+            Ako nema istaknutih,
+            prikazujemo prvih 5.
+        */
+
+        const featured =
+            partners.filter(
+                partner =>
+                    partner.istaknut === true
+            );
+
+
+        const homePartners =
+            (
+                featured.length
+                    ? featured
+                    : partners
+            )
+                .slice(
+                    0,
+                    5
+                );
+
+
+        container.innerHTML =
+            homePartners
+                .map(
+                    renderHomePartner
+                )
+                .join("");
+
+    }
+
+
+
+    function renderHomePartner(
+        partner
+    ) {
+
+        const logo =
+            partner.logo ||
+            "images/grb.png";
+
+
+        const imageClass =
+            partner.logo
+                ? ""
+                : "home-partner-placeholder";
+
+
+        const content = `
+
+            <div class="home-partner-card">
+
+                <div class="home-partner-logo">
+
+                    <img
+                        src="${escapeAttribute(logo)}"
+                        alt="${escapeAttribute(partner.naziv || "Партнер ФК Обилић")}"
+                        class="${imageClass}"
+                        loading="lazy"
+                    >
+
+                </div>
+
+
+                <strong>
+                    ${escapeHtml(partner.naziv || "")}
+                </strong>
+
+            </div>
+
+        `;
+
+
+        if (partner.link) {
+
+            return `
+
+                <a
+                    href="${escapeAttribute(partner.link)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="home-partner-link"
+                >
+
+                    ${content}
+
+                </a>
+
+            `;
+
+        }
+
+
+        return content;
+
+    }
+
+
+
+    /* =====================================================
+       STRANICA SVI PARTNERI
+    ===================================================== */
+
+    function renderPartnersPage(
+        partners
+    ) {
+
+        const container =
+            document.querySelector(
+                ".partners-page-grid"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        if (!partners.length) {
+
+            container.innerHTML = `
+
                 <div class="partners-page-empty">
 
                     <img
@@ -87,378 +284,245 @@ async function loadPartners() {
                         alt=""
                     >
 
+
                     <div>
 
                         <strong>
-                            ПАРТНЕРИ ТРЕНУТНО НИСУ ДОСТУПНИ
+                            Партнери клуба
                         </strong>
 
                         <p>
-                            Није могуће учитати податке о партнерима.
+                            Партнери ФК Обилић
+                            биће приказани овде.
                         </p>
 
                     </div>
 
                 </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            partners
+                .map(
+                    renderPartnerPageCard
+                )
+                .join("");
+
+    }
+
+
+
+    function renderPartnerPageCard(
+        partner
+    ) {
+
+        const logo =
+            partner.logo ||
+            "images/grb.png";
+
+
+        const placeholderClass =
+            partner.logo
+                ? ""
+                : "home-partner-placeholder";
+
+
+        const card = `
+
+            <article class="partner-page-card">
+
+                <div class="partner-page-logo">
+
+                    <img
+                        src="${escapeAttribute(logo)}"
+                        alt="${escapeAttribute(partner.naziv || "Партнер ФК Обилић")}"
+                        class="${placeholderClass}"
+                        loading="lazy"
+                    >
+
+                </div>
+
+
+                <div class="partner-page-info">
+
+                    <h3>
+                        ${escapeHtml(partner.naziv || "")}
+                    </h3>
+
+
+                    ${
+                        partner.opis
+                            ? `
+                                <span>
+                                    ${escapeHtml(partner.opis)}
+                                </span>
+                            `
+                            : `
+                                <span>
+                                    ПАРТНЕР ФК ОБИЛИЋ
+                                </span>
+                            `
+                    }
+
+                </div>
+
+            </article>
+
+        `;
+
+
+        if (partner.link) {
+
+            return `
+
+                <a
+                    href="${escapeAttribute(partner.link)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="partner-page-card-link"
+                >
+
+                    ${card}
+
+                </a>
+
             `;
 
         }
 
 
-        if (homeContainer) {
+        return card;
 
-            homeContainer.innerHTML = `
+    }
+
+
+
+    /* =====================================================
+       GREŠKA
+    ===================================================== */
+
+    function renderPartnersError() {
+
+        const home =
+            document.querySelector(
+                "#home-partners-grid"
+            );
+
+
+        if (home) {
+
+            home.innerHTML = `
+
                 <div class="home-partners-empty">
-                    Партнери тренутно нису доступни.
+
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
+
+                    <span>
+                        Партнере тренутно није могуће учитати.
+                    </span>
+
                 </div>
+
+            `;
+
+        }
+
+
+        const page =
+            document.querySelector(
+                ".partners-page-grid"
+            );
+
+
+        if (page) {
+
+            page.innerHTML = `
+
+                <div class="partners-page-empty">
+
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
+
+
+                    <div>
+
+                        <strong>
+                            Партнери клуба
+                        </strong>
+
+                        <p>
+                            Партнере тренутно није могуће учитати.
+                        </p>
+
+                    </div>
+
+                </div>
+
             `;
 
         }
 
     }
-}
 
 
 
-/* =========================================================
-   POSEBNA STRANICA PARTNERA
-========================================================= */
+    /* =====================================================
+       BEZBEDAN ISPIS
+    ===================================================== */
 
-function renderPartnersPage(
-    container,
-    partners
-) {
+    function escapeHtml(
+        value = ""
+    ) {
 
-    if (partners.length === 0) {
+        return String(value)
 
-        container.innerHTML = `
-            <div class="partners-page-empty">
-
-                <img
-                    src="images/grb.png"
-                    alt=""
-                >
-
-                <div>
-
-                    <strong>
-                        ПАРТНЕРИ КЛУБА
-                    </strong>
-
-                    <p>
-                        Подаци о партнерима биће додати ускоро.
-                    </p>
-
-                </div>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        partners
-            .map(partner =>
-                createPartnerPageCard(partner)
+            .replaceAll(
+                "&",
+                "&amp;"
             )
-            .join("");
-}
 
-
-
-/* =========================================================
-   PARTNERI NA POČETNOJ
-========================================================= */
-
-function renderHomePartners(
-    container,
-    partners
-) {
-
-    if (partners.length === 0) {
-
-        container.innerHTML = `
-            <div class="home-partners-empty">
-
-                <img
-                    src="images/grb.png"
-                    alt=""
-                >
-
-                <span>
-                    Партнери клуба биће додати ускоро.
-                </span>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    /*
-        Na početnoj prikazujemo prvih 5 partnera.
-        Svi partneri ostaju dostupni na partneri.html.
-    */
-
-    const homePartners =
-        partners.slice(0, 5);
-
-
-    container.innerHTML =
-        homePartners
-            .map(partner =>
-                createHomePartnerCard(partner)
+            .replaceAll(
+                "<",
+                "&lt;"
             )
-            .join("");
-}
 
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
 
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
 
-/* =========================================================
-   KARTICA NA STRANICI PARTNERA
-========================================================= */
-
-function createPartnerPageCard(partner) {
-
-    const name =
-        escapePartnerHtml(
-            partner.naziv || "Партнер клуба"
-        );
-
-
-    const logo =
-        escapePartnerHtml(
-            partner.logo || ""
-        );
-
-
-    const link =
-        sanitizePartnerLink(
-            partner.link || ""
-        );
-
-
-    const type =
-        escapePartnerHtml(
-            partner.tip || "Партнер клуба"
-        );
-
-
-    const content = `
-        <article class="partner-page-card">
-
-            <div class="partner-page-logo">
-
-                ${
-                    logo
-                        ? `
-                            <img
-                                src="${logo}"
-                                alt="${name}"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                "
-                            >
-                        `
-                        : `
-                            <img
-                                src="images/grb.png"
-                                alt=""
-                                loading="lazy"
-                                style="
-                                    opacity:0.12;
-                                    filter:grayscale(1);
-                                "
-                            >
-                        `
-                }
-
-            </div>
-
-
-            <div class="partner-page-info">
-
-                <h3>
-                    ${name}
-                </h3>
-
-                <span>
-                    ${type}
-                </span>
-
-            </div>
-
-        </article>
-    `;
-
-
-    if (!link) {
-        return content;
-    }
-
-
-    return `
-        <a
-            href="${link}"
-            class="partner-page-card-link"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            ${content}
-        </a>
-    `;
-}
-
-
-
-/* =========================================================
-   KARTICA PARTNERA NA POČETNOJ
-========================================================= */
-
-function createHomePartnerCard(partner) {
-
-    const name =
-        escapePartnerHtml(
-            partner.naziv || "Партнер клуба"
-        );
-
-
-    const logo =
-        escapePartnerHtml(
-            partner.logo || ""
-        );
-
-
-    const link =
-        sanitizePartnerLink(
-            partner.link || ""
-        );
-
-
-    const content = `
-        <div class="home-partner-card">
-
-            <div class="home-partner-logo">
-
-                ${
-                    logo
-                        ? `
-                            <img
-                                src="${logo}"
-                                alt="${name}"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                "
-                            >
-                        `
-                        : `
-                            <img
-                                src="images/grb.png"
-                                alt=""
-                                loading="lazy"
-                                class="home-partner-placeholder"
-                            >
-                        `
-                }
-
-            </div>
-
-            <strong>
-                ${name}
-            </strong>
-
-        </div>
-    `;
-
-
-    if (!link) {
-        return content;
-    }
-
-
-    return `
-        <a
-            href="${link}"
-            class="home-partner-link"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            ${content}
-        </a>
-    `;
-}
-
-
-
-/* =========================================================
-   LINK PARTNERA
-========================================================= */
-
-function sanitizePartnerLink(value = "") {
-
-    const link =
-        String(value).trim();
-
-
-    if (!link) {
-        return "";
-    }
-
-
-    try {
-
-        const url =
-            new URL(link);
-
-
-        if (
-            url.protocol !== "http:" &&
-            url.protocol !== "https:"
-        ) {
-            return "";
-        }
-
-
-        return escapePartnerHtml(
-            url.href
-        );
-
-
-    } catch {
-
-        return "";
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
 
     }
-}
 
 
+    function escapeAttribute(
+        value = ""
+    ) {
 
-/* =========================================================
-   ZAŠTITA TEKSTA
-========================================================= */
+        return escapeHtml(
+            value
+        );
 
-function escapePartnerHtml(value = "") {
+    }
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-
-/* =========================================================
-   POKRETANJE
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    loadPartners
-);
+})();

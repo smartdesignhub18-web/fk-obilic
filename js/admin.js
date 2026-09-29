@@ -1,44 +1,18 @@
-/* =========================================================
-   FK OBILIĆ NOVI KNEŽEVAC
-   ADMIN PANEL
-========================================================= */
+const SUPABASE_URL = "https://uvevthgxlnzzkapkjxky.supabase.co";
+const SUPABASE_KEY = "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
+const NEWS_BUCKET = "vesti";
+const PLAYERS_BUCKET = "igraci";
+const STAFF_BUCKET = "strucni-stab";
+const MANAGEMENT_BUCKET = "uprava";
+const SELECTIONS_BUCKET = "selekcije";
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+const sb = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-const SUPABASE_URL =
-    "https://uvevthgxlnzzkapkjxky.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
-
-
-const NEWS_BUCKET =
-    "vesti";
-
-const PLAYERS_BUCKET =
-    "igraci";
-
-    const STAFF_BUCKET =
-    "strucni-stab";
-
-    const MANAGEMENT_BUCKET =
-    "uprava";
-
-
-const sb =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-
-/* =========================================================
-   ELEMENTI - LOGIN / PANEL
-========================================================= */
+let adminSelections = [];
 
 const loginScreen =
     document.querySelector(
@@ -86,30 +60,20 @@ const adminPageTitle =
     );
 
 
-
-/* =========================================================
-   START
-========================================================= */
-
 document.addEventListener(
     "DOMContentLoaded",
     initializeAdmin
 );
 
 
-
 async function initializeAdmin() {
 
     setupNavigation();
-
     setupNewsAdmin();
-
     setupPlayersAdmin();
-
     setupStaffAdmin();
-
     setupManagementAdmin();
-
+    setupSelectionsAdmin();
 
     const {
         data: {
@@ -117,7 +81,6 @@ async function initializeAdmin() {
         }
     } =
         await sb.auth.getSession();
-
 
     if (
         session &&
@@ -139,11 +102,6 @@ async function initializeAdmin() {
 }
 
 
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
 if (loginForm) {
 
     loginForm.addEventListener(
@@ -152,12 +110,10 @@ if (loginForm) {
 
             event.preventDefault();
 
-
             setLoginMessage(
                 "",
                 ""
             );
-
 
             const email =
                 emailInput?.value
@@ -165,7 +121,6 @@ if (loginForm) {
 
             const password =
                 passwordInput?.value;
-
 
             if (
                 !email ||
@@ -181,12 +136,10 @@ if (loginForm) {
 
             }
 
-
             const submitButton =
                 loginForm.querySelector(
                     'button[type="submit"]'
                 );
-
 
             if (submitButton) {
 
@@ -194,7 +147,6 @@ if (loginForm) {
                     true;
 
             }
-
 
             try {
 
@@ -210,17 +162,13 @@ if (loginForm) {
                             }
                         );
 
-
                 if (error) {
 
                     throw error;
 
                 }
 
-
-                if (
-                    !data.user
-                ) {
+                if (!data.user) {
 
                     throw new Error(
                         "Пријава није успела."
@@ -228,25 +176,21 @@ if (loginForm) {
 
                 }
 
-
                 const isAdmin =
                     await checkAdminMembership(
                         data.user.id
                     );
-
 
                 if (!isAdmin) {
 
                     await sb.auth
                         .signOut();
 
-
                     throw new Error(
                         "Овај налог нема приступ админ панелу."
                     );
 
                 }
-
 
                 await openAdminPanel(
                     data.user
@@ -260,7 +204,6 @@ if (loginForm) {
                     "Login error:",
                     error
                 );
-
 
                 setLoginMessage(
                     getFriendlyError(
@@ -289,11 +232,6 @@ if (loginForm) {
 }
 
 
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
 if (logoutButton) {
 
     logoutButton.addEventListener(
@@ -303,7 +241,6 @@ if (logoutButton) {
             await sb.auth
                 .signOut();
 
-
             showLoginScreen();
 
         }
@@ -311,11 +248,6 @@ if (logoutButton) {
 
 }
 
-
-
-/* =========================================================
-   ADMIN PROVERA
-========================================================= */
 
 async function checkAdminMembership(
     userId
@@ -338,7 +270,6 @@ async function checkAdminMembership(
             )
             .maybeSingle();
 
-
     if (error) {
 
         console.error(
@@ -350,18 +281,12 @@ async function checkAdminMembership(
 
     }
 
-
     return Boolean(
         data
     );
 
 }
 
-
-
-/* =========================================================
-   PANEL
-========================================================= */
 
 async function openAdminPanel(
     user
@@ -372,19 +297,16 @@ async function openAdminPanel(
             user.id
         );
 
-
     if (!isAdmin) {
 
         await sb.auth
             .signOut();
-
 
         showLoginScreen();
 
         return;
 
     }
-
 
     if (loginScreen) {
 
@@ -393,14 +315,12 @@ async function openAdminPanel(
 
     }
 
-
     if (adminPanel) {
 
         adminPanel.hidden =
             false;
 
     }
-
 
     if (adminUserEmail) {
 
@@ -410,19 +330,20 @@ async function openAdminPanel(
 
     }
 
+    await loadAdminSelectionOptions();
 
-   await Promise.allSettled(
-    [
-        loadDashboardStats(),
-        loadAdminNews(),
-        loadAdminPlayers(),
-        loadAdminStaff(),
-        loadAdminManagement()
-    ]
-);
+    await Promise.allSettled(
+        [
+            loadDashboardStats(),
+            loadAdminNews(),
+            loadAdminPlayers(),
+            loadAdminStaff(),
+            loadAdminManagement(),
+            loadAdminSelections()
+        ]
+    );
 
 }
-
 
 
 function showLoginScreen() {
@@ -434,14 +355,12 @@ function showLoginScreen() {
 
     }
 
-
     if (adminPanel) {
 
         adminPanel.hidden =
             true;
 
     }
-
 
     if (passwordInput) {
 
@@ -453,11 +372,6 @@ function showLoginScreen() {
 }
 
 
-
-/* =========================================================
-   NAVIGACIJA
-========================================================= */
-
 function setupNavigation() {
 
     const navButtons =
@@ -465,14 +379,10 @@ function setupNavigation() {
             "[data-admin-page]"
         );
 
-
     const pages =
         document.querySelectorAll(
             ".admin-page"
         );
-
-        
-
 
     navButtons.forEach(
         button => {
@@ -485,7 +395,6 @@ function setupNavigation() {
                         button.dataset
                             .adminPage;
 
-
                     navButtons.forEach(
                         item => {
 
@@ -497,12 +406,10 @@ function setupNavigation() {
                         }
                     );
 
-
                     button.classList
                         .add(
                             "active"
                         );
-
 
                     pages.forEach(
                         page => {
@@ -517,7 +424,6 @@ function setupNavigation() {
                         }
                     );
 
-
                     if (adminPageTitle) {
 
                         adminPageTitle.textContent =
@@ -526,7 +432,6 @@ function setupNavigation() {
                             );
 
                     }
-
 
                     if (
                         pageName ===
@@ -537,7 +442,6 @@ function setupNavigation() {
 
                     }
 
-
                     if (
                         pageName ===
                         "igraci"
@@ -546,23 +450,34 @@ function setupNavigation() {
                         loadAdminPlayers();
 
                     }
-if (
-    pageName ===
-    "strucni-stab"
-) {
 
-    loadAdminStaff();
+                    if (
+                        pageName ===
+                        "strucni-stab"
+                    ) {
 
-}
+                        loadAdminStaff();
 
-if (
-    pageName ===
-    "uprava"
-) {
+                    }
 
-    loadAdminManagement();
+                    if (
+                        pageName ===
+                        "uprava"
+                    ) {
 
-}
+                        loadAdminManagement();
+
+                    }
+
+                    if (
+                        pageName ===
+                        "selekcije"
+                    ) {
+
+                        loadAdminSelections();
+
+                    }
+
                 }
             );
 
@@ -570,7 +485,6 @@ if (
     );
 
 }
-
 
 
 function getAdminPageTitle(
@@ -608,7 +522,6 @@ function getAdminPageTitle(
 
     };
 
-
     return (
         titles[pageName] ||
         "Админ панел"
@@ -617,22 +530,20 @@ function getAdminPageTitle(
 }
 
 
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
 async function loadDashboardStats() {
 
     await Promise.allSettled(
         [
             loadNewsCount(),
+
             loadPlayersCount(),
+
             loadJsonCount(
                 "data/galerija.json",
                 "fotografije",
                 "#admin-stat-gallery"
             ),
+
             loadJsonCount(
                 "data/partneri.json",
                 "partneri",
@@ -644,7 +555,6 @@ async function loadDashboardStats() {
 }
 
 
-
 async function loadNewsCount() {
 
     const element =
@@ -652,11 +562,11 @@ async function loadNewsCount() {
             "#admin-stat-news"
         );
 
-
     if (!element) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         count,
@@ -681,7 +591,6 @@ async function loadNewsCount() {
                 true
             );
 
-
     element.textContent =
         error
             ? "—"
@@ -692,7 +601,6 @@ async function loadNewsCount() {
 }
 
 
-
 async function loadPlayersCount() {
 
     const element =
@@ -700,11 +608,11 @@ async function loadPlayersCount() {
             "#admin-stat-players"
         );
 
-
     if (!element) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         count,
@@ -729,7 +637,6 @@ async function loadPlayersCount() {
                 true
             );
 
-
     element.textContent =
         error
             ? "—"
@@ -738,7 +645,6 @@ async function loadPlayersCount() {
             );
 
 }
-
 
 
 async function loadJsonCount(
@@ -752,11 +658,11 @@ async function loadJsonCount(
             selector
         );
 
-
     if (!element) {
-        return;
-    }
 
+        return;
+
+    }
 
     try {
 
@@ -769,7 +675,6 @@ async function loadJsonCount(
                 }
             );
 
-
         if (!response.ok) {
 
             throw new Error(
@@ -778,20 +683,23 @@ async function loadJsonCount(
 
         }
 
-
         const data =
             await response.json();
 
-
         const value =
-            Array.isArray(data)
+            Array.isArray(
+                data
+            )
+
                 ? data.length
+
                 : Array.isArray(
                     data?.[key]
                 )
-                    ? data[key].length
-                    : 0;
 
+                    ? data[key].length
+
+                    : 0;
 
         element.textContent =
             String(
@@ -810,16 +718,249 @@ async function loadJsonCount(
 }
 
 
-
 /* =========================================================
-   =========================================================
-   VESTI
-   =========================================================
+   SELEKCIJE ZA IGRAČE I STRUČNI ŠTAB
 ========================================================= */
 
+async function loadAdminSelectionOptions() {
+
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "selekcije"
+            )
+            .select(
+                "id,kod,naziv,redosled,aktivna"
+            )
+            .order(
+                "redosled",
+                {
+                    ascending:
+                        true
+                }
+            )
+            .order(
+                "naziv",
+                {
+                    ascending:
+                        true
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Selection options load error:",
+            error
+        );
+
+        return;
+
+    }
+
+    adminSelections =
+        Array.isArray(
+            data
+        )
+            ? data
+            : [];
+
+    populateAdminSelectionSelect(
+        playerSelectionInput
+    );
+
+    populateAdminSelectionSelect(
+        staffSelectionInput
+    );
+
+}
+
+
+function populateAdminSelectionSelect(
+    selectElement,
+    selectedValue = ""
+) {
+
+    if (!selectElement) {
+
+        return;
+
+    }
+
+    const currentValue =
+        selectedValue ||
+        selectElement.value ||
+        "";
+
+    if (
+        !adminSelections.length
+    ) {
+
+        if (currentValue) {
+
+            const exists =
+                Array.from(
+                    selectElement.options
+                )
+                    .some(
+                        option =>
+                            option.value ===
+                            currentValue
+                    );
+
+            if (exists) {
+
+                selectElement.value =
+                    currentValue;
+
+            }
+
+        }
+
+        return;
+
+    }
+
+    const existingNames =
+        adminSelections.map(
+            selection =>
+                selection.naziv
+        );
+
+    let html =
+        "";
+
+    if (
+        currentValue &&
+        !existingNames.includes(
+            currentValue
+        )
+    ) {
+
+        html += `
+
+            <option
+                value="${escapeAttribute(currentValue)}"
+            >
+                ${escapeHtml(currentValue)}
+            </option>
+
+        `;
+
+    }
+
+    html +=
+        adminSelections
+            .map(
+                selection => {
+
+                    const inactive =
+                        selection.aktivna ===
+                        false;
+
+                    return `
+
+                        <option
+                            value="${escapeAttribute(selection.naziv || "")}"
+                            ${inactive ? "disabled" : ""}
+                        >
+                            ${escapeHtml(selection.naziv || "")}${inactive ? " — НЕАКТИВНА" : ""}
+                        </option>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+    selectElement.innerHTML =
+        html;
+
+    const targetValue =
+        currentValue ||
+        getDefaultAdminSelectionName();
+
+    if (!targetValue) {
+
+        return;
+
+    }
+
+    const optionExists =
+        Array.from(
+            selectElement.options
+        )
+            .some(
+                option =>
+                    option.value ===
+                    targetValue
+            );
+
+    if (optionExists) {
+
+        selectElement.value =
+            targetValue;
+
+    }
+
+}
+
+
+function getDefaultAdminSelectionName() {
+
+    const firstTeam =
+        adminSelections.find(
+            selection =>
+                selection.kod ===
+                    "prvi-tim" &&
+                selection.aktivna !==
+                    false
+        );
+
+    if (firstTeam) {
+
+        return firstTeam.naziv;
+
+    }
+
+    const firstActive =
+        adminSelections.find(
+            selection =>
+                selection.aktivna !==
+                    false
+        );
+
+    return (
+        firstActive?.naziv ||
+        "ПРВИ ТИМ"
+    );
+
+}
+
+
+function getAdminSelectionOrder(
+    selectionName
+) {
+
+    const index =
+        adminSelections.findIndex(
+            selection =>
+                selection.naziv ===
+                selectionName
+        );
+
+    return index === -1
+        ? 999
+        : index + 1;
+
+}
+
 
 /* =========================================================
-   ELEMENTI - VESTI
+   VESTI
 ========================================================= */
 
 const addNewsButton =
@@ -958,11 +1099,6 @@ const newsSaveButton =
     );
 
 
-
-/* =========================================================
-   NEWS EVENTS
-========================================================= */
-
 function setupNewsAdmin() {
 
     if (addNewsButton) {
@@ -977,7 +1113,6 @@ function setupNewsAdmin() {
         );
 
     }
-
 
     document
         .querySelectorAll(
@@ -994,7 +1129,6 @@ function setupNewsAdmin() {
             }
         );
 
-
     if (newsHasMatch) {
 
         newsHasMatch.addEventListener(
@@ -1003,7 +1137,6 @@ function setupNewsAdmin() {
         );
 
     }
-
 
     if (newsImageInput) {
 
@@ -1014,7 +1147,6 @@ function setupNewsAdmin() {
 
     }
 
-
     if (newsForm) {
 
         newsForm.addEventListener(
@@ -1023,7 +1155,6 @@ function setupNewsAdmin() {
         );
 
     }
-
 
     document.addEventListener(
         "keydown",
@@ -1046,17 +1177,13 @@ function setupNewsAdmin() {
 }
 
 
-
-/* =========================================================
-   UČITAVANJE VESTI
-========================================================= */
-
 async function loadAdminNews() {
 
     if (!newsList) {
-        return;
-    }
 
+        return;
+
+    }
 
     newsList.innerHTML = `
 
@@ -1065,7 +1192,6 @@ async function loadAdminNews() {
         </div>
 
     `;
-
 
     const {
         data,
@@ -1093,14 +1219,12 @@ async function loadAdminNews() {
                 }
             );
 
-
     if (error) {
 
         console.error(
             "News load error:",
             error
         );
-
 
         newsList.innerHTML = `
 
@@ -1114,10 +1238,12 @@ async function loadAdminNews() {
 
     }
 
-
     if (
-        !Array.isArray(data) ||
-        data.length === 0
+        !Array.isArray(
+            data
+        ) ||
+        data.length ===
+            0
     ) {
 
         newsList.innerHTML = `
@@ -1132,7 +1258,6 @@ async function loadAdminNews() {
 
     }
 
-
     newsList.innerHTML =
         data
             .map(
@@ -1142,7 +1267,6 @@ async function loadAdminNews() {
                     )
             )
             .join("");
-
 
     newsList
         .querySelectorAll(
@@ -1159,14 +1283,12 @@ async function loadAdminNews() {
                             button.dataset
                                 .editNews;
 
-
                         const article =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
-
 
                         if (article) {
 
@@ -1181,7 +1303,6 @@ async function loadAdminNews() {
 
             }
         );
-
 
     newsList
         .querySelectorAll(
@@ -1198,14 +1319,12 @@ async function loadAdminNews() {
                             button.dataset
                                 .deleteNews;
 
-
                         const article =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
-
 
                         if (article) {
 
@@ -1224,7 +1343,6 @@ async function loadAdminNews() {
 }
 
 
-
 function renderAdminNewsItem(
     article
 ) {
@@ -1233,13 +1351,11 @@ function renderAdminNewsItem(
         article.image ||
         "images/grb.png";
 
-
     const date =
         article.date_display ||
         formatDateDisplay(
             article.date
         );
-
 
     return `
 
@@ -1254,7 +1370,6 @@ function renderAdminNewsItem(
                 >
 
             </div>
-
 
             <div class="admin-news-info">
 
@@ -1290,7 +1405,6 @@ function renderAdminNewsItem(
 
             </div>
 
-
             <div class="admin-news-actions">
 
                 <button
@@ -1316,11 +1430,6 @@ function renderAdminNewsItem(
 }
 
 
-
-/* =========================================================
-   NEWS MODAL
-========================================================= */
-
 function openNewsModal(
     article = null
 ) {
@@ -1329,12 +1438,12 @@ function openNewsModal(
         !newsModal ||
         !newsForm
     ) {
+
         return;
+
     }
 
-
     resetNewsForm();
-
 
     if (article) {
 
@@ -1345,48 +1454,42 @@ function openNewsModal(
 
         }
 
-
         newsIdInput.value =
             article.id ||
             "";
-
 
         newsCurrentImage.value =
             article.image ||
             "";
 
-
         newsTitleInput.value =
             article.title ||
             "";
-
 
         newsCategoryInput.value =
             article.category ||
             "ВЕСТ";
 
-
         newsDateInput.value =
             article.date ||
             "";
-
 
         newsExcerptInput.value =
             article.excerpt ||
             "";
 
-
         newsContentInput.value =
             Array.isArray(
                 article.content
             )
+
                 ? article.content
                     .join(
                         "\n\n"
                     )
+
                 : article.content ||
                     "";
-
 
         if (article.image) {
 
@@ -1395,24 +1498,22 @@ function openNewsModal(
 
         }
 
-
         const source =
             article.source &&
             typeof article.source ===
                 "object"
-                ? article.source
-                : {};
 
+                ? article.source
+
+                : {};
 
         newsSourceName.value =
             source.name ||
             "";
 
-
         newsSourceUrl.value =
             source.url ||
             "";
-
 
         if (
             article.match_data &&
@@ -1423,22 +1524,18 @@ function openNewsModal(
             newsHasMatch.checked =
                 true;
 
-
             newsHome.value =
                 article.match_data.home ||
                 "";
-
 
             newsAway.value =
                 article.match_data.away ||
                 "";
 
-
             newsHomeScore.value =
                 article.match_data
                     .homeScore ??
                 "";
-
 
             newsAwayScore.value =
                 article.match_data
@@ -1447,11 +1544,9 @@ function openNewsModal(
 
         }
 
-
         newsFeatured.checked =
             article.featured ===
             true;
-
 
         newsPublished.checked =
             article.published !==
@@ -1468,7 +1563,6 @@ function openNewsModal(
 
         }
 
-
         if (newsDateInput) {
 
             newsDateInput.value =
@@ -1478,13 +1572,10 @@ function openNewsModal(
 
     }
 
-
     updateMatchFieldsVisibility();
-
 
     newsModal.hidden =
         false;
-
 
     document.body.style.overflow =
         "hidden";
@@ -1492,17 +1583,16 @@ function openNewsModal(
 }
 
 
-
 function closeNewsModal() {
 
     if (!newsModal) {
-        return;
-    }
 
+        return;
+
+    }
 
     newsModal.hidden =
         true;
-
 
     document.body.style.overflow =
         "";
@@ -1510,16 +1600,15 @@ function closeNewsModal() {
 }
 
 
-
 function resetNewsForm() {
 
     if (!newsForm) {
+
         return;
+
     }
 
-
     newsForm.reset();
-
 
     if (newsIdInput) {
 
@@ -1528,14 +1617,12 @@ function resetNewsForm() {
 
     }
 
-
     if (newsCurrentImage) {
 
         newsCurrentImage.value =
             "";
 
     }
-
 
     if (newsImagePreview) {
 
@@ -1544,14 +1631,12 @@ function resetNewsForm() {
 
     }
 
-
     if (newsImageName) {
 
         newsImageName.textContent =
             "Није изабрана фотографија";
 
     }
-
 
     if (newsPublished) {
 
@@ -1560,7 +1645,6 @@ function resetNewsForm() {
 
     }
 
-
     if (newsFeatured) {
 
         newsFeatured.checked =
@@ -1568,14 +1652,12 @@ function resetNewsForm() {
 
     }
 
-
     if (newsHasMatch) {
 
         newsHasMatch.checked =
             false;
 
     }
-
 
     setNewsFormMessage(
         "",
@@ -1585,13 +1667,13 @@ function resetNewsForm() {
 }
 
 
-
 function updateMatchFieldsVisibility() {
 
     if (!newsMatchFields) {
-        return;
-    }
 
+        return;
+
+    }
 
     newsMatchFields.hidden =
         !newsHasMatch?.checked;
@@ -1599,17 +1681,11 @@ function updateMatchFieldsVisibility() {
 }
 
 
-
-/* =========================================================
-   NEWS IMAGE PREVIEW
-========================================================= */
-
 function previewNewsImage() {
 
     const file =
         newsImageInput
             ?.files?.[0];
-
 
     if (!file) {
 
@@ -1617,26 +1693,20 @@ function previewNewsImage() {
 
     }
 
-
-    if (
-        newsImageName
-    ) {
+    if (newsImageName) {
 
         newsImageName.textContent =
             file.name;
 
     }
 
-
     const objectUrl =
         URL.createObjectURL(
             file
         );
 
-
     newsImagePreview.src =
         objectUrl;
-
 
     newsImagePreview.onload =
         () => {
@@ -1650,35 +1720,26 @@ function previewNewsImage() {
 }
 
 
-
-/* =========================================================
-   ČUVANJE VESTI
-========================================================= */
-
 async function saveNews(
     event
 ) {
 
     event.preventDefault();
 
-
     setNewsFormMessage(
         "",
         ""
     );
-
 
     const id =
         newsIdInput
             ?.value
             .trim();
 
-
     const title =
         newsTitleInput
             ?.value
             .trim();
-
 
     const category =
         newsCategoryInput
@@ -1686,11 +1747,9 @@ async function saveNews(
             .trim() ||
         "ВЕСТ";
 
-
     const date =
         newsDateInput
             ?.value;
-
 
     const excerpt =
         newsExcerptInput
@@ -1698,12 +1757,10 @@ async function saveNews(
             .trim() ||
         null;
 
-
     const rawContent =
         newsContentInput
             ?.value
             .trim();
-
 
     if (
         !title ||
@@ -1720,7 +1777,6 @@ async function saveNews(
 
     }
 
-
     const content =
         rawContent
             .split(
@@ -1730,12 +1786,12 @@ async function saveNews(
                 paragraph =>
                     paragraph.trim()
             )
-            .filter(Boolean);
-
+            .filter(
+                Boolean
+            );
 
     let matchData =
         null;
-
 
     if (
         newsHasMatch?.checked
@@ -1759,12 +1815,13 @@ async function saveNews(
             newsAwayScore
                 ?.value;
 
-
         if (
             !home ||
             !away ||
-            homeScore === "" ||
-            awayScore === ""
+            homeScore ===
+                "" ||
+            awayScore ===
+                ""
         ) {
 
             setNewsFormMessage(
@@ -1775,7 +1832,6 @@ async function saveNews(
             return;
 
         }
-
 
         matchData = {
 
@@ -1807,21 +1863,19 @@ async function saveNews(
 
     }
 
-
     const sourceName =
         newsSourceName
             ?.value
             .trim();
-
 
     const sourceUrl =
         newsSourceUrl
             ?.value
             .trim();
 
-
     const source =
         sourceName
+
             ? {
                 name:
                     sourceName,
@@ -1830,8 +1884,8 @@ async function saveNews(
                     sourceUrl ||
                     null
             }
-            : null;
 
+            : null;
 
     const oldImage =
         newsCurrentImage
@@ -1839,10 +1893,8 @@ async function saveNews(
             .trim() ||
         "";
 
-
     let uploadedImage =
         null;
-
 
     setButtonLoading(
         newsSaveButton,
@@ -1850,13 +1902,11 @@ async function saveNews(
         "ЧУВАЊЕ..."
     );
 
-
     try {
 
         const selectedFile =
             newsImageInput
                 ?.files?.[0];
-
 
         if (selectedFile) {
 
@@ -1869,22 +1919,18 @@ async function saveNews(
 
         }
 
-
         const image =
             uploadedImage ||
             oldImage ||
             null;
-
 
         const baseSlug =
             createSlug(
                 title
             );
 
-
         let slug =
             baseSlug;
-
 
         if (!id) {
 
@@ -1892,7 +1938,6 @@ async function saveNews(
                 `${baseSlug}-${Date.now()}`;
 
         }
-
 
         const payload = {
 
@@ -1932,9 +1977,7 @@ async function saveNews(
 
         };
 
-
         let error;
-
 
         if (id) {
 
@@ -1951,7 +1994,6 @@ async function saveNews(
                         id
                     );
 
-
             error =
                 result.error;
 
@@ -1962,7 +2004,6 @@ async function saveNews(
             payload.slug =
                 slug;
 
-
             const result =
                 await sb
                     .from(
@@ -1972,19 +2013,16 @@ async function saveNews(
                         payload
                     );
 
-
             error =
                 result.error;
 
         }
-
 
         if (error) {
 
             throw error;
 
         }
-
 
         if (
             uploadedImage &&
@@ -2000,12 +2038,10 @@ async function saveNews(
 
         }
 
-
         setNewsFormMessage(
             "Вест је успешно сачувана.",
             "success"
         );
-
 
         await Promise.allSettled(
             [
@@ -2013,7 +2049,6 @@ async function saveNews(
                 loadNewsCount()
             ]
         );
-
 
         setTimeout(
             closeNewsModal,
@@ -2029,7 +2064,6 @@ async function saveNews(
             error
         );
 
-
         if (uploadedImage) {
 
             await deleteStorageImageFromUrl(
@@ -2038,7 +2072,6 @@ async function saveNews(
             );
 
         }
-
 
         setNewsFormMessage(
             getFriendlyError(
@@ -2063,11 +2096,6 @@ async function saveNews(
 }
 
 
-
-/* =========================================================
-   BRISANJE VESTI
-========================================================= */
-
 async function deleteNews(
     article
 ) {
@@ -2077,11 +2105,11 @@ async function deleteNews(
             `Обрисати вест „${article.title}“?`
         );
 
-
     if (!confirmed) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         error
@@ -2095,7 +2123,6 @@ async function deleteNews(
                 "id",
                 article.id
             );
-
 
     if (error) {
 
@@ -2111,8 +2138,9 @@ async function deleteNews(
 
     }
 
-
-    if (article.image) {
+    if (
+        article.image
+    ) {
 
         await deleteStorageImageFromUrl(
             NEWS_BUCKET,
@@ -2120,7 +2148,6 @@ async function deleteNews(
         );
 
     }
-
 
     await Promise.allSettled(
         [
@@ -2132,16 +2159,8 @@ async function deleteNews(
 }
 
 
-
 /* =========================================================
-   =========================================================
    IGRAČI
-   =========================================================
-========================================================= */
-
-
-/* =========================================================
-   ELEMENTI - IGRAČI
 ========================================================= */
 
 const addPlayerButton =
@@ -2245,11 +2264,6 @@ const playerSaveButton =
     );
 
 
-
-/* =========================================================
-   PLAYER EVENTS
-========================================================= */
-
 function setupPlayersAdmin() {
 
     if (addPlayerButton) {
@@ -2264,7 +2278,6 @@ function setupPlayersAdmin() {
         );
 
     }
-
 
     document
         .querySelectorAll(
@@ -2281,7 +2294,6 @@ function setupPlayersAdmin() {
             }
         );
 
-
     if (playerImageInput) {
 
         playerImageInput.addEventListener(
@@ -2291,7 +2303,6 @@ function setupPlayersAdmin() {
 
     }
 
-
     if (playerForm) {
 
         playerForm.addEventListener(
@@ -2300,7 +2311,6 @@ function setupPlayersAdmin() {
         );
 
     }
-
 
     document.addEventListener(
         "keydown",
@@ -2323,17 +2333,13 @@ function setupPlayersAdmin() {
 }
 
 
-
-/* =========================================================
-   UČITAVANJE IGRAČA
-========================================================= */
-
 async function loadAdminPlayers() {
 
     if (!playersList) {
-        return;
-    }
 
+        return;
+
+    }
 
     playersList.innerHTML = `
 
@@ -2342,7 +2348,6 @@ async function loadAdminPlayers() {
         </div>
 
     `;
-
 
     const {
         data,
@@ -2356,14 +2361,12 @@ async function loadAdminPlayers() {
                 "id,ime_prezime,broj,pozicija,pozicija_detaljno,datum_rodjenja,selekcija,fotografija,redosled,aktivan,created_at"
             );
 
-
     if (error) {
 
         console.error(
             "Players load error:",
             error
         );
-
 
         playersList.innerHTML = `
 
@@ -2377,10 +2380,12 @@ async function loadAdminPlayers() {
 
     }
 
-
     if (
-        !Array.isArray(data) ||
-        data.length === 0
+        !Array.isArray(
+            data
+        ) ||
+        data.length ===
+            0
     ) {
 
         playersList.innerHTML = `
@@ -2395,19 +2400,16 @@ async function loadAdminPlayers() {
 
     }
 
-
     const sortedPlayers =
         [...data]
             .sort(
                 sortPlayers
             );
 
-
     playersList.innerHTML =
         renderPlayerGroups(
             sortedPlayers
         );
-
 
     playersList
         .querySelectorAll(
@@ -2424,14 +2426,12 @@ async function loadAdminPlayers() {
                             button.dataset
                                 .editPlayer;
 
-
                         const player =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
-
 
                         if (player) {
 
@@ -2446,7 +2446,6 @@ async function loadAdminPlayers() {
 
             }
         );
-
 
     playersList
         .querySelectorAll(
@@ -2463,14 +2462,12 @@ async function loadAdminPlayers() {
                             button.dataset
                                 .deletePlayer;
 
-
                         const player =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
-
 
                         if (player) {
 
@@ -2489,29 +2486,10 @@ async function loadAdminPlayers() {
 }
 
 
-
-/* =========================================================
-   SORTIRANJE IGRAČA
-========================================================= */
-
 function sortPlayers(
     a,
     b
 ) {
-
-    const selectionOrder = {
-
-        "ПРВИ ТИМ":
-            1,
-
-        "ПИОНИРИ":
-            2,
-
-        "ПЕТЛИЋИ":
-            3
-
-    };
-
 
     const positionOrder = {
 
@@ -2529,21 +2507,15 @@ function sortPlayers(
 
     };
 
-
     const selectionDifference =
 
-        (
-            selectionOrder[
-                a.selekcija
-            ] || 99
+        getAdminSelectionOrder(
+            a.selekcija
         ) -
 
-        (
-            selectionOrder[
-                b.selekcija
-            ] || 99
+        getAdminSelectionOrder(
+            b.selekcija
         );
-
 
     if (
         selectionDifference !==
@@ -2554,21 +2526,21 @@ function sortPlayers(
 
     }
 
-
     const positionDifference =
 
         (
             positionOrder[
                 a.pozicija
-            ] || 99
+            ] ||
+            99
         ) -
 
         (
             positionOrder[
                 b.pozicija
-            ] || 99
+            ] ||
+            99
         );
-
 
     if (
         positionDifference !==
@@ -2579,17 +2551,17 @@ function sortPlayers(
 
     }
 
-
     const orderDifference =
 
         Number(
-            a.redosled || 0
+            a.redosled ||
+            0
         ) -
 
         Number(
-            b.redosled || 0
+            b.redosled ||
+            0
         );
-
 
     if (
         orderDifference !==
@@ -2599,7 +2571,6 @@ function sortPlayers(
         return orderDifference;
 
     }
-
 
     return String(
         a.ime_prezime ||
@@ -2615,25 +2586,9 @@ function sortPlayers(
 }
 
 
-
-/* =========================================================
-   GRUPE IGRAČA
-========================================================= */
-
 function renderPlayerGroups(
     players
 ) {
-
-    const selections = [
-
-        "ПРВИ ТИМ",
-
-        "ПИОНИРИ",
-
-        "ПЕТЛИЋИ"
-
-    ];
-
 
     const positions = [
 
@@ -2647,10 +2602,40 @@ function renderPlayerGroups(
 
     ];
 
+    const selections =
+        adminSelections
+            .map(
+                selection =>
+                    selection.naziv
+            )
+            .filter(
+                Boolean
+            );
+
+    players.forEach(
+        player => {
+
+            const selection =
+                player.selekcija;
+
+            if (
+                selection &&
+                !selections.includes(
+                    selection
+                )
+            ) {
+
+                selections.push(
+                    selection
+                );
+
+            }
+
+        }
+    );
 
     let html =
         "";
-
 
     selections.forEach(
         selection => {
@@ -2662,7 +2647,6 @@ function renderPlayerGroups(
                         selection
                 );
 
-
             if (
                 selectionPlayers.length ===
                 0
@@ -2671,7 +2655,6 @@ function renderPlayerGroups(
                 return;
 
             }
-
 
             html += `
 
@@ -2683,7 +2666,6 @@ function renderPlayerGroups(
 
             `;
 
-
             positions.forEach(
                 position => {
 
@@ -2694,7 +2676,6 @@ function renderPlayerGroups(
                                 position
                         );
 
-
                     if (
                         group.length ===
                         0
@@ -2703,7 +2684,6 @@ function renderPlayerGroups(
                         return;
 
                     }
-
 
                     html += `
 
@@ -2726,7 +2706,6 @@ function renderPlayerGroups(
                 }
             );
 
-
             html += `
 
                 </div>
@@ -2736,16 +2715,10 @@ function renderPlayerGroups(
         }
     );
 
-
     return html;
 
 }
 
-
-
-/* =========================================================
-   KARTICA IGRAČA
-========================================================= */
 
 function renderAdminPlayer(
     player
@@ -2755,35 +2728,37 @@ function renderAdminPlayer(
         player.fotografija ||
         "images/grb.png";
 
-
     const number =
         player.broj !==
             null &&
         player.broj !==
             undefined
-            ? `#${player.broj}`
-            : "БЕЗ БРОЈА";
 
+            ? `#${player.broj}`
+
+            : "БЕЗ БРОЈА";
 
     const positionDetail =
         player.pozicija_detaljno
+
             ? `
                 <span>
                     ${escapeHtml(player.pozicija_detaljno)}
                 </span>
             `
-            : "";
 
+            : "";
 
     const birthDate =
         player.datum_rodjenja
+
             ? `
                 <span>
                     ${escapeHtml(formatBirthDate(player.datum_rodjenja))}
                 </span>
             `
-            : "";
 
+            : "";
 
     return `
 
@@ -2799,13 +2774,11 @@ function renderAdminPlayer(
 
             </div>
 
-
             <div class="admin-player-info">
 
                 <strong>
                     ${escapeHtml(player.ime_prezime || "")}
                 </strong>
-
 
                 <div class="admin-player-meta">
 
@@ -2820,7 +2793,6 @@ function renderAdminPlayer(
                     <span>
                         ${escapeHtml(player.selekcija || "")}
                     </span>
-
 
                     <span
                         class="
@@ -2843,7 +2815,6 @@ function renderAdminPlayer(
 
             </div>
 
-
             <div class="admin-player-actions">
 
                 <button
@@ -2853,7 +2824,6 @@ function renderAdminPlayer(
                 >
                     ИЗМЕНИ
                 </button>
-
 
                 <button
                     type="button"
@@ -2872,11 +2842,6 @@ function renderAdminPlayer(
 }
 
 
-
-/* =========================================================
-   PLAYER MODAL
-========================================================= */
-
 function openPlayerModal(
     player = null
 ) {
@@ -2890,9 +2855,7 @@ function openPlayerModal(
 
     }
 
-
     resetPlayerForm();
-
 
     if (player) {
 
@@ -2903,58 +2866,51 @@ function openPlayerModal(
 
         }
 
-
         playerIdInput.value =
             player.id ||
             "";
-
 
         playerCurrentImage.value =
             player.fotografija ||
             "";
 
-
         playerNameInput.value =
             player.ime_prezime ||
             "";
-
 
         playerNumberInput.value =
             player.broj ??
             "";
 
-
         playerPositionInput.value =
             player.pozicija ||
             "";
-
 
         playerPositionDetailInput.value =
             player.pozicija_detaljno ||
             "";
 
-
         playerBirthDateInput.value =
             player.datum_rodjenja ||
             "";
 
-
-        playerSelectionInput.value =
+        populateAdminSelectionSelect(
+            playerSelectionInput,
             player.selekcija ||
-            "ПРВИ ТИМ";
-
+                getDefaultAdminSelectionName()
+        );
 
         playerOrderInput.value =
             player.redosled ??
             0;
 
-
         playerActiveInput.checked =
             player.aktivan !==
             false;
 
-
-        if (player.fotografija) {
+        if (
+            player.fotografija
+        ) {
 
             playerImagePreview.src =
                 player.fotografija;
@@ -2974,10 +2930,8 @@ function openPlayerModal(
 
     }
 
-
     playerModal.hidden =
         false;
-
 
     document.body.style.overflow =
         "hidden";
@@ -2985,17 +2939,16 @@ function openPlayerModal(
 }
 
 
-
 function closePlayerModal() {
 
     if (!playerModal) {
-        return;
-    }
 
+        return;
+
+    }
 
     playerModal.hidden =
         true;
-
 
     document.body.style.overflow =
         "";
@@ -3003,16 +2956,15 @@ function closePlayerModal() {
 }
 
 
-
 function resetPlayerForm() {
 
     if (!playerForm) {
+
         return;
+
     }
 
-
     playerForm.reset();
-
 
     if (playerIdInput) {
 
@@ -3021,14 +2973,12 @@ function resetPlayerForm() {
 
     }
 
-
     if (playerCurrentImage) {
 
         playerCurrentImage.value =
             "";
 
     }
-
 
     if (playerImagePreview) {
 
@@ -3037,7 +2987,6 @@ function resetPlayerForm() {
 
     }
 
-
     if (playerImageName) {
 
         playerImageName.textContent =
@@ -3045,14 +2994,14 @@ function resetPlayerForm() {
 
     }
 
-
     if (playerSelectionInput) {
 
-        playerSelectionInput.value =
-            "ПРВИ ТИМ";
+        populateAdminSelectionSelect(
+            playerSelectionInput,
+            getDefaultAdminSelectionName()
+        );
 
     }
-
 
     if (playerOrderInput) {
 
@@ -3061,14 +3010,12 @@ function resetPlayerForm() {
 
     }
 
-
     if (playerActiveInput) {
 
         playerActiveInput.checked =
             true;
 
     }
-
 
     setPlayerFormMessage(
         "",
@@ -3078,42 +3025,32 @@ function resetPlayerForm() {
 }
 
 
-
-/* =========================================================
-   PLAYER PHOTO PREVIEW
-========================================================= */
-
 function previewPlayerImage() {
 
     const file =
         playerImageInput
             ?.files?.[0];
 
-
     if (!file) {
+
         return;
+
     }
 
-
-    if (
-        playerImageName
-    ) {
+    if (playerImageName) {
 
         playerImageName.textContent =
             file.name;
 
     }
 
-
     const objectUrl =
         URL.createObjectURL(
             file
         );
 
-
     playerImagePreview.src =
         objectUrl;
-
 
     playerImagePreview.onload =
         () => {
@@ -3127,46 +3064,35 @@ function previewPlayerImage() {
 }
 
 
-
-/* =========================================================
-   ČUVANJE IGRAČA
-========================================================= */
-
 async function savePlayer(
     event
 ) {
 
     event.preventDefault();
 
-
     setPlayerFormMessage(
         "",
         ""
     );
-
 
     const id =
         playerIdInput
             ?.value
             .trim();
 
-
     const name =
         playerNameInput
             ?.value
             .trim();
-
 
     const numberRaw =
         playerNumberInput
             ?.value
             .trim();
 
-
     const position =
         playerPositionInput
             ?.value;
-
 
     const positionDetail =
         playerPositionDetailInput
@@ -3174,23 +3100,19 @@ async function savePlayer(
             .trim() ||
         null;
 
-
     const birthDate =
         playerBirthDateInput
             ?.value ||
         null;
 
-
     const selection =
         playerSelectionInput
             ?.value ||
-        "ПРВИ ТИМ";
-
+        getDefaultAdminSelectionName();
 
     const orderRaw =
         playerOrderInput
             ?.value;
-
 
     if (
         !name ||
@@ -3206,10 +3128,8 @@ async function savePlayer(
 
     }
 
-
     let number =
         null;
-
 
     if (
         numberRaw !==
@@ -3220,7 +3140,6 @@ async function savePlayer(
             Number(
                 numberRaw
             );
-
 
         if (
             !Number.isInteger(
@@ -3241,18 +3160,18 @@ async function savePlayer(
 
     }
 
-
     const order =
         Number.isFinite(
             Number(
                 orderRaw
             )
         )
+
             ? Number(
                 orderRaw
             )
-            : 0;
 
+            : 0;
 
     const oldImage =
         playerCurrentImage
@@ -3260,10 +3179,8 @@ async function savePlayer(
             .trim() ||
         "";
 
-
     let uploadedImage =
         null;
-
 
     setButtonLoading(
         playerSaveButton,
@@ -3271,13 +3188,11 @@ async function savePlayer(
         "ЧУВАЊЕ..."
     );
 
-
     try {
 
         const selectedFile =
             playerImageInput
                 ?.files?.[0];
-
 
         if (selectedFile) {
 
@@ -3290,12 +3205,10 @@ async function savePlayer(
 
         }
 
-
         const photo =
             uploadedImage ||
             oldImage ||
             null;
-
 
         const payload = {
 
@@ -3331,9 +3244,7 @@ async function savePlayer(
 
         };
 
-
         let error;
-
 
         if (id) {
 
@@ -3349,7 +3260,6 @@ async function savePlayer(
                         "id",
                         id
                     );
-
 
             error =
                 result.error;
@@ -3367,19 +3277,16 @@ async function savePlayer(
                         payload
                     );
 
-
             error =
                 result.error;
 
         }
-
 
         if (error) {
 
             throw error;
 
         }
-
 
         if (
             uploadedImage &&
@@ -3395,12 +3302,10 @@ async function savePlayer(
 
         }
 
-
         setPlayerFormMessage(
             "Играч је успешно сачуван.",
             "success"
         );
-
 
         await Promise.allSettled(
             [
@@ -3408,7 +3313,6 @@ async function savePlayer(
                 loadPlayersCount()
             ]
         );
-
 
         setTimeout(
             closePlayerModal,
@@ -3424,7 +3328,6 @@ async function savePlayer(
             error
         );
 
-
         if (uploadedImage) {
 
             await deleteStorageImageFromUrl(
@@ -3433,7 +3336,6 @@ async function savePlayer(
             );
 
         }
-
 
         setPlayerFormMessage(
             getFriendlyError(
@@ -3458,11 +3360,6 @@ async function savePlayer(
 }
 
 
-
-/* =========================================================
-   BRISANJE IGRAČA
-========================================================= */
-
 async function deletePlayer(
     player
 ) {
@@ -3472,11 +3369,11 @@ async function deletePlayer(
             `Обрисати играча „${player.ime_prezime}“?`
         );
 
-
     if (!confirmed) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         error
@@ -3491,14 +3388,12 @@ async function deletePlayer(
                 player.id
             );
 
-
     if (error) {
 
         console.error(
             "Delete player error:",
             error
         );
-
 
         window.alert(
             "Играч није могуће обрисати."
@@ -3508,8 +3403,9 @@ async function deletePlayer(
 
     }
 
-
-    if (player.fotografija) {
+    if (
+        player.fotografija
+    ) {
 
         await deleteStorageImageFromUrl(
             PLAYERS_BUCKET,
@@ -3517,7 +3413,6 @@ async function deletePlayer(
         );
 
     }
-
 
     await Promise.allSettled(
         [
@@ -3528,15 +3423,9 @@ async function deletePlayer(
 
 }
 
+
 /* =========================================================
-   =========================================================
    STRUČNI ŠTAB
-   =========================================================
-========================================================= */
-
-
-/* =========================================================
-   ELEMENTI
 ========================================================= */
 
 const addStaffButton =
@@ -3630,11 +3519,6 @@ const staffSaveButton =
     );
 
 
-
-/* =========================================================
-   EVENTS
-========================================================= */
-
 function setupStaffAdmin() {
 
     if (addStaffButton) {
@@ -3649,7 +3533,6 @@ function setupStaffAdmin() {
         );
 
     }
-
 
     document
         .querySelectorAll(
@@ -3666,7 +3549,6 @@ function setupStaffAdmin() {
             }
         );
 
-
     if (staffImageInput) {
 
         staffImageInput.addEventListener(
@@ -3675,7 +3557,6 @@ function setupStaffAdmin() {
         );
 
     }
-
 
     if (staffForm) {
 
@@ -3686,13 +3567,13 @@ function setupStaffAdmin() {
 
     }
 
-
     document.addEventListener(
         "keydown",
         event => {
 
             if (
-                event.key === "Escape" &&
+                event.key ===
+                    "Escape" &&
                 staffModal &&
                 !staffModal.hidden
             ) {
@@ -3707,17 +3588,13 @@ function setupStaffAdmin() {
 }
 
 
-
-/* =========================================================
-   UČITAVANJE
-========================================================= */
-
 async function loadAdminStaff() {
 
     if (!staffList) {
-        return;
-    }
 
+        return;
+
+    }
 
     staffList.innerHTML = `
 
@@ -3726,7 +3603,6 @@ async function loadAdminStaff() {
         </div>
 
     `;
-
 
     const {
         data,
@@ -3742,16 +3618,17 @@ async function loadAdminStaff() {
             .order(
                 "redosled",
                 {
-                    ascending: true
+                    ascending:
+                        true
                 }
             )
             .order(
                 "ime_prezime",
                 {
-                    ascending: true
+                    ascending:
+                        true
                 }
             );
-
 
     if (error) {
 
@@ -3759,7 +3636,6 @@ async function loadAdminStaff() {
             "Staff load error:",
             error
         );
-
 
         staffList.innerHTML = `
 
@@ -3773,10 +3649,12 @@ async function loadAdminStaff() {
 
     }
 
-
     if (
-        !Array.isArray(data) ||
-        data.length === 0
+        !Array.isArray(
+            data
+        ) ||
+        data.length ===
+            0
     ) {
 
         staffList.innerHTML = `
@@ -3791,14 +3669,12 @@ async function loadAdminStaff() {
 
     }
 
-
     staffList.innerHTML =
         data
             .map(
                 renderAdminStaffMember
             )
             .join("");
-
 
     staffList
         .querySelectorAll(
@@ -3815,13 +3691,12 @@ async function loadAdminStaff() {
                             button.dataset
                                 .editStaff;
 
-
                         const member =
                             data.find(
                                 item =>
-                                    item.id === id
+                                    item.id ===
+                                    id
                             );
-
 
                         if (member) {
 
@@ -3836,7 +3711,6 @@ async function loadAdminStaff() {
 
             }
         );
-
 
     staffList
         .querySelectorAll(
@@ -3853,13 +3727,12 @@ async function loadAdminStaff() {
                             button.dataset
                                 .deleteStaff;
 
-
                         const member =
                             data.find(
                                 item =>
-                                    item.id === id
+                                    item.id ===
+                                    id
                             );
-
 
                         if (member) {
 
@@ -3878,11 +3751,6 @@ async function loadAdminStaff() {
 }
 
 
-
-/* =========================================================
-   KARTICA
-========================================================= */
-
 function renderAdminStaffMember(
     member
 ) {
@@ -3891,25 +3759,20 @@ function renderAdminStaffMember(
         member.fotografija ||
         "images/grb.png";
 
-
     const birthDate =
         member.datum_rodjenja
+
             ? `
                 <span>
-                    ${escapeHtml(
-                        formatBirthDate(
-                            member.datum_rodjenja
-                        )
-                    )}
+                    ${escapeHtml(formatBirthDate(member.datum_rodjenja))}
                 </span>
             `
-            : "";
 
+            : "";
 
     return `
 
         <article class="admin-staff-item">
-
 
             <div class="admin-staff-photo">
 
@@ -3921,13 +3784,11 @@ function renderAdminStaffMember(
 
             </div>
 
-
             <div class="admin-staff-info">
 
                 <strong>
                     ${escapeHtml(member.ime_prezime || "")}
                 </strong>
-
 
                 <div class="admin-staff-meta">
 
@@ -3935,14 +3796,11 @@ function renderAdminStaffMember(
                         ${escapeHtml(member.uloga || "")}
                     </span>
 
-
                     <span>
                         ${escapeHtml(member.selekcija || "")}
                     </span>
 
-
                     ${birthDate}
-
 
                     <span
                         class="
@@ -3965,7 +3823,6 @@ function renderAdminStaffMember(
 
             </div>
 
-
             <div class="admin-staff-actions">
 
                 <button
@@ -3975,7 +3832,6 @@ function renderAdminStaffMember(
                 >
                     ИЗМЕНИ
                 </button>
-
 
                 <button
                     type="button"
@@ -3994,11 +3850,6 @@ function renderAdminStaffMember(
 }
 
 
-
-/* =========================================================
-   MODAL
-========================================================= */
-
 function openStaffModal(
     member = null
 ) {
@@ -4007,57 +3858,51 @@ function openStaffModal(
         !staffModal ||
         !staffForm
     ) {
+
         return;
+
     }
 
-
     resetStaffForm();
-
 
     if (member) {
 
         staffModalTitle.textContent =
             "Измени члана";
 
-
         staffIdInput.value =
             member.id ||
             "";
-
 
         staffCurrentImage.value =
             member.fotografija ||
             "";
 
-
         staffNameInput.value =
             member.ime_prezime ||
             "";
-
 
         staffRoleInput.value =
             member.uloga ||
             "";
 
-
-        staffSelectionInput.value =
+        populateAdminSelectionSelect(
+            staffSelectionInput,
             member.selekcija ||
-            "ПРВИ ТИМ";
-
+                getDefaultAdminSelectionName()
+        );
 
         staffBirthDateInput.value =
             member.datum_rodjenja ||
             "";
 
-
         staffOrderInput.value =
             member.redosled ??
             0;
 
-
         staffActiveInput.checked =
-            member.aktivan !== false;
-
+            member.aktivan !==
+            false;
 
         if (
             member.fotografija
@@ -4077,10 +3922,8 @@ function openStaffModal(
 
     }
 
-
     staffModal.hidden =
         false;
-
 
     document.body.style.overflow =
         "hidden";
@@ -4088,17 +3931,16 @@ function openStaffModal(
 }
 
 
-
 function closeStaffModal() {
 
     if (!staffModal) {
-        return;
-    }
 
+        return;
+
+    }
 
     staffModal.hidden =
         true;
-
 
     document.body.style.overflow =
         "";
@@ -4106,44 +3948,38 @@ function closeStaffModal() {
 }
 
 
-
 function resetStaffForm() {
 
     if (!staffForm) {
+
         return;
+
     }
 
-
     staffForm.reset();
-
 
     staffIdInput.value =
         "";
 
-
     staffCurrentImage.value =
         "";
 
-
-    staffSelectionInput.value =
-        "ПРВИ ТИМ";
-
+    populateAdminSelectionSelect(
+        staffSelectionInput,
+        getDefaultAdminSelectionName()
+    );
 
     staffOrderInput.value =
         "0";
 
-
     staffActiveInput.checked =
         true;
-
 
     staffImagePreview.src =
         "images/grb.png";
 
-
     staffImageName.textContent =
         "Није изабрана фотографија";
-
 
     setStaffFormMessage(
         "",
@@ -4153,36 +3989,28 @@ function resetStaffForm() {
 }
 
 
-
-/* =========================================================
-   PREVIEW FOTOGRAFIJE
-========================================================= */
-
 function previewStaffImage() {
 
     const file =
         staffImageInput
             ?.files?.[0];
 
-
     if (!file) {
-        return;
-    }
 
+        return;
+
+    }
 
     staffImageName.textContent =
         file.name;
-
 
     const objectUrl =
         URL.createObjectURL(
             file
         );
 
-
     staffImagePreview.src =
         objectUrl;
-
 
     staffImagePreview.onload =
         () => {
@@ -4196,53 +4024,41 @@ function previewStaffImage() {
 }
 
 
-
-/* =========================================================
-   ČUVANJE
-========================================================= */
-
 async function saveStaffMember(
     event
 ) {
 
     event.preventDefault();
 
-
     setStaffFormMessage(
         "",
         ""
     );
-
 
     const id =
         staffIdInput
             ?.value
             .trim();
 
-
     const name =
         staffNameInput
             ?.value
             .trim();
-
 
     const role =
         staffRoleInput
             ?.value
             .trim();
 
-
     const selection =
         staffSelectionInput
             ?.value ||
-        "ПРВИ ТИМ";
-
+        getDefaultAdminSelectionName();
 
     const birthDate =
         staffBirthDateInput
             ?.value ||
         null;
-
 
     const order =
         Number(
@@ -4250,7 +4066,6 @@ async function saveStaffMember(
                 ?.value ||
             0
         );
-
 
     if (
         !name ||
@@ -4266,17 +4081,14 @@ async function saveStaffMember(
 
     }
 
-
     const oldImage =
         staffCurrentImage
             ?.value
             .trim() ||
         "";
 
-
     let uploadedImage =
         null;
-
 
     setButtonLoading(
         staffSaveButton,
@@ -4284,13 +4096,11 @@ async function saveStaffMember(
         "ЧУВАЊЕ..."
     );
 
-
     try {
 
         const selectedFile =
             staffImageInput
                 ?.files?.[0];
-
 
         if (selectedFile) {
 
@@ -4303,12 +4113,10 @@ async function saveStaffMember(
 
         }
 
-
         const photo =
             uploadedImage ||
             oldImage ||
             null;
-
 
         const payload = {
 
@@ -4328,7 +4136,9 @@ async function saveStaffMember(
                 photo,
 
             redosled:
-                Number.isFinite(order)
+                Number.isFinite(
+                    order
+                )
                     ? order
                     : 0,
 
@@ -4340,9 +4150,7 @@ async function saveStaffMember(
 
         };
 
-
         let error;
-
 
         if (id) {
 
@@ -4358,7 +4166,6 @@ async function saveStaffMember(
                         "id",
                         id
                     );
-
 
             error =
                 result.error;
@@ -4376,12 +4183,10 @@ async function saveStaffMember(
                         payload
                     );
 
-
             error =
                 result.error;
 
         }
-
 
         if (error) {
 
@@ -4389,11 +4194,11 @@ async function saveStaffMember(
 
         }
 
-
         if (
             uploadedImage &&
             oldImage &&
-            uploadedImage !== oldImage
+            uploadedImage !==
+                oldImage
         ) {
 
             await deleteStorageImageFromUrl(
@@ -4403,15 +4208,12 @@ async function saveStaffMember(
 
         }
 
-
         setStaffFormMessage(
             "Члан стручног штаба је успешно сачуван.",
             "success"
         );
 
-
         await loadAdminStaff();
-
 
         setTimeout(
             closeStaffModal,
@@ -4427,7 +4229,6 @@ async function saveStaffMember(
             error
         );
 
-
         if (uploadedImage) {
 
             await deleteStorageImageFromUrl(
@@ -4436,7 +4237,6 @@ async function saveStaffMember(
             );
 
         }
-
 
         setStaffFormMessage(
             getFriendlyError(
@@ -4461,11 +4261,6 @@ async function saveStaffMember(
 }
 
 
-
-/* =========================================================
-   BRISANJE
-========================================================= */
-
 async function deleteStaffMember(
     member
 ) {
@@ -4475,11 +4270,11 @@ async function deleteStaffMember(
             `Обрисати члана „${member.ime_prezime}“?`
         );
 
-
     if (!confirmed) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         error
@@ -4494,14 +4289,12 @@ async function deleteStaffMember(
                 member.id
             );
 
-
     if (error) {
 
         console.error(
             "Delete staff error:",
             error
         );
-
 
         window.alert(
             "Члана није могуће обрисати."
@@ -4510,7 +4303,6 @@ async function deleteStaffMember(
         return;
 
     }
-
 
     if (
         member.fotografija
@@ -4523,16 +4315,10 @@ async function deleteStaffMember(
 
     }
 
-
     await loadAdminStaff();
 
 }
 
-
-
-/* =========================================================
-   PORUKA FORME
-========================================================= */
 
 function setStaffFormMessage(
     message,
@@ -4540,17 +4326,16 @@ function setStaffFormMessage(
 ) {
 
     if (!staffFormMessage) {
-        return;
-    }
 
+        return;
+
+    }
 
     staffFormMessage.textContent =
         message;
 
-
     staffFormMessage.className =
         "admin-form-message";
-
 
     if (type) {
 
@@ -4564,15 +4349,9 @@ function setStaffFormMessage(
 
 }
 
-/* =========================================================
-   =========================================================
-   UPRAVA KLUBA
-   =========================================================
-========================================================= */
-
 
 /* =========================================================
-   ELEMENTI
+   UPRAVA
 ========================================================= */
 
 const addManagementButton =
@@ -4661,11 +4440,6 @@ const managementSaveButton =
     );
 
 
-
-/* =========================================================
-   EVENTS
-========================================================= */
-
 function setupManagementAdmin() {
 
     if (addManagementButton) {
@@ -4680,7 +4454,6 @@ function setupManagementAdmin() {
         );
 
     }
-
 
     document
         .querySelectorAll(
@@ -4697,7 +4470,6 @@ function setupManagementAdmin() {
             }
         );
 
-
     if (managementImageInput) {
 
         managementImageInput.addEventListener(
@@ -4706,7 +4478,6 @@ function setupManagementAdmin() {
         );
 
     }
-
 
     if (managementForm) {
 
@@ -4717,13 +4488,13 @@ function setupManagementAdmin() {
 
     }
 
-
     document.addEventListener(
         "keydown",
         event => {
 
             if (
-                event.key === "Escape" &&
+                event.key ===
+                    "Escape" &&
                 managementModal &&
                 !managementModal.hidden
             ) {
@@ -4738,17 +4509,13 @@ function setupManagementAdmin() {
 }
 
 
-
-/* =========================================================
-   UČITAVANJE UPRAVE
-========================================================= */
-
 async function loadAdminManagement() {
 
     if (!managementList) {
-        return;
-    }
 
+        return;
+
+    }
 
     managementList.innerHTML = `
 
@@ -4757,7 +4524,6 @@ async function loadAdminManagement() {
         </div>
 
     `;
-
 
     const {
         data,
@@ -4773,22 +4539,24 @@ async function loadAdminManagement() {
             .order(
                 "istaknut",
                 {
-                    ascending: false
+                    ascending:
+                        false
                 }
             )
             .order(
                 "redosled",
                 {
-                    ascending: true
+                    ascending:
+                        true
                 }
             )
             .order(
                 "ime_prezime",
                 {
-                    ascending: true
+                    ascending:
+                        true
                 }
             );
-
 
     if (error) {
 
@@ -4796,7 +4564,6 @@ async function loadAdminManagement() {
             "Management load error:",
             error
         );
-
 
         managementList.innerHTML = `
 
@@ -4810,10 +4577,12 @@ async function loadAdminManagement() {
 
     }
 
-
     if (
-        !Array.isArray(data) ||
-        data.length === 0
+        !Array.isArray(
+            data
+        ) ||
+        data.length ===
+            0
     ) {
 
         managementList.innerHTML = `
@@ -4828,14 +4597,12 @@ async function loadAdminManagement() {
 
     }
 
-
     managementList.innerHTML =
         data
             .map(
                 renderAdminManagementMember
             )
             .join("");
-
 
     managementList
         .querySelectorAll(
@@ -4852,13 +4619,12 @@ async function loadAdminManagement() {
                             button.dataset
                                 .editManagement;
 
-
                         const member =
                             data.find(
                                 item =>
-                                    item.id === id
+                                    item.id ===
+                                    id
                             );
-
 
                         if (member) {
 
@@ -4873,7 +4639,6 @@ async function loadAdminManagement() {
 
             }
         );
-
 
     managementList
         .querySelectorAll(
@@ -4890,13 +4655,12 @@ async function loadAdminManagement() {
                             button.dataset
                                 .deleteManagement;
 
-
                         const member =
                             data.find(
                                 item =>
-                                    item.id === id
+                                    item.id ===
+                                    id
                             );
-
 
                         if (member) {
 
@@ -4915,11 +4679,6 @@ async function loadAdminManagement() {
 }
 
 
-
-/* =========================================================
-   KARTICA ČLANA UPRAVE
-========================================================= */
-
 function renderAdminManagementMember(
     member
 ) {
@@ -4927,7 +4686,6 @@ function renderAdminManagementMember(
     const photo =
         member.fotografija ||
         "images/grb.png";
-
 
     return `
 
@@ -4937,7 +4695,6 @@ function renderAdminManagementMember(
                 ${member.istaknut ? "featured" : ""}
             "
         >
-
 
             <div class="admin-management-photo">
 
@@ -4949,13 +4706,11 @@ function renderAdminManagementMember(
 
             </div>
 
-
             <div class="admin-management-info">
 
                 <strong>
                     ${escapeHtml(member.ime_prezime || "")}
                 </strong>
-
 
                 <div class="admin-management-meta">
 
@@ -4963,21 +4718,17 @@ function renderAdminManagementMember(
                         ${escapeHtml(member.funkcija || "")}
                     </span>
 
-
                     ${
                         member.istaknut
 
-                        ? `
+                            ? `
+                                <span class="admin-management-featured">
+                                    ИСТАКНУТ
+                                </span>
+                            `
 
-                            <span class="admin-management-featured">
-                                ИСТАКНУТ
-                            </span>
-
-                        `
-
-                        : ""
+                            : ""
                     }
-
 
                     <span
                         class="
@@ -5000,7 +4751,6 @@ function renderAdminManagementMember(
 
             </div>
 
-
             <div class="admin-management-actions">
 
                 <button
@@ -5010,7 +4760,6 @@ function renderAdminManagementMember(
                 >
                     ИЗМЕНИ
                 </button>
-
 
                 <button
                     type="button"
@@ -5029,11 +4778,6 @@ function renderAdminManagementMember(
 }
 
 
-
-/* =========================================================
-   MODAL
-========================================================= */
-
 function openManagementModal(
     member = null
 ) {
@@ -5042,51 +4786,45 @@ function openManagementModal(
         !managementModal ||
         !managementForm
     ) {
+
         return;
+
     }
 
-
     resetManagementForm();
-
 
     if (member) {
 
         managementModalTitle.textContent =
             "Измени члана управе";
 
-
         managementIdInput.value =
             member.id ||
             "";
-
 
         managementCurrentImage.value =
             member.fotografija ||
             "";
 
-
         managementNameInput.value =
             member.ime_prezime ||
             "";
-
 
         managementRoleInput.value =
             member.funkcija ||
             "";
 
-
         managementOrderInput.value =
             member.redosled ??
             0;
 
-
         managementFeaturedInput.checked =
-            member.istaknut === true;
-
+            member.istaknut ===
+            true;
 
         managementActiveInput.checked =
-            member.aktivan !== false;
-
+            member.aktivan !==
+            false;
 
         if (
             member.fotografija
@@ -5106,10 +4844,8 @@ function openManagementModal(
 
     }
 
-
     managementModal.hidden =
         false;
-
 
     document.body.style.overflow =
         "hidden";
@@ -5117,17 +4853,16 @@ function openManagementModal(
 }
 
 
-
 function closeManagementModal() {
 
     if (!managementModal) {
-        return;
-    }
 
+        return;
+
+    }
 
     managementModal.hidden =
         true;
-
 
     document.body.style.overflow =
         "";
@@ -5135,48 +4870,36 @@ function closeManagementModal() {
 }
 
 
-
-/* =========================================================
-   RESET FORME
-========================================================= */
-
 function resetManagementForm() {
 
     if (!managementForm) {
+
         return;
+
     }
 
-
     managementForm.reset();
-
 
     managementIdInput.value =
         "";
 
-
     managementCurrentImage.value =
         "";
-
 
     managementOrderInput.value =
         "0";
 
-
     managementFeaturedInput.checked =
         false;
-
 
     managementActiveInput.checked =
         true;
 
-
     managementImagePreview.src =
         "images/grb.png";
 
-
     managementImageName.textContent =
         "Није изабрана фотографија";
-
 
     setManagementFormMessage(
         "",
@@ -5186,36 +4909,28 @@ function resetManagementForm() {
 }
 
 
-
-/* =========================================================
-   PREVIEW FOTOGRAFIJE
-========================================================= */
-
 function previewManagementImage() {
 
     const file =
         managementImageInput
             ?.files?.[0];
 
-
     if (!file) {
-        return;
-    }
 
+        return;
+
+    }
 
     managementImageName.textContent =
         file.name;
-
 
     const objectUrl =
         URL.createObjectURL(
             file
         );
 
-
     managementImagePreview.src =
         objectUrl;
-
 
     managementImagePreview.onload =
         () => {
@@ -5229,41 +4944,31 @@ function previewManagementImage() {
 }
 
 
-
-/* =========================================================
-   ČUVANJE
-========================================================= */
-
 async function saveManagementMember(
     event
 ) {
 
     event.preventDefault();
 
-
     setManagementFormMessage(
         "",
         ""
     );
-
 
     const id =
         managementIdInput
             ?.value
             .trim();
 
-
     const name =
         managementNameInput
             ?.value
             .trim();
 
-
     const role =
         managementRoleInput
             ?.value
             .trim();
-
 
     const order =
         Number(
@@ -5271,7 +4976,6 @@ async function saveManagementMember(
                 ?.value ||
             0
         );
-
 
     if (
         !name ||
@@ -5287,17 +4991,14 @@ async function saveManagementMember(
 
     }
 
-
     const oldImage =
         managementCurrentImage
             ?.value
             .trim() ||
         "";
 
-
     let uploadedImage =
         null;
-
 
     setButtonLoading(
         managementSaveButton,
@@ -5305,13 +5006,11 @@ async function saveManagementMember(
         "ЧУВАЊЕ..."
     );
 
-
     try {
 
         const selectedFile =
             managementImageInput
                 ?.files?.[0];
-
 
         if (selectedFile) {
 
@@ -5324,12 +5023,10 @@ async function saveManagementMember(
 
         }
 
-
         const photo =
             uploadedImage ||
             oldImage ||
             null;
-
 
         const payload = {
 
@@ -5349,7 +5046,9 @@ async function saveManagementMember(
                 ),
 
             redosled:
-                Number.isFinite(order)
+                Number.isFinite(
+                    order
+                )
                     ? order
                     : 0,
 
@@ -5361,9 +5060,7 @@ async function saveManagementMember(
 
         };
 
-
         let error;
-
 
         if (id) {
 
@@ -5379,7 +5076,6 @@ async function saveManagementMember(
                         "id",
                         id
                     );
-
 
             error =
                 result.error;
@@ -5397,12 +5093,10 @@ async function saveManagementMember(
                         payload
                     );
 
-
             error =
                 result.error;
 
         }
-
 
         if (error) {
 
@@ -5410,11 +5104,11 @@ async function saveManagementMember(
 
         }
 
-
         if (
             uploadedImage &&
             oldImage &&
-            uploadedImage !== oldImage
+            uploadedImage !==
+                oldImage
         ) {
 
             await deleteStorageImageFromUrl(
@@ -5424,15 +5118,12 @@ async function saveManagementMember(
 
         }
 
-
         setManagementFormMessage(
             "Члан управе је успешно сачуван.",
             "success"
         );
 
-
         await loadAdminManagement();
-
 
         setTimeout(
             closeManagementModal,
@@ -5448,7 +5139,6 @@ async function saveManagementMember(
             error
         );
 
-
         if (uploadedImage) {
 
             await deleteStorageImageFromUrl(
@@ -5457,7 +5147,6 @@ async function saveManagementMember(
             );
 
         }
-
 
         setManagementFormMessage(
             getFriendlyError(
@@ -5482,11 +5171,6 @@ async function saveManagementMember(
 }
 
 
-
-/* =========================================================
-   BRISANJE
-========================================================= */
-
 async function deleteManagementMember(
     member
 ) {
@@ -5496,11 +5180,11 @@ async function deleteManagementMember(
             `Обрисати члана управе „${member.ime_prezime}“?`
         );
 
-
     if (!confirmed) {
-        return;
-    }
 
+        return;
+
+    }
 
     const {
         error
@@ -5515,14 +5199,12 @@ async function deleteManagementMember(
                 member.id
             );
 
-
     if (error) {
 
         console.error(
             "Delete management error:",
             error
         );
-
 
         window.alert(
             "Члана управе није могуће обрисати."
@@ -5531,7 +5213,6 @@ async function deleteManagementMember(
         return;
 
     }
-
 
     if (
         member.fotografija
@@ -5544,16 +5225,10 @@ async function deleteManagementMember(
 
     }
 
-
     await loadAdminManagement();
 
 }
 
-
-
-/* =========================================================
-   PORUKA FORME
-========================================================= */
 
 function setManagementFormMessage(
     message,
@@ -5561,17 +5236,16 @@ function setManagementFormMessage(
 ) {
 
     if (!managementFormMessage) {
-        return;
-    }
 
+        return;
+
+    }
 
     managementFormMessage.textContent =
         message;
 
-
     managementFormMessage.className =
         "admin-form-message";
-
 
     if (type) {
 
@@ -5587,14 +5261,1283 @@ function setManagementFormMessage(
 
 
 /* =========================================================
-   =========================================================
-   STORAGE
-   =========================================================
+   SELEKCIJE
 ========================================================= */
+
+const addSelectionButton =
+    document.querySelector(
+        "#admin-add-selection"
+    );
+
+const selectionsList =
+    document.querySelector(
+        "#admin-selections-list"
+    );
+
+const selectionModal =
+    document.querySelector(
+        "#admin-selection-modal"
+    );
+
+const selectionForm =
+    document.querySelector(
+        "#admin-selection-form"
+    );
+
+const selectionModalTitle =
+    document.querySelector(
+        "#admin-selection-modal-title"
+    );
+
+const selectionIdInput =
+    document.querySelector(
+        "#admin-selection-id"
+    );
+
+const selectionCodeInput =
+    document.querySelector(
+        "#admin-selection-code"
+    );
+
+const selectionCurrentImage =
+    document.querySelector(
+        "#admin-selection-current-image"
+    );
+
+const selectionNameInput =
+    document.querySelector(
+        "#admin-selection-name"
+    );
+
+const selectionYearInput =
+    document.querySelector(
+        "#admin-selection-year"
+    );
+
+const selectionOrderInput =
+    document.querySelector(
+        "#admin-selection-order"
+    );
+
+const selectionDescriptionInput =
+    document.querySelector(
+        "#admin-selection-description"
+    );
+
+const selectionImageInput =
+    document.querySelector(
+        "#admin-selection-image"
+    );
+
+const selectionImagePreview =
+    document.querySelector(
+        "#admin-selection-image-preview img"
+    );
+
+const selectionImageName =
+    document.querySelector(
+        "#admin-selection-image-name"
+    );
+
+const selectionActiveInput =
+    document.querySelector(
+        "#admin-selection-active"
+    );
+
+const selectionFormMessage =
+    document.querySelector(
+        "#admin-selection-form-message"
+    );
+
+const selectionSaveButton =
+    document.querySelector(
+        "#admin-selection-save-button"
+    );
+
+
+function setupSelectionsAdmin() {
+
+    if (addSelectionButton) {
+
+        addSelectionButton.addEventListener(
+            "click",
+            () => {
+
+                openSelectionModal();
+
+            }
+        );
+
+    }
+
+    document
+        .querySelectorAll(
+            "[data-close-selection-modal]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closeSelectionModal
+                );
+
+            }
+        );
+
+    if (selectionImageInput) {
+
+        selectionImageInput.addEventListener(
+            "change",
+            previewSelectionImage
+        );
+
+    }
+
+    if (selectionForm) {
+
+        selectionForm.addEventListener(
+            "submit",
+            saveSelection
+        );
+
+    }
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                    "Escape" &&
+                selectionModal &&
+                !selectionModal.hidden
+            ) {
+
+                closeSelectionModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+async function loadAdminSelections() {
+
+    if (!selectionsList) {
+
+        return;
+
+    }
+
+    selectionsList.innerHTML = `
+
+        <div class="admin-list-loading">
+            Учитавање селекција...
+        </div>
+
+    `;
+
+    const {
+        data,
+        error
+    } =
+        await sb
+            .from(
+                "selekcije"
+            )
+            .select(
+                "id,kod,naziv,opis,godiste,fotografija,redosled,aktivna,created_at"
+            )
+            .order(
+                "redosled",
+                {
+                    ascending:
+                        true
+                }
+            )
+            .order(
+                "naziv",
+                {
+                    ascending:
+                        true
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Selections load error:",
+            error
+        );
+
+        selectionsList.innerHTML = `
+
+            <div class="admin-list-loading">
+                Грешка при учитавању селекција.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    if (
+        !Array.isArray(
+            data
+        ) ||
+        data.length ===
+            0
+    ) {
+
+        selectionsList.innerHTML = `
+
+            <div class="admin-selections-empty">
+                Још нема унетих селекција.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    selectionsList.innerHTML =
+        data
+            .map(
+                renderAdminSelection
+            )
+            .join("");
+
+    selectionsList
+        .querySelectorAll(
+            "[data-edit-selection]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .editSelection;
+
+                        const selection =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+                        if (selection) {
+
+                            openSelectionModal(
+                                selection
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    selectionsList
+        .querySelectorAll(
+            "[data-delete-selection]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .deleteSelection;
+
+                        const selection =
+                            data.find(
+                                item =>
+                                    item.id ===
+                                    id
+                            );
+
+                        if (selection) {
+
+                            deleteSelection(
+                                selection
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+function renderAdminSelection(
+    selection
+) {
+
+    const photo =
+        selection.fotografija ||
+        "images/grb.png";
+
+    const description =
+        selection.opis
+
+            ? `
+                <p class="admin-selection-description">
+                    ${escapeHtml(selection.opis)}
+                </p>
+            `
+
+            : "";
+
+    const year =
+        selection.godiste
+
+            ? `
+                <span class="admin-selection-year">
+                    ${escapeHtml(selection.godiste)}
+                </span>
+            `
+
+            : "";
+
+    return `
+
+        <article class="admin-selection-item">
+
+            <div class="admin-selection-photo">
+
+                <img
+                    src="${escapeAttribute(photo)}"
+                    alt="${escapeAttribute(selection.naziv || "")}"
+                    onerror="this.onerror=null;this.src='images/grb.png';"
+                >
+
+            </div>
+
+            <div class="admin-selection-info">
+
+                <strong>
+                    ${escapeHtml(selection.naziv || "")}
+                </strong>
+
+                ${description}
+
+                <div class="admin-selection-meta">
+
+                    ${year}
+
+                    <span>
+                        РЕДОСЛЕД:
+                        ${escapeHtml(
+                            String(
+                                selection.redosled ??
+                                0
+                            )
+                        )}
+                    </span>
+
+                    <span
+                        class="
+                            admin-selection-status
+                            ${
+                                selection.aktivna
+                                    ? "active"
+                                    : "inactive"
+                            }
+                        "
+                    >
+                        ${
+                            selection.aktivna
+                                ? "АКТИВНА"
+                                : "НЕАКТИВНА"
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="admin-selection-actions">
+
+                <button
+                    type="button"
+                    class="admin-selection-edit"
+                    data-edit-selection="${escapeAttribute(selection.id)}"
+                >
+                    ИЗМЕНИ
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-selection-delete"
+                    data-delete-selection="${escapeAttribute(selection.id)}"
+                >
+                    ОБРИШИ
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+function openSelectionModal(
+    selection = null
+) {
+
+    if (
+        !selectionModal ||
+        !selectionForm
+    ) {
+
+        return;
+
+    }
+
+    resetSelectionForm();
+
+    if (selection) {
+
+        if (selectionModalTitle) {
+
+            selectionModalTitle.textContent =
+                "Измени селекцију";
+
+        }
+
+        if (selectionIdInput) {
+
+            selectionIdInput.value =
+                selection.id ||
+                "";
+
+        }
+
+        if (selectionCodeInput) {
+
+            selectionCodeInput.value =
+                selection.kod ||
+                "";
+
+        }
+
+        if (selectionCurrentImage) {
+
+            selectionCurrentImage.value =
+                selection.fotografija ||
+                "";
+
+        }
+
+        if (selectionNameInput) {
+
+            selectionNameInput.value =
+                selection.naziv ||
+                "";
+
+        }
+
+        if (selectionYearInput) {
+
+            selectionYearInput.value =
+                selection.godiste ||
+                "";
+
+        }
+
+        if (selectionDescriptionInput) {
+
+            selectionDescriptionInput.value =
+                selection.opis ||
+                "";
+
+        }
+
+        if (selectionOrderInput) {
+
+            selectionOrderInput.value =
+                selection.redosled ??
+                0;
+
+        }
+
+        if (selectionActiveInput) {
+
+            selectionActiveInput.checked =
+                selection.aktivna !==
+                false;
+
+        }
+
+        if (
+            selectionImagePreview &&
+            selection.fotografija
+        ) {
+
+            selectionImagePreview.src =
+                selection.fotografija;
+
+        }
+
+    }
+
+    else {
+
+        if (selectionModalTitle) {
+
+            selectionModalTitle.textContent =
+                "Додај селекцију";
+
+        }
+
+    }
+
+    selectionModal.hidden =
+        false;
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function closeSelectionModal() {
+
+    if (!selectionModal) {
+
+        return;
+
+    }
+
+    selectionModal.hidden =
+        true;
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+function resetSelectionForm() {
+
+    if (!selectionForm) {
+
+        return;
+
+    }
+
+    selectionForm.reset();
+
+    if (selectionIdInput) {
+
+        selectionIdInput.value =
+            "";
+
+    }
+
+    if (selectionCodeInput) {
+
+        selectionCodeInput.value =
+            "";
+
+    }
+
+    if (selectionCurrentImage) {
+
+        selectionCurrentImage.value =
+            "";
+
+    }
+
+    if (selectionOrderInput) {
+
+        selectionOrderInput.value =
+            "0";
+
+    }
+
+    if (selectionActiveInput) {
+
+        selectionActiveInput.checked =
+            true;
+
+    }
+
+    if (selectionImagePreview) {
+
+        selectionImagePreview.src =
+            "images/grb.png";
+
+    }
+
+    if (selectionImageName) {
+
+        selectionImageName.textContent =
+            "Није изабрана фотографија";
+
+    }
+
+    setSelectionFormMessage(
+        "",
+        ""
+    );
+
+}
+
+
+function previewSelectionImage() {
+
+    const file =
+        selectionImageInput
+            ?.files?.[0];
+
+    if (!file) {
+
+        return;
+
+    }
+
+    try {
+
+        validateImageFile(
+            file
+        );
+
+    }
+
+    catch (error) {
+
+        setSelectionFormMessage(
+            getFriendlyError(
+                error,
+                "Фотографија није исправна."
+            ),
+            "error"
+        );
+
+        if (selectionImageInput) {
+
+            selectionImageInput.value =
+                "";
+
+        }
+
+        return;
+
+    }
+
+    if (selectionImageName) {
+
+        selectionImageName.textContent =
+            file.name;
+
+    }
+
+    const objectUrl =
+        URL.createObjectURL(
+            file
+        );
+
+    if (selectionImagePreview) {
+
+        selectionImagePreview.src =
+            objectUrl;
+
+        selectionImagePreview.onload =
+            () => {
+
+                URL.revokeObjectURL(
+                    objectUrl
+                );
+
+            };
+
+    }
+
+}
+
+
+function createSelectionCode(
+    name = ""
+) {
+
+    return (
+        createSlug(
+            name
+        ) ||
+        `selekcija-${Date.now()}`
+    );
+
+}
+
+
+async function saveSelection(
+    event
+) {
+
+    event.preventDefault();
+
+    setSelectionFormMessage(
+        "",
+        ""
+    );
+
+    const id =
+        selectionIdInput
+            ?.value
+            .trim() ||
+        "";
+
+    const name =
+        selectionNameInput
+            ?.value
+            .trim() ||
+        "";
+
+    const year =
+        selectionYearInput
+            ?.value
+            .trim() ||
+        "";
+
+    const description =
+        selectionDescriptionInput
+            ?.value
+            .trim() ||
+        "";
+
+    const orderRaw =
+        selectionOrderInput
+            ?.value;
+
+    if (!name) {
+
+        setSelectionFormMessage(
+            "Назив селекције је обавезан.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const order =
+        Number.isFinite(
+            Number(
+                orderRaw
+            )
+        )
+
+            ? Number(
+                orderRaw
+            )
+
+            : 0;
+
+    const oldImage =
+        selectionCurrentImage
+            ?.value
+            .trim() ||
+        "";
+
+    const existingCode =
+        selectionCodeInput
+            ?.value
+            .trim() ||
+        "";
+
+    const code =
+        existingCode ||
+        createSelectionCode(
+            name
+        );
+
+    let previousName =
+        "";
+
+    if (id) {
+
+        const {
+            data: currentSelection,
+            error: currentSelectionError
+        } =
+            await sb
+                .from(
+                    "selekcije"
+                )
+                .select(
+                    "naziv"
+                )
+                .eq(
+                    "id",
+                    id
+                )
+                .maybeSingle();
+
+        if (currentSelectionError) {
+
+            console.error(
+                "Current selection load error:",
+                currentSelectionError
+            );
+
+        }
+
+        previousName =
+            currentSelection?.naziv ||
+            "";
+
+    }
+
+    let uploadedImage =
+        null;
+
+    setButtonLoading(
+        selectionSaveButton,
+        true,
+        "ЧУВАЊЕ..."
+    );
+
+    try {
+
+        const selectedFile =
+            selectionImageInput
+                ?.files?.[0];
+
+        if (selectedFile) {
+
+            uploadedImage =
+                await uploadStorageImage(
+                    SELECTIONS_BUCKET,
+                    selectedFile,
+                    name
+                );
+
+        }
+
+        const photo =
+            uploadedImage ||
+            oldImage ||
+            null;
+
+        const payload = {
+
+            kod:
+                code,
+
+            naziv:
+                name,
+
+            opis:
+                description ||
+                null,
+
+            godiste:
+                year ||
+                null,
+
+            fotografija:
+                photo,
+
+            redosled:
+                order,
+
+            aktivna:
+                Boolean(
+                    selectionActiveInput
+                        ?.checked
+                )
+
+        };
+
+        let error;
+
+        if (id) {
+
+            const result =
+                await sb
+                    .from(
+                        "selekcije"
+                    )
+                    .update(
+                        payload
+                    )
+                    .eq(
+                        "id",
+                        id
+                    );
+
+            error =
+                result.error;
+
+        }
+
+        else {
+
+            const result =
+                await sb
+                    .from(
+                        "selekcije"
+                    )
+                    .insert(
+                        payload
+                    );
+
+            error =
+                result.error;
+
+        }
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        if (
+            id &&
+            previousName &&
+            previousName !==
+                name
+        ) {
+
+            const [
+                playersRenameResult,
+                staffRenameResult
+            ] =
+                await Promise.all(
+                    [
+                        sb
+                            .from(
+                                "igraci"
+                            )
+                            .update(
+                                {
+                                    selekcija:
+                                        name
+                                }
+                            )
+                            .eq(
+                                "selekcija",
+                                previousName
+                            ),
+
+                        sb
+                            .from(
+                                "strucni_stab"
+                            )
+                            .update(
+                                {
+                                    selekcija:
+                                        name
+                                }
+                            )
+                            .eq(
+                                "selekcija",
+                                previousName
+                            )
+                    ]
+                );
+
+            if (
+                playersRenameResult.error ||
+                staffRenameResult.error
+            ) {
+
+                console.error(
+                    "Selection rename relation error:",
+                    playersRenameResult.error ||
+                    staffRenameResult.error
+                );
+
+                window.alert(
+                    "Назив селекције је сачуван, али неки повезани играчи или чланови стручног штаба нису аутоматски ажурирани. Проверите њихову селекцију у админ панелу."
+                );
+
+            }
+
+        }
+
+        if (
+            uploadedImage &&
+            oldImage &&
+            uploadedImage !==
+                oldImage
+        ) {
+
+            await deleteStorageImageFromUrl(
+                SELECTIONS_BUCKET,
+                oldImage
+            );
+
+        }
+
+        setSelectionFormMessage(
+            "Селекција је успешно сачувана.",
+            "success"
+        );
+
+        await loadAdminSelectionOptions();
+
+        await Promise.allSettled(
+            [
+                loadAdminSelections(),
+                loadAdminPlayers(),
+                loadAdminStaff()
+            ]
+        );
+
+        setTimeout(
+            closeSelectionModal,
+            450
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save selection error:",
+            error
+        );
+
+        if (uploadedImage) {
+
+            await deleteStorageImageFromUrl(
+                SELECTIONS_BUCKET,
+                uploadedImage
+            );
+
+        }
+
+        setSelectionFormMessage(
+            getFriendlyError(
+                error,
+                "Селекција није сачувана."
+            ),
+            "error"
+        );
+
+    }
+
+    finally {
+
+        setButtonLoading(
+            selectionSaveButton,
+            false,
+            "САЧУВАЈ"
+        );
+
+    }
+
+}
+
+
+async function deleteSelection(
+    selection
+) {
+
+    const [
+        playersCheck,
+        staffCheck
+    ] =
+        await Promise.all(
+            [
+                sb
+                    .from(
+                        "igraci"
+                    )
+                    .select(
+                        "id",
+                        {
+                            count:
+                                "exact",
+
+                            head:
+                                true
+                        }
+                    )
+                    .eq(
+                        "selekcija",
+                        selection.naziv
+                    ),
+
+                sb
+                    .from(
+                        "strucni_stab"
+                    )
+                    .select(
+                        "id",
+                        {
+                            count:
+                                "exact",
+
+                            head:
+                                true
+                        }
+                    )
+                    .eq(
+                        "selekcija",
+                        selection.naziv
+                    )
+            ]
+        );
+
+    if (
+        playersCheck.error ||
+        staffCheck.error
+    ) {
+
+        console.error(
+            "Selection relation check error:",
+            playersCheck.error ||
+            staffCheck.error
+        );
+
+        window.alert(
+            "Није могуће проверити да ли селекција има играче или стручни штаб."
+        );
+
+        return;
+
+    }
+
+    const playerCount =
+        playersCheck.count ??
+        0;
+
+    const staffCount =
+        staffCheck.count ??
+        0;
+
+    if (
+        playerCount > 0 ||
+        staffCount > 0
+    ) {
+
+        window.alert(
+            `Селекција „${selection.naziv}“ не може бити обрисана док има повезане играче или чланове стручног штаба.\n\nИграчи: ${playerCount}\nСтручни штаб: ${staffCount}`
+        );
+
+        return;
+
+    }
+
+    const confirmed =
+        window.confirm(
+            `Обрисати селекцију „${selection.naziv}“?`
+        );
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+    const {
+        error
+    } =
+        await sb
+            .from(
+                "selekcije"
+            )
+            .delete()
+            .eq(
+                "id",
+                selection.id
+            );
+
+    if (error) {
+
+        console.error(
+            "Delete selection error:",
+            error
+        );
+
+        window.alert(
+            "Селекцију није могуће обрисати."
+        );
+
+        return;
+
+    }
+
+    if (
+        selection.fotografija
+    ) {
+
+        await deleteStorageImageFromUrl(
+            SELECTIONS_BUCKET,
+            selection.fotografija
+        );
+
+    }
+
+    await loadAdminSelectionOptions();
+
+    await Promise.allSettled(
+        [
+            loadAdminSelections(),
+            loadAdminPlayers(),
+            loadAdminStaff()
+        ]
+    );
+
+}
+
+
+function setSelectionFormMessage(
+    message,
+    type
+) {
+
+    if (!selectionFormMessage) {
+
+        return;
+
+    }
+
+    selectionFormMessage.textContent =
+        message;
+
+    selectionFormMessage.className =
+        "admin-form-message";
+
+    if (type) {
+
+        selectionFormMessage
+            .classList
+            .add(
+                type
+            );
+
+    }
+
+}
 
 
 /* =========================================================
-   UPLOAD SLIKE
+   STORAGE
 ========================================================= */
 
 async function uploadStorageImage(
@@ -5607,13 +6550,11 @@ async function uploadStorageImage(
         file
     );
 
-
     const extension =
         getFileExtension(
             file.name,
             file.type
         );
-
 
     const safeName =
         createSlug(
@@ -5621,10 +6562,8 @@ async function uploadStorageImage(
         ) ||
         "slika";
 
-
     const path =
         `slike/${Date.now()}-${safeName}.${extension}`;
-
 
     const {
         error
@@ -5649,13 +6588,11 @@ async function uploadStorageImage(
                 }
             );
 
-
     if (error) {
 
         throw error;
 
     }
-
 
     const {
         data
@@ -5669,7 +6606,6 @@ async function uploadStorageImage(
                 path
             );
 
-
     if (
         !data ||
         !data.publicUrl
@@ -5681,16 +6617,10 @@ async function uploadStorageImage(
 
     }
 
-
     return data.publicUrl;
 
 }
 
-
-
-/* =========================================================
-   BRISANJE SLIKE
-========================================================= */
 
 async function deleteStorageImageFromUrl(
     bucket,
@@ -5703,13 +6633,11 @@ async function deleteStorageImageFromUrl(
             url
         );
 
-
     if (!path) {
 
         return;
 
     }
-
 
     const {
         error
@@ -5725,7 +6653,6 @@ async function deleteStorageImageFromUrl(
                 ]
             );
 
-
     if (error) {
 
         console.warn(
@@ -5738,16 +6665,16 @@ async function deleteStorageImageFromUrl(
 }
 
 
-
 function getStoragePathFromPublicUrl(
     bucket,
     url
 ) {
 
     if (!url) {
-        return "";
-    }
 
+        return "";
+
+    }
 
     try {
 
@@ -5756,10 +6683,8 @@ function getStoragePathFromPublicUrl(
                 url
             );
 
-
         const marker =
             `/storage/v1/object/public/${bucket}/`;
-
 
         const index =
             parsed.pathname
@@ -5767,15 +6692,14 @@ function getStoragePathFromPublicUrl(
                     marker
                 );
 
-
         if (
-            index === -1
+            index ===
+            -1
         ) {
 
             return "";
 
         }
-
 
         return decodeURIComponent(
             parsed.pathname
@@ -5796,11 +6720,6 @@ function getStoragePathFromPublicUrl(
 }
 
 
-
-/* =========================================================
-   VALIDACIJA SLIKE
-========================================================= */
-
 function validateImageFile(
     file
 ) {
@@ -5811,7 +6730,6 @@ function validateImageFile(
             "image/png",
             "image/webp"
         ];
-
 
     if (
         !allowedTypes.includes(
@@ -5825,12 +6743,10 @@ function validateImageFile(
 
     }
 
-
     const maxSize =
         8 *
         1024 *
         1024;
-
 
     if (
         file.size >
@@ -5846,7 +6762,6 @@ function validateImageFile(
 }
 
 
-
 function getFileExtension(
     fileName,
     mimeType
@@ -5857,10 +6772,11 @@ function getFileExtension(
             fileName ||
             ""
         )
-            .split(".")
+            .split(
+                "."
+            )
             .pop()
             .toLowerCase();
-
 
     if (
         [
@@ -5875,11 +6791,10 @@ function getFileExtension(
 
         return extension ===
             "jpeg"
-            ? "jpg"
-            : extension;
+                ? "jpg"
+                : extension;
 
     }
-
 
     const map = {
 
@@ -5894,7 +6809,6 @@ function getFileExtension(
 
     };
 
-
     return (
         map[mimeType] ||
         "jpg"
@@ -5903,9 +6817,8 @@ function getFileExtension(
 }
 
 
-
 /* =========================================================
-   GRBOVI KLUBOVA
+   GRBOVI
 ========================================================= */
 
 function getClubLogoPath(
@@ -5916,7 +6829,6 @@ function getClubLogoPath(
         normalizeText(
             teamName
         );
-
 
     const logos = {
 
@@ -5967,7 +6879,6 @@ function getClubLogoPath(
 
     };
 
-
     return (
         logos[name] ||
         ""
@@ -5976,9 +6887,8 @@ function getClubLogoPath(
 }
 
 
-
 /* =========================================================
-   DATUM
+   DATUMI
 ========================================================= */
 
 function formatDateDisplay(
@@ -5986,15 +6896,15 @@ function formatDateDisplay(
 ) {
 
     if (!dateString) {
-        return "";
-    }
 
+        return "";
+
+    }
 
     const date =
         new Date(
             `${dateString}T12:00:00`
         );
-
 
     if (
         Number.isNaN(
@@ -6005,7 +6915,6 @@ function formatDateDisplay(
         return "";
 
     }
-
 
     const result =
         new Intl.DateTimeFormat(
@@ -6023,15 +6932,14 @@ function formatDateDisplay(
                 timeZone:
                     "Europe/Belgrade"
             }
-        ).format(
-            date
-        );
-
+        )
+            .format(
+                date
+            );
 
     return `${result}.`;
 
 }
-
 
 
 function formatBirthDate(
@@ -6039,16 +6947,16 @@ function formatBirthDate(
 ) {
 
     if (!dateString) {
-        return "";
-    }
 
+        return "";
+
+    }
 
     const parts =
         dateString
             .split(
                 "-"
             );
-
 
     if (
         parts.length !==
@@ -6059,7 +6967,6 @@ function formatBirthDate(
 
     }
 
-
     return (
         `${parts[2]}.` +
         `${parts[1]}.` +
@@ -6069,12 +6976,10 @@ function formatBirthDate(
 }
 
 
-
 function getTodayInputValue() {
 
     const now =
         new Date();
-
 
     const formatter =
         new Intl.DateTimeFormat(
@@ -6094,13 +6999,11 @@ function getTodayInputValue() {
             }
         );
 
-
     return formatter.format(
         now
     );
 
 }
-
 
 
 /* =========================================================
@@ -6132,7 +7035,6 @@ function createSlug(
         );
 
 }
-
 
 
 function latinize(
@@ -6167,25 +7069,23 @@ function latinize(
 
     };
 
-
     return String(
         value
     )
-        .split("")
+        .split(
+            ""
+        )
         .map(
             character =>
                 map[character] ??
                 character
         )
-        .join("");
+        .join(
+            ""
+        );
 
 }
 
-
-
-/* =========================================================
-   NORMALIZACIJA
-========================================================= */
 
 function normalizeText(
     value
@@ -6207,7 +7107,6 @@ function normalizeText(
 }
 
 
-
 /* =========================================================
    PORUKE
 ========================================================= */
@@ -6218,17 +7117,16 @@ function setLoginMessage(
 ) {
 
     if (!loginMessage) {
-        return;
-    }
 
+        return;
+
+    }
 
     loginMessage.textContent =
         message;
 
-
     loginMessage.className =
         "admin-login-message";
-
 
     if (type) {
 
@@ -6242,24 +7140,22 @@ function setLoginMessage(
 }
 
 
-
 function setNewsFormMessage(
     message,
     type
 ) {
 
     if (!newsFormMessage) {
-        return;
-    }
 
+        return;
+
+    }
 
     newsFormMessage.textContent =
         message;
 
-
     newsFormMessage.className =
         "admin-form-message";
-
 
     if (type) {
 
@@ -6273,24 +7169,22 @@ function setNewsFormMessage(
 }
 
 
-
 function setPlayerFormMessage(
     message,
     type
 ) {
 
     if (!playerFormMessage) {
-        return;
-    }
 
+        return;
+
+    }
 
     playerFormMessage.textContent =
         message;
 
-
     playerFormMessage.className =
         "admin-form-message";
-
 
     if (type) {
 
@@ -6304,11 +7198,6 @@ function setPlayerFormMessage(
 }
 
 
-
-/* =========================================================
-   BUTTON LOADING
-========================================================= */
-
 function setButtonLoading(
     button,
     loading,
@@ -6316,24 +7205,19 @@ function setButtonLoading(
 ) {
 
     if (!button) {
-        return;
-    }
 
+        return;
+
+    }
 
     button.disabled =
         loading;
-
 
     button.textContent =
         text;
 
 }
 
-
-
-/* =========================================================
-   GREŠKE
-========================================================= */
 
 function getFriendlyError(
     error,
@@ -6346,7 +7230,6 @@ function getFriendlyError(
             ""
         );
 
-
     if (
         message.includes(
             "duplicate key"
@@ -6356,7 +7239,6 @@ function getFriendlyError(
         return "Већ постоји исти запис.";
 
     }
-
 
     if (
         message.includes(
@@ -6368,7 +7250,6 @@ function getFriendlyError(
 
     }
 
-
     if (
         message.includes(
             "Bucket not found"
@@ -6379,7 +7260,6 @@ function getFriendlyError(
 
     }
 
-
     return (
         message ||
         fallback
@@ -6387,11 +7267,6 @@ function getFriendlyError(
 
 }
 
-
-
-/* =========================================================
-   BEZBEDAN ISPIS
-========================================================= */
 
 function escapeHtml(
     value = ""
@@ -6422,7 +7297,6 @@ function escapeHtml(
         );
 
 }
-
 
 
 function escapeAttribute(

@@ -1,355 +1,137 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEZEVAC
-   KONTAKT
+   FK OBILIĆ NOVI KNEŽEVAC
+   KONTAKT - JAVNI SAJT
 ========================================================= */
 
-async function loadContactData() {
-    const container =
-        document.querySelector("#contact-dynamic");
+(() => {
 
-    if (!container) return;
+    const SUPABASE_URL =
+        "https://uvevthgxlnzzkapkjxky.supabase.co";
 
-    try {
-        const response = await fetch(
-            "data/kontakt.json",
-            {
-                cache: "no-store"
-            }
-        );
+    const SUPABASE_KEY =
+        "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadContactData
+    );
+
+
+
+    /* =====================================================
+       UČITAVANJE
+    ===================================================== */
+
+    async function loadContactData() {
+
+        const container =
+            document.querySelector(
+                "#contact-details-grid"
+            ) ||
+            document.querySelector(
+                ".contact-details-grid"
             );
-        }
-
-        const data = await response.json();
-
-        const contact =
-            data?.kontakt || {};
-
-        const items = [];
 
 
-        /* =====================================================
-           TELEFON
-        ===================================================== */
-
-        if (contact.telefon) {
-
-            const phone =
-                escapeContactHtml(
-                    contact.telefon
-                );
-
-            const phoneHref =
-                String(contact.telefon)
-                    .replace(/[^\d+]/g, "");
-
-            items.push(`
-                <a
-                    href="tel:${phoneHref}"
-                    class="contact-detail-item contact-clickable"
-                >
-
-                    <div class="contact-detail-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M6.6 10.8c1.6 3.1 3.5 5 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1.1l-2.2 2.1z"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <div class="contact-detail-content">
-
-                        <span>
-                            ТЕЛЕФОН
-                        </span>
-
-                        <strong>
-                            ${phone}
-                        </strong>
-
-                        <small>
-                            ПОЗОВИТЕ НАС →
-                        </small>
-
-                    </div>
-
-                </a>
-            `);
+        if (!container) {
+            return;
         }
 
 
-        /* =====================================================
-           EMAIL
-        ===================================================== */
+        try {
 
-        if (contact.email) {
+            const url =
+                `${SUPABASE_URL}/rest/v1/kontakt` +
+                `?select=id,tip,naziv,vrednost,link,redosled,aktivan` +
+                `&aktivan=eq.true` +
+                `&order=redosled.asc,created_at.asc`;
 
-            const email =
-                escapeContactHtml(
-                    contact.email
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        headers: {
+
+                            apikey:
+                                SUPABASE_KEY,
+
+                            Authorization:
+                                `Bearer ${SUPABASE_KEY}`
+
+                        },
+
+                        cache:
+                            "no-store"
+                    }
                 );
 
-            items.push(`
-                <a
-                    href="mailto:${escapeContactAttribute(contact.email)}"
-                    class="contact-detail-item contact-clickable"
-                >
 
-                    <div class="contact-detail-icon">
+            if (!response.ok) {
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M3 5h18c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2zm9 7L3.4 7h17.2L12 12zm0 2.3L3 9v8h18V9l-9 5.3z"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <div class="contact-detail-content">
-
-                        <span>
-                            Е-ПОШТА
-                        </span>
-
-                        <strong>
-                            ${email}
-                        </strong>
-
-                        <small>
-                            ПОШАЉИТЕ ПОРУКУ →
-                        </small>
-
-                    </div>
-
-                </a>
-            `);
-        }
-
-
-        /* =====================================================
-           ADRESA / GOOGLE MAPS
-        ===================================================== */
-
-        if (contact.adresa) {
-
-            const address =
-                escapeContactHtml(
-                    contact.adresa
+                throw new Error(
+                    `HTTP ${response.status}`
                 );
 
-            let mapsUrl = "";
-
-            if (contact.mapa) {
-                mapsUrl =
-                    sanitizeContactUrl(
-                        contact.mapa
-                    );
             }
 
-            /*
-                Rezervna varijanta:
-                ako kasnije nema "mapa" linka,
-                napravi Google Maps pretragu iz adrese.
-            */
 
-            if (!mapsUrl) {
-                mapsUrl =
-                    "https://www.google.com/maps/search/?api=1&query=" +
-                    encodeURIComponent(
-                        contact.adresa
-                    );
-            }
-
-            items.push(`
-                <a
-                    href="${mapsUrl}"
-                    class="contact-detail-item contact-clickable"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-
-                    <div class="contact-detail-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <div class="contact-detail-content">
-
-                        <span>
-                            ЛОКАЦИЈА
-                        </span>
-
-                        <strong>
-                            ${address}
-                        </strong>
-
-                        <small>
-                            ОТВОРИ GOOGLE MAPS →
-                        </small>
-
-                    </div>
-
-                </a>
-            `);
-        }
+            const contacts =
+                await response.json();
 
 
-        /* =====================================================
-           INSTAGRAM
-        ===================================================== */
+            if (
+                !Array.isArray(
+                    contacts
+                )
+            ) {
 
-        if (contact.instagram) {
-
-            const instagram =
-                sanitizeContactUrl(
-                    contact.instagram
+                throw new Error(
+                    "Неисправан формат контакт података."
                 );
 
-            if (instagram) {
-
-                items.push(`
-                    <a
-                        href="${instagram}"
-                        class="contact-detail-item contact-clickable"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-
-                        <div class="contact-detail-icon">
-
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="5"
-                                    ry="5"
-                                />
-
-                                <circle
-                                    cx="12"
-                                    cy="12"
-                                    r="4"
-                                />
-
-                                <circle
-                                    cx="17.5"
-                                    cy="6.5"
-                                    r="1"
-                                    class="icon-dot"
-                                />
-                            </svg>
-
-                        </div>
-
-                        <div class="contact-detail-content">
-
-                            <span>
-                                ИНСТАГРАМ
-                            </span>
-
-                            <strong>
-                                @fkobilicnk1930
-                            </strong>
-
-                            <small>
-                                ПОСЕТИ ПРОФИЛ →
-                            </small>
-
-                        </div>
-
-                    </a>
-                `);
             }
+
+
+            renderContacts(
+                contacts,
+                container
+            );
+
         }
 
+        catch (error) {
 
-        /* =====================================================
-           FACEBOOK
-        ===================================================== */
+            console.error(
+                "Greška pri učitavanju kontakta:",
+                error
+            );
 
-        if (contact.facebook) {
 
-            const facebook =
-                sanitizeContactUrl(
-                    contact.facebook
-                );
+            renderContactError(
+                container
+            );
 
-            if (facebook) {
-
-                items.push(`
-                    <a
-                        href="${facebook}"
-                        class="contact-detail-item contact-clickable"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-
-                        <div class="contact-detail-icon">
-
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="M14 8h3V4.5c-.5-.1-2-.2-3.4-.2-3.3 0-5.6 2-5.6 5.8V13H5v4h3v7h4v-7h3.3l.7-4H12v-2.5C12 9.3 12.3 8 14 8z"
-                                />
-                            </svg>
-
-                        </div>
-
-                        <div class="contact-detail-content">
-
-                            <span>
-                                ФЕЈСБУК
-                            </span>
-
-                            <strong>
-                                ФК Обилић
-                            </strong>
-
-                            <small>
-                                ПОСЕТИ СТРАНИЦУ →
-                            </small>
-
-                        </div>
-
-                    </a>
-                `);
-            }
         }
 
+    }
 
-        /* =====================================================
-           AKO NEMA PODATAKA
-        ===================================================== */
 
-        if (items.length === 0) {
+
+    /* =====================================================
+       PRIKAZ
+    ===================================================== */
+
+    function renderContacts(
+        contacts,
+        container
+    ) {
+
+        if (!contacts.length) {
 
             container.innerHTML = `
+
                 <div class="contact-data-empty">
 
                     <img
@@ -360,123 +142,321 @@ async function loadContactData() {
                     <div>
 
                         <strong>
-                            КОНТАКТ ПОДАЦИ
+                            Контакт подаци
                         </strong>
 
                         <p>
-                            Званични контакт подаци клуба
+                            Контакт подаци клуба
                             биће додати ускоро.
                         </p>
 
                     </div>
 
                 </div>
+
             `;
 
             return;
+
         }
 
 
         container.innerHTML =
-            items.join("");
+            contacts
+                .map(
+                    renderContactItem
+                )
+                .join("");
+
+    }
 
 
-    } catch (error) {
 
-        console.error(
-            "Грешка при учитавању контакт података:",
-            error
-        );
+    /* =====================================================
+       POJEDINAČNI KONTAKT
+    ===================================================== */
 
-        container.innerHTML = `
-            <div class="contact-data-empty">
+    function renderContactItem(
+        item
+    ) {
 
-                <p>
-                    Контакт подаци тренутно нису доступни.
-                </p>
+        const label =
+            item.naziv ||
+            getContactTypeLabel(
+                item.tip
+            );
+
+
+        const value =
+            item.vrednost ||
+            "";
+
+
+        const link =
+            getSafeContactLink(
+                item.link
+            );
+
+
+        const content = `
+
+            <span>
+                ${escapeHtml(label)}
+            </span>
+
+            <strong>
+                ${escapeHtml(value)}
+            </strong>
+
+        `;
+
+
+        if (link) {
+
+            return `
+
+                <a
+                    href="${escapeAttribute(link)}"
+                    class="contact-detail-item"
+                    ${getLinkAttributes(link)}
+                >
+
+                    ${content}
+
+                </a>
+
+            `;
+
+        }
+
+
+        return `
+
+            <div class="contact-detail-item">
+
+                ${content}
 
             </div>
+
         `;
-    }
-}
 
-
-
-/* =========================================================
-   PROVERA LINKA
-========================================================= */
-
-function sanitizeContactUrl(value = "") {
-
-    const link =
-        String(value).trim();
-
-    if (!link) {
-        return "";
     }
 
-    try {
 
-        const url =
-            new URL(link);
 
-        if (
-            url.protocol !== "http:" &&
-            url.protocol !== "https:"
-        ) {
+    /* =====================================================
+       LABELA
+    ===================================================== */
+
+    function getContactTypeLabel(
+        type
+    ) {
+
+        const labels = {
+
+            telefon:
+                "ТЕЛЕФОН",
+
+            email:
+                "E-MAIL",
+
+            adresa:
+                "АДРЕСА",
+
+            instagram:
+                "INSTAGRAM",
+
+            facebook:
+                "FACEBOOK",
+
+            youtube:
+                "YOUTUBE",
+
+            website:
+                "ВЕБ САЈТ",
+
+            ostalo:
+                "КОНТАКТ"
+
+        };
+
+
+        return (
+            labels[type] ||
+            "КОНТАКТ"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       BEZBEDAN LINK
+    ===================================================== */
+
+    function getSafeContactLink(
+        value
+    ) {
+
+        if (!value) {
             return "";
         }
 
-        return escapeContactAttribute(
-            url.href
-        );
 
-    } catch {
+        const link =
+            String(value)
+                .trim();
+
+
+        if (
+            link.startsWith("tel:") ||
+            link.startsWith("mailto:")
+        ) {
+
+            return link;
+
+        }
+
+
+        try {
+
+            const url =
+                new URL(
+                    link
+                );
+
+
+            if (
+                url.protocol === "http:" ||
+                url.protocol === "https:"
+            ) {
+
+                return url.href;
+
+            }
+
+        }
+
+        catch {
+
+            return "";
+
+        }
+
 
         return "";
 
     }
-}
 
 
 
-/* =========================================================
-   ZAŠTITA HTML-A
-========================================================= */
+    function getLinkAttributes(
+        link
+    ) {
 
-function escapeContactHtml(value = "") {
+        if (
+            link.startsWith("http://") ||
+            link.startsWith("https://")
+        ) {
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+            return `
+                target="_blank"
+                rel="noopener noreferrer"
+            `;
+
+        }
 
 
+        return "";
 
-/* =========================================================
-   ZAŠTITA ATRIBUTA
-========================================================= */
-
-function escapeContactAttribute(value = "") {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;")
-        .replaceAll("<", "")
-        .replaceAll(">", "");
-}
+    }
 
 
 
-/* =========================================================
-   POKRETANJE
-========================================================= */
+    /* =====================================================
+       GREŠKA
+    ===================================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadContactData
-);
+    function renderContactError(
+        container
+    ) {
+
+        container.innerHTML = `
+
+            <div class="contact-data-empty">
+
+                <img
+                    src="images/grb.png"
+                    alt=""
+                >
+
+                <div>
+
+                    <strong>
+                        Контакт
+                    </strong>
+
+                    <p>
+                        Контакт податке тренутно
+                        није могуће учитати.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    /* =====================================================
+       ESCAPE
+    ===================================================== */
+
+    function escapeHtml(
+        value = ""
+    ) {
+
+        return String(value)
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    function escapeAttribute(
+        value = ""
+    ) {
+
+        return escapeHtml(
+            value
+        );
+
+    }
+
+})();

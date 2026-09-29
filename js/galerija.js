@@ -1,73 +1,88 @@
 /* =========================================================
-   FK OBILIĆ NOVI KNEZEVAC
-   GALERIJA
+   FK OBILIĆ NOVI KNEŽEVAC
+   JAVNA GALERIJA - SUPABASE
 ========================================================= */
 
-let galleryItems = [];
-let currentGalleryFilter = "sve";
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const PUBLIC_GALLERY_SUPABASE_URL =
+    "https://uvevthgxlnzzkapkjxky.supabase.co";
+
+const PUBLIC_GALLERY_SUPABASE_KEY =
+    "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
 
-async function loadGallery() {
 
-    const pageContainer =
-        document.querySelector("#gallery-grid");
+/* =========================================================
+   START
+========================================================= */
 
-    const homeContainer =
-        document.querySelector("#home-gallery-grid");
+document.addEventListener(
+    "DOMContentLoaded",
+    loadPublicGallery
+);
 
 
-    if (!pageContainer && !homeContainer) return;
+
+/* =========================================================
+   GLAVNO UČITAVANJE
+========================================================= */
+
+async function loadPublicGallery() {
+
+    const homeGrid =
+        document.querySelector(
+            "#home-gallery-grid"
+        );
+
+
+    const fullGrid =
+        document.querySelector(
+            "#gallery-page-grid"
+        );
+
+
+    if (
+        !homeGrid &&
+        !fullGrid
+    ) {
+
+        return;
+
+    }
 
 
     try {
 
-        const response = await fetch(
-            "data/galerija.json",
-            {
-                cache: "no-store"
-            }
-        );
+        const items =
+            await fetchPublicGallery();
 
 
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
+        if (homeGrid) {
 
-
-        const data = await response.json();
-
-
-        galleryItems =
-            Array.isArray(data?.fotografije)
-                ? data.fotografije
-                : [];
-
-
-        /* =====================================================
-           GLAVNA GALERIJA
-        ===================================================== */
-
-        if (pageContainer) {
-            renderGalleryPage(
-                pageContainer
-            );
-        }
-
-
-        /* =====================================================
-           GALERIJA NA POČETNOJ
-        ===================================================== */
-
-        if (homeContainer) {
             renderHomeGallery(
-                homeContainer
+                items,
+                homeGrid
             );
+
         }
 
 
-    } catch (error) {
+        if (fullGrid) {
+
+            renderFullGallery(
+                items,
+                fullGrid
+            );
+
+        }
+
+    }
+
+    catch (error) {
 
         console.error(
             "Грешка при учитавању галерије:",
@@ -75,36 +90,10 @@ async function loadGallery() {
         );
 
 
-        if (pageContainer) {
+        if (homeGrid) {
 
-            pageContainer.innerHTML = `
-                <div class="gallery-empty">
+            homeGrid.innerHTML = `
 
-                    <img
-                        src="images/grb.png"
-                        alt=""
-                    >
-
-                    <div>
-
-                        <strong>
-                            ГАЛЕРИЈА ТРЕНУТНО НИЈЕ ДОСТУПНА
-                        </strong>
-
-                        <p>
-                            Није могуће учитати фотографије.
-                        </p>
-
-                    </div>
-
-                </div>
-            `;
-        }
-
-
-        if (homeContainer) {
-
-            homeContainer.innerHTML = `
                 <div class="home-gallery-empty">
 
                     <img
@@ -117,86 +106,151 @@ async function loadGallery() {
                     </span>
 
                 </div>
+
             `;
+
         }
 
-    }
-}
 
+        if (fullGrid) {
 
+            fullGrid.innerHTML = `
 
-/* =========================================================
-   GLAVNA GALERIJA
-========================================================= */
+                <div class="gallery-page-empty">
 
-function renderGalleryPage(container) {
+                    <img
+                        src="images/grb.png"
+                        alt=""
+                    >
 
-    const filteredItems =
-        currentGalleryFilter === "sve"
-            ? galleryItems
-            : galleryItems.filter(item =>
-                normalizeGalleryCategory(
-                    item.kategorija
-                ) === currentGalleryFilter
-            );
-
-
-    if (filteredItems.length === 0) {
-
-        container.innerHTML = `
-            <div class="gallery-empty">
-
-                <img
-                    src="images/grb.png"
-                    alt=""
-                >
-
-                <div>
-
-                    <strong>
-                        ${
-                            currentGalleryFilter === "sve"
-                                ? "ГАЛЕРИЈА ФК ОБИЛИЋ"
-                                : "НЕМА ФОТОГРАФИЈА"
-                        }
-                    </strong>
-
-                    <p>
-                        ${
-                            currentGalleryFilter === "sve"
-                                ? "Фотографије ће бити додате ускоро."
-                                : "У овој категорији тренутно нема фотографија."
-                        }
-                    </p>
+                    <span>
+                        Галерија тренутно није доступна.
+                    </span>
 
                 </div>
 
-            </div>
-        `;
+            `;
 
-        return;
+        }
+
     }
 
-
-    container.innerHTML =
-        filteredItems
-            .map(item =>
-                createGalleryItem(item)
-            )
-            .join("");
 }
 
 
 
 /* =========================================================
-   GALERIJA NA POČETNOJ
+   SUPABASE FETCH
 ========================================================= */
 
-function renderHomeGallery(container) {
+async function fetchPublicGallery() {
 
-    if (galleryItems.length === 0) {
+    const url =
+        new URL(
+            `${PUBLIC_GALLERY_SUPABASE_URL}/rest/v1/galerija`
+        );
+
+
+    url.searchParams.set(
+        "select",
+        [
+            "id",
+            "naslov",
+            "opis",
+            "fotografija",
+            "alt_text",
+            "datum",
+            "kategorija",
+            "istaknuta",
+            "redosled",
+            "aktivna",
+            "created_at"
+        ].join(",")
+    );
+
+
+    url.searchParams.set(
+        "aktivna",
+        "eq.true"
+    );
+
+
+    url.searchParams.set(
+        "order",
+        [
+            "istaknuta.desc",
+            "redosled.asc",
+            "datum.desc.nullslast",
+            "created_at.desc"
+        ].join(",")
+    );
+
+
+    const response =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    "GET",
+
+                headers: {
+
+                    "apikey":
+                        PUBLIC_GALLERY_SUPABASE_KEY,
+
+                    "Authorization":
+                        `Bearer ${PUBLIC_GALLERY_SUPABASE_KEY}`,
+
+                    "Accept":
+                        "application/json"
+
+                },
+
+                cache:
+                    "no-store"
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `HTTP ${response.status}`
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    return Array.isArray(
+        data
+    )
+        ? data
+        : [];
+
+}
+
+
+
+/* =========================================================
+   POČETNA STRANA
+========================================================= */
+
+function renderHomeGallery(
+    items,
+    container
+) {
+
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="home-gallery-empty">
 
                 <img
@@ -209,301 +263,848 @@ function renderHomeGallery(container) {
                 </span>
 
             </div>
+
         `;
 
         return;
+
     }
 
 
     /*
-        Na početnoj prikazujemo prvih 6 fotografija.
+        Na početnoj prikazujemo najviše 6.
+        Istaknute su već prve zbog sortiranja.
     */
 
     const homeItems =
-        galleryItems.slice(0, 6);
+        items.slice(
+            0,
+            6
+        );
 
 
     container.innerHTML =
         homeItems
-            .map(item =>
-                createHomeGalleryItem(item)
+            .map(
+                createHomeGalleryItem
             )
             .join("");
+
+
+    setupGalleryClicks(
+        container,
+        homeItems
+    );
+
 }
 
 
 
 /* =========================================================
-   POJEDINAČNA FOTOGRAFIJA - GLAVNA GALERIJA
+   KARTICA NA POČETNOJ
 ========================================================= */
 
-function createGalleryItem(item) {
+function createHomeGalleryItem(
+    item,
+    index
+) {
+
+    const image =
+        item.fotografija ||
+        "images/grb.png";
+
 
     const title =
-        escapeGalleryHtml(
-            item.naslov || "ФК Обилић"
-        );
+        item.naslov ||
+        "ФК Обилић";
 
 
     const category =
-        normalizeGalleryCategory(
-            item.kategorija
-        );
+        item.kategorija ||
+        "ГАЛЕРИЈА";
 
 
-    const categoryLabel =
-        getGalleryCategoryLabel(
-            category
-        );
+    return `
 
+        <button
+            type="button"
+            class="home-gallery-item"
+            data-gallery-index="${index}"
+            aria-label="${escapeGalleryPublicAttribute(title)}"
+        >
+
+            <img
+                src="${escapeGalleryPublicAttribute(image)}"
+                alt="${escapeGalleryPublicAttribute(item.alt_text || title)}"
+                loading="lazy"
+                onerror="
+                    this.onerror=null;
+                    this.src='images/grb.png';
+                "
+            >
+
+
+            <span class="home-gallery-overlay"></span>
+
+
+            <span class="home-gallery-info">
+
+                <span>
+                    ${escapeGalleryPublicHtml(category)}
+                </span>
+
+                <strong>
+                    ${escapeGalleryPublicHtml(title)}
+                </strong>
+
+            </span>
+
+        </button>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   CELA GALERIJA
+========================================================= */
+
+function renderFullGallery(
+    items,
+    container
+) {
+
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="gallery-page-empty">
+
+                <img
+                    src="images/grb.png"
+                    alt=""
+                >
+
+                <span>
+                    Фотографије ће бити додате ускоро.
+                </span>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        items
+            .map(
+                createFullGalleryItem
+            )
+            .join("");
+
+
+    setupGalleryClicks(
+        container,
+        items
+    );
+
+}
+
+
+
+/* =========================================================
+   KARTICA NA STRANICI GALERIJE
+========================================================= */
+
+function createFullGalleryItem(
+    item,
+    index
+) {
 
     const image =
-        escapeGalleryHtml(
-            item.slika || ""
-        );
+        item.fotografija ||
+        "images/grb.png";
+
+
+    const title =
+        item.naslov ||
+        "ФК Обилић";
+
+
+    const category =
+        item.kategorija ||
+        "ГАЛЕРИЈА";
 
 
     const date =
-        escapeGalleryHtml(
-            item.datum || ""
-        );
-
-
-    if (!image) {
-        return "";
-    }
+        item.datum
+            ? formatPublicGalleryDate(
+                item.datum
+            )
+            : "";
 
 
     return `
-        <article
-            class="gallery-item"
-            data-category="${category}"
+
+        <button
+            type="button"
+            class="gallery-page-item"
+            data-gallery-index="${index}"
+            aria-label="${escapeGalleryPublicAttribute(title)}"
         >
 
             <img
-                src="${image}"
-                alt="${title}"
+                src="${escapeGalleryPublicAttribute(image)}"
+                alt="${escapeGalleryPublicAttribute(item.alt_text || title)}"
                 loading="lazy"
                 onerror="
-                    this.closest('.gallery-item').style.display='none';
+                    this.onerror=null;
+                    this.src='images/grb.png';
                 "
             >
 
 
-            <div class="gallery-item-info">
+            <span class="gallery-page-overlay"></span>
 
-                <span>
-                    ${categoryLabel}
-                    ${
-                        date
-                            ? ` • ${date}`
-                            : ""
-                    }
+
+            <span class="gallery-page-info">
+
+                <span class="gallery-page-category">
+                    ${escapeGalleryPublicHtml(category)}
                 </span>
 
+
                 <strong>
-                    ${title}
+                    ${escapeGalleryPublicHtml(title)}
                 </strong>
 
-            </div>
 
-        </article>
+                ${
+                    date
+                        ? `
+
+                            <small>
+                                ${escapeGalleryPublicHtml(date)}
+                            </small>
+
+                        `
+                        : ""
+                }
+
+            </span>
+
+        </button>
+
     `;
+
 }
 
 
 
 /* =========================================================
-   POJEDINAČNA FOTOGRAFIJA - POČETNA
+   KLIK NA FOTOGRAFIJU
 ========================================================= */
 
-function createHomeGalleryItem(item) {
+function setupGalleryClicks(
+    container,
+    items
+) {
 
-    const title =
-        escapeGalleryHtml(
-            item.naslov || "ФК Обилић"
+    container
+        .querySelectorAll(
+            "[data-gallery-index]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const index =
+                            Number(
+                                button.dataset
+                                    .galleryIndex
+                            );
+
+
+                        if (
+                            Number.isInteger(index) &&
+                            items[index]
+                        ) {
+
+                            openPublicGalleryLightbox(
+                                items,
+                                index
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   LIGHTBOX
+========================================================= */
+
+let galleryLightboxItems =
+    [];
+
+let galleryLightboxIndex =
+    0;
+
+
+function openPublicGalleryLightbox(
+    items,
+    index
+) {
+
+    galleryLightboxItems =
+        items;
+
+
+    galleryLightboxIndex =
+        index;
+
+
+    let lightbox =
+        document.querySelector(
+            "#public-gallery-lightbox"
         );
 
 
+    if (!lightbox) {
+
+        lightbox =
+            createPublicGalleryLightbox();
+
+    }
+
+
+    updatePublicGalleryLightbox();
+
+
+    lightbox.hidden =
+        false;
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+
+/* =========================================================
+   KREIRANJE LIGHTBOXA
+========================================================= */
+
+function createPublicGalleryLightbox() {
+
+    const lightbox =
+        document.createElement(
+            "div"
+        );
+
+
+    lightbox.id =
+        "public-gallery-lightbox";
+
+
+    lightbox.className =
+        "public-gallery-lightbox";
+
+
+    lightbox.hidden =
+        true;
+
+
+    lightbox.innerHTML = `
+
+        <div
+            class="public-gallery-lightbox-backdrop"
+            data-gallery-lightbox-close
+        ></div>
+
+
+        <button
+            type="button"
+            class="public-gallery-lightbox-close"
+            data-gallery-lightbox-close
+            aria-label="Затвори"
+        >
+            ×
+        </button>
+
+
+        <button
+            type="button"
+            class="
+                public-gallery-lightbox-arrow
+                public-gallery-lightbox-prev
+            "
+            data-gallery-lightbox-prev
+            aria-label="Претходна фотографија"
+        >
+            ‹
+        </button>
+
+
+        <div class="public-gallery-lightbox-content">
+
+            <img
+                id="public-gallery-lightbox-image"
+                src=""
+                alt=""
+            >
+
+
+            <div class="public-gallery-lightbox-info">
+
+                <span
+                    id="public-gallery-lightbox-category"
+                ></span>
+
+
+                <strong
+                    id="public-gallery-lightbox-title"
+                ></strong>
+
+
+                <p
+                    id="public-gallery-lightbox-description"
+                ></p>
+
+
+                <small
+                    id="public-gallery-lightbox-counter"
+                ></small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="
+                public-gallery-lightbox-arrow
+                public-gallery-lightbox-next
+            "
+            data-gallery-lightbox-next
+            aria-label="Следећа фотографија"
+        >
+            ›
+        </button>
+
+    `;
+
+
+    document.body.appendChild(
+        lightbox
+    );
+
+
+    lightbox
+        .querySelectorAll(
+            "[data-gallery-lightbox-close]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    closePublicGalleryLightbox
+                );
+
+            }
+        );
+
+
+    lightbox
+        .querySelector(
+            "[data-gallery-lightbox-prev]"
+        )
+        ?.addEventListener(
+            "click",
+            showPreviousPublicGalleryImage
+        );
+
+
+    lightbox
+        .querySelector(
+            "[data-gallery-lightbox-next]"
+        )
+        ?.addEventListener(
+            "click",
+            showNextPublicGalleryImage
+        );
+
+
+    document.addEventListener(
+        "keydown",
+        handlePublicGalleryKeyboard
+    );
+
+
+    return lightbox;
+
+}
+
+
+
+/* =========================================================
+   LIGHTBOX SADRŽAJ
+========================================================= */
+
+function updatePublicGalleryLightbox() {
+
+    const item =
+        galleryLightboxItems[
+            galleryLightboxIndex
+        ];
+
+
+    if (!item) {
+
+        return;
+
+    }
+
+
     const image =
-        escapeGalleryHtml(
-            item.slika || ""
+        document.querySelector(
+            "#public-gallery-lightbox-image"
         );
 
 
     const category =
-        normalizeGalleryCategory(
-            item.kategorija
+        document.querySelector(
+            "#public-gallery-lightbox-category"
         );
 
 
-    const categoryLabel =
-        getGalleryCategoryLabel(
-            category
+    const title =
+        document.querySelector(
+            "#public-gallery-lightbox-title"
         );
 
 
-    if (!image) {
+    const description =
+        document.querySelector(
+            "#public-gallery-lightbox-description"
+        );
+
+
+    const counter =
+        document.querySelector(
+            "#public-gallery-lightbox-counter"
+        );
+
+
+    if (image) {
+
+        image.src =
+            item.fotografija ||
+            "images/grb.png";
+
+
+        image.alt =
+            item.alt_text ||
+            item.naslov ||
+            "ФК Обилић";
+
+    }
+
+
+    if (category) {
+
+        category.textContent =
+            item.kategorija ||
+            "ГАЛЕРИЈА";
+
+    }
+
+
+    if (title) {
+
+        title.textContent =
+            item.naslov ||
+            "ФК Обилић";
+
+    }
+
+
+    if (description) {
+
+        description.textContent =
+            item.opis ||
+            "";
+
+
+        description.hidden =
+            !item.opis;
+
+    }
+
+
+    if (counter) {
+
+        counter.textContent =
+            `${galleryLightboxIndex + 1} / ${galleryLightboxItems.length}`;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   PRETHODNA
+========================================================= */
+
+function showPreviousPublicGalleryImage() {
+
+    if (
+        galleryLightboxItems.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    galleryLightboxIndex =
+        (
+            galleryLightboxIndex -
+            1 +
+            galleryLightboxItems.length
+        ) %
+        galleryLightboxItems.length;
+
+
+    updatePublicGalleryLightbox();
+
+}
+
+
+
+/* =========================================================
+   SLEDEĆA
+========================================================= */
+
+function showNextPublicGalleryImage() {
+
+    if (
+        galleryLightboxItems.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    galleryLightboxIndex =
+        (
+            galleryLightboxIndex +
+            1
+        ) %
+        galleryLightboxItems.length;
+
+
+    updatePublicGalleryLightbox();
+
+}
+
+
+
+/* =========================================================
+   ZATVARANJE
+========================================================= */
+
+function closePublicGalleryLightbox() {
+
+    const lightbox =
+        document.querySelector(
+            "#public-gallery-lightbox"
+        );
+
+
+    if (!lightbox) {
+
+        return;
+
+    }
+
+
+    lightbox.hidden =
+        true;
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+/* =========================================================
+   TASTATURA
+========================================================= */
+
+function handlePublicGalleryKeyboard(
+    event
+) {
+
+    const lightbox =
+        document.querySelector(
+            "#public-gallery-lightbox"
+        );
+
+
+    if (
+        !lightbox ||
+        lightbox.hidden
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        event.key ===
+        "Escape"
+    ) {
+
+        closePublicGalleryLightbox();
+
+    }
+
+
+    if (
+        event.key ===
+        "ArrowLeft"
+    ) {
+
+        showPreviousPublicGalleryImage();
+
+    }
+
+
+    if (
+        event.key ===
+        "ArrowRight"
+    ) {
+
+        showNextPublicGalleryImage();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   DATUM
+========================================================= */
+
+function formatPublicGalleryDate(
+    dateString
+) {
+
+    if (!dateString) {
+
         return "";
+
+    }
+
+
+    const parts =
+        String(
+            dateString
+        )
+            .split("-");
+
+
+    if (
+        parts.length !==
+        3
+    ) {
+
+        return dateString;
+
     }
 
 
-    return `
-        <a
-            href="galerija.html"
-            class="home-gallery-item"
-        >
+    return (
+        `${parts[2]}.` +
+        `${parts[1]}.` +
+        `${parts[0]}.`
+    );
 
-            <img
-                src="${image}"
-                alt="${title}"
-                loading="lazy"
-                onerror="
-                    this.closest('.home-gallery-item').style.display='none';
-                "
-            >
-
-            <div class="home-gallery-overlay"></div>
-
-            <div class="home-gallery-info">
-
-                <span>
-                    ${categoryLabel}
-                </span>
-
-                <strong>
-                    ${title}
-                </strong>
-
-            </div>
-
-        </a>
-    `;
 }
 
 
 
 /* =========================================================
-   FILTERI
+   BEZBEDAN ISPIS
 ========================================================= */
 
-function setupGalleryFilters() {
+function escapeGalleryPublicHtml(
+    value = ""
+) {
 
-    const buttons =
-        document.querySelectorAll(
-            ".gallery-filter"
+    return String(
+        value
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
         );
 
-
-    if (!buttons.length) return;
-
-
-    buttons.forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const filter =
-                    button.dataset.filter || "sve";
-
-
-                currentGalleryFilter =
-                    normalizeGalleryCategory(
-                        filter
-                    );
-
-
-                buttons.forEach(btn =>
-                    btn.classList.remove(
-                        "active"
-                    )
-                );
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                const pageContainer =
-                    document.querySelector(
-                        "#gallery-grid"
-                    );
-
-
-                if (pageContainer) {
-                    renderGalleryPage(
-                        pageContainer
-                    );
-                }
-            }
-        );
-
-    });
 }
 
 
+function escapeGalleryPublicAttribute(
+    value = ""
+) {
 
-/* =========================================================
-   NAZIV KATEGORIJE
-========================================================= */
+    return escapeGalleryPublicHtml(
+        value
+    );
 
-function getGalleryCategoryLabel(category) {
-
-    const labels = {
-        utakmice: "УТАКМИЦЕ",
-        treninzi: "ТРЕНИНЗИ",
-        klub: "КЛУБ"
-    };
-
-
-    return labels[category]
-        || "ФК ОБИЛИЋ";
 }
-
-
-
-/* =========================================================
-   NORMALIZACIJA KATEGORIJE
-========================================================= */
-
-function normalizeGalleryCategory(category = "") {
-
-    return String(category)
-        .trim()
-        .toLowerCase();
-}
-
-
-
-/* =========================================================
-   ZAŠTITA TEKSTA
-========================================================= */
-
-function escapeGalleryHtml(value = "") {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-
-/* =========================================================
-   POKRETANJE
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        setupGalleryFilters();
-
-        loadGallery();
-
-    }
-);
