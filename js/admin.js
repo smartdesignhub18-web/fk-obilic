@@ -535,20 +535,9 @@ async function loadDashboardStats() {
     await Promise.allSettled(
         [
             loadNewsCount(),
-
             loadPlayersCount(),
-
-            loadJsonCount(
-                "data/galerija.json",
-                "fotografije",
-                "#admin-stat-gallery"
-            ),
-
-            loadJsonCount(
-                "data/partneri.json",
-                "partneri",
-                "#admin-stat-partners"
-            )
+            loadGalleryCount(),
+            loadPartnersCount()
         ]
     );
 
@@ -636,6 +625,100 @@ async function loadPlayersCount() {
                 "aktivan",
                 true
             );
+
+    element.textContent =
+        error
+            ? "—"
+            : String(
+                count ?? 0
+            );
+
+}
+
+async function loadGalleryCount() {
+
+    const element =
+        document.querySelector(
+            "#admin-stat-gallery"
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    const {
+        count,
+        error
+    } =
+        await sb
+            .from(
+                "galerija"
+            )
+            .select(
+                "*",
+                {
+                    count:
+                        "exact",
+
+                    head:
+                        true
+                }
+            )
+            .eq(
+                "aktivna",
+                true
+            );
+
+
+    element.textContent =
+        error
+            ? "—"
+            : String(
+                count ?? 0
+            );
+
+}
+
+
+
+async function loadPartnersCount() {
+
+    const element =
+        document.querySelector(
+            "#admin-stat-partners"
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    const {
+        count,
+        error
+    } =
+        await sb
+            .from(
+                "partneri"
+            )
+            .select(
+                "*",
+                {
+                    count:
+                        "exact",
+
+                    head:
+                        true
+                }
+            )
+            .eq(
+                "aktivan",
+                true
+            );
+
 
     element.textContent =
         error

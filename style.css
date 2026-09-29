@@ -13034,3 +13034,36 @@ p {
     }
 
 }
+
+/* ==================================================
+   FOOTER - ADMIN LOGIN
+================================================== */
+
+.footer-admin-link {
+    margin-top: 10px;
+}
+
+.footer-admin-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 1.4px;
+
+    color: rgba(255,255,255,0.28);
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.footer-admin-link a:hover {
+    color: var(--red);
+}
