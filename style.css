@@ -13142,3 +13142,12 @@ p {
     }
 
 }
+
+.smart-design a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.smart-design a:hover {
+    text-decoration: underline;
+}
