@@ -25,7 +25,6 @@ const galleryAdminSb =
     );
 
 
-
 /* =========================================================
    ELEMENTI
 ========================================================= */
@@ -80,6 +79,16 @@ const galleryCategoryInput =
         "#admin-gallery-category"
     );
 
+const gallerySelectionInput =
+    document.querySelector(
+        "#admin-gallery-selection"
+    );
+
+const gallerySelectionField =
+    gallerySelectionInput
+        ?.closest(".admin-field") ||
+    null;
+
 const galleryOrderInput =
     document.querySelector(
         "#admin-gallery-order"
@@ -131,7 +140,6 @@ const gallerySaveButton =
     );
 
 
-
 /* =========================================================
    START
 ========================================================= */
@@ -142,62 +150,45 @@ document.addEventListener(
 );
 
 
-
 /* =========================================================
-   EVENTS
+   PODEŠAVANJE
 ========================================================= */
 
 function setupGalleryAdmin() {
 
-        loadGalleryDashboardCount();
+    loadGalleryDashboardCount();
 
-        /*
-    Admin.js još uvek pokušava da učita
-    stari broj iz data/galerija.json.
-
-    Zato nakon učitavanja admin panela
-    ponovo postavljamo tačan broj
-    direktno iz Supabase-a.
-*/
-
-setTimeout(
-    loadGalleryDashboardCount,
-    1200
-);
-
-
-/*
-    Kada se otvori Kontrolna tabla,
-    ponovo osveži broj fotografija.
-*/
-
-const dashboardNavButton =
-    document.querySelector(
-        '[data-admin-page="dashboard"]'
+    /*
+        Admin.js možda još jednom menja broj
+        fotografija na kontrolnoj tabli.
+    */
+    setTimeout(
+        loadGalleryDashboardCount,
+        1200
     );
 
 
-if (dashboardNavButton) {
+    const dashboardNavButton =
+        document.querySelector(
+            '[data-admin-page="dashboard"]'
+        );
 
-    dashboardNavButton.addEventListener(
-        "click",
-        () => {
+    if (dashboardNavButton) {
 
-            loadGalleryDashboardCount();
+        dashboardNavButton.addEventListener(
+            "click",
+            loadGalleryDashboardCount
+        );
 
-        }
-    );
+    }
 
-}
 
     if (galleryAddButton) {
 
         galleryAddButton.addEventListener(
             "click",
             () => {
-
                 openGalleryModal();
-
             }
         );
 
@@ -208,16 +199,14 @@ if (dashboardNavButton) {
         .querySelectorAll(
             "[data-close-gallery-modal]"
         )
-        .forEach(
-            button => {
+        .forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    closeGalleryModal
-                );
+            button.addEventListener(
+                "click",
+                closeGalleryModal
+            );
 
-            }
-        );
+        });
 
 
     if (galleryImageInput) {
@@ -225,6 +214,16 @@ if (dashboardNavButton) {
         galleryImageInput.addEventListener(
             "change",
             previewGalleryImage
+        );
+
+    }
+
+
+    if (galleryCategoryInput) {
+
+        galleryCategoryInput.addEventListener(
+            "change",
+            updateGallerySelectionVisibility
         );
 
     }
@@ -245,16 +244,11 @@ if (dashboardNavButton) {
             '[data-admin-page="galerija"]'
         );
 
-
     if (galleryNavButton) {
 
         galleryNavButton.addEventListener(
             "click",
-            () => {
-
-                loadAdminGallery();
-
-            }
+            loadAdminGallery
         );
 
     }
@@ -277,8 +271,10 @@ if (dashboardNavButton) {
         }
     );
 
-}
 
+    updateGallerySelectionVisibility();
+
+}
 
 
 /* =========================================================
@@ -288,18 +284,14 @@ if (dashboardNavButton) {
 async function loadAdminGallery() {
 
     if (!galleryList) {
-
         return;
-
     }
 
 
     galleryList.innerHTML = `
-
         <div class="admin-list-loading">
             Учитавање галерије...
         </div>
-
     `;
 
 
@@ -308,40 +300,44 @@ async function loadAdminGallery() {
         error
     } =
         await galleryAdminSb
-            .from(
-                "galerija"
-            )
-            .select(
-                "id,naslov,opis,fotografija,alt_text,datum,kategorija,istaknuta,redosled,aktivna,created_at"
-            )
+            .from("galerija")
+            .select(`
+                id,
+                naslov,
+                opis,
+                fotografija,
+                alt_text,
+                datum,
+                kategorija,
+                selekcija,
+                istaknuta,
+                redosled,
+                aktivna,
+                created_at
+            `)
             .order(
                 "istaknuta",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             )
             .order(
                 "redosled",
                 {
-                    ascending:
-                        true
+                    ascending: true
                 }
             )
             .order(
                 "datum",
                 {
-                    ascending:
-                        false,
-                    nullsFirst:
-                        false
+                    ascending: false,
+                    nullsFirst: false
                 }
             )
             .order(
                 "created_at",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             );
 
@@ -353,13 +349,10 @@ async function loadAdminGallery() {
             error
         );
 
-
         galleryList.innerHTML = `
-
             <div class="admin-gallery-empty">
                 Грешка при учитавању галерије.
             </div>
-
         `;
 
         return;
@@ -373,11 +366,9 @@ async function loadAdminGallery() {
     ) {
 
         galleryList.innerHTML = `
-
             <div class="admin-gallery-empty">
                 Још нема фотографија у галерији.
             </div>
-
         `;
 
         return;
@@ -387,9 +378,7 @@ async function loadAdminGallery() {
 
     galleryList.innerHTML =
         data
-            .map(
-                renderAdminGalleryItem
-            )
+            .map(renderAdminGalleryItem)
             .join("");
 
 
@@ -397,79 +386,70 @@ async function loadAdminGallery() {
         .querySelectorAll(
             "[data-edit-gallery]"
         )
-        .forEach(
-            button => {
+        .forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                        const id =
-                            button.dataset
-                                .editGallery;
+                    const id =
+                        button.dataset
+                            .editGallery;
 
+                    const item =
+                        data.find(
+                            galleryItem =>
+                                galleryItem.id === id
+                        );
 
-                        const item =
-                            data.find(
-                                galleryItem =>
-                                    galleryItem.id === id
-                            );
+                    if (item) {
 
-
-                        if (item) {
-
-                            openGalleryModal(
-                                item
-                            );
-
-                        }
+                        openGalleryModal(
+                            item
+                        );
 
                     }
-                );
 
-            }
-        );
+                }
+            );
+
+        });
 
 
     galleryList
         .querySelectorAll(
             "[data-delete-gallery]"
         )
-        .forEach(
-            button => {
+        .forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                        const id =
-                            button.dataset
-                                .deleteGallery;
+                    const id =
+                        button.dataset
+                            .deleteGallery;
 
+                    const item =
+                        data.find(
+                            galleryItem =>
+                                galleryItem.id === id
+                        );
 
-                        const item =
-                            data.find(
-                                galleryItem =>
-                                    galleryItem.id === id
-                            );
+                    if (item) {
 
-
-                        if (item) {
-
-                            deleteGalleryItem(
-                                item
-                            );
-
-                        }
+                        deleteGalleryItem(
+                            item
+                        );
 
                     }
-                );
 
-            }
-        );
+                }
+            );
+
+        });
 
 }
-
 
 
 /* =========================================================
@@ -487,37 +467,37 @@ function renderAdminGalleryItem(
 
     const description =
         item.opis
-
             ? `
-
                 <p class="admin-gallery-description">
                     ${escapeGalleryHtml(item.opis)}
                 </p>
-
             `
-
             : "";
 
 
     const category =
         item.kategorija
-
             ? `
-
                 <span class="admin-gallery-category">
                     ${escapeGalleryHtml(item.kategorija)}
                 </span>
-
             `
+            : "";
 
+
+    const selection =
+        item.selekcija
+            ? `
+                <span class="admin-gallery-category">
+                    ${escapeGalleryHtml(item.selekcija)}
+                </span>
+            `
             : "";
 
 
     const date =
         item.datum
-
             ? `
-
                 <span>
                     ${escapeGalleryHtml(
                         formatGalleryDate(
@@ -525,28 +505,21 @@ function renderAdminGalleryItem(
                         )
                     )}
                 </span>
-
             `
-
             : "";
 
 
     const featured =
         item.istaknuta
-
             ? `
-
                 <span class="admin-gallery-featured-badge">
                     ИСТАКНУТА
                 </span>
-
             `
-
             : "";
 
 
     return `
-
         <article
             class="
                 admin-gallery-item
@@ -554,15 +527,18 @@ function renderAdminGalleryItem(
             "
         >
 
-
             <div class="admin-gallery-photo">
 
                 ${featured}
 
-
                 <img
-                    src="${escapeGalleryAttribute(item.fotografija || "")}"
-                    alt="${escapeGalleryAttribute(item.alt_text || title)}"
+                    src="${escapeGalleryAttribute(
+                        item.fotografija || ""
+                    )}"
+                    alt="${escapeGalleryAttribute(
+                        item.alt_text ||
+                        title
+                    )}"
                     loading="lazy"
                     onerror="
                         this.onerror=null;
@@ -579,16 +555,15 @@ function renderAdminGalleryItem(
                     ${escapeGalleryHtml(title)}
                 </strong>
 
-
                 ${description}
-
 
                 <div class="admin-gallery-meta">
 
                     ${category}
 
-                    ${date}
+                    ${selection}
 
+                    ${date}
 
                     <span>
                         РЕДОСЛЕД:
@@ -599,7 +574,6 @@ function renderAdminGalleryItem(
                             )
                         )}
                     </span>
-
 
                     <span
                         class="
@@ -628,7 +602,9 @@ function renderAdminGalleryItem(
                 <button
                     type="button"
                     class="admin-gallery-edit"
-                    data-edit-gallery="${escapeGalleryAttribute(item.id)}"
+                    data-edit-gallery="${escapeGalleryAttribute(
+                        item.id
+                    )}"
                 >
                     ИЗМЕНИ
                 </button>
@@ -637,20 +613,19 @@ function renderAdminGalleryItem(
                 <button
                     type="button"
                     class="admin-gallery-delete"
-                    data-delete-gallery="${escapeGalleryAttribute(item.id)}"
+                    data-delete-gallery="${escapeGalleryAttribute(
+                        item.id
+                    )}"
                 >
                     ОБРИШИ
                 </button>
 
             </div>
 
-
         </article>
-
     `;
 
 }
-
 
 
 /* =========================================================
@@ -724,6 +699,15 @@ function openGalleryModal(
 
             galleryCategoryInput.value =
                 item.kategorija ||
+                "";
+
+        }
+
+
+        if (gallerySelectionInput) {
+
+            gallerySelectionInput.value =
+                item.selekcija ||
                 "";
 
         }
@@ -806,6 +790,9 @@ function openGalleryModal(
     }
 
 
+    updateGallerySelectionVisibility();
+
+
     galleryModal.hidden =
         false;
 
@@ -816,7 +803,6 @@ function openGalleryModal(
 }
 
 
-
 /* =========================================================
    ZATVARANJE MODALA
 ========================================================= */
@@ -824,9 +810,7 @@ function openGalleryModal(
 function closeGalleryModal() {
 
     if (!galleryModal) {
-
         return;
-
     }
 
 
@@ -840,7 +824,6 @@ function closeGalleryModal() {
 }
 
 
-
 /* =========================================================
    RESET FORME
 ========================================================= */
@@ -848,9 +831,7 @@ function closeGalleryModal() {
 function resetGalleryForm() {
 
     if (!galleryForm) {
-
         return;
-
     }
 
 
@@ -897,6 +878,14 @@ function resetGalleryForm() {
     }
 
 
+    if (gallerySelectionInput) {
+
+        gallerySelectionInput.value =
+            "";
+
+    }
+
+
     if (galleryImagePreview) {
 
         galleryImagePreview.src =
@@ -918,8 +907,46 @@ function resetGalleryForm() {
         ""
     );
 
+
+    updateGallerySelectionVisibility();
+
 }
 
+
+/* =========================================================
+   POLJE ZA MLAĐE KATEGORIJE
+========================================================= */
+
+function updateGallerySelectionVisibility() {
+
+    if (
+        !gallerySelectionInput ||
+        !gallerySelectionField
+    ) {
+
+        return;
+
+    }
+
+
+    const isYouthCategory =
+        galleryCategoryInput
+            ?.value ===
+        "МЛАЂЕ КАТЕГОРИЈЕ";
+
+
+    gallerySelectionField.hidden =
+        !isYouthCategory;
+
+
+    if (!isYouthCategory) {
+
+        gallerySelectionInput.value =
+            "";
+
+    }
+
+}
 
 
 /* =========================================================
@@ -934,9 +961,7 @@ function previewGalleryImage() {
 
 
     if (!file) {
-
         return;
-
     }
 
 
@@ -956,10 +981,8 @@ function previewGalleryImage() {
             "error"
         );
 
-
         galleryImageInput.value =
             "";
-
 
         return;
 
@@ -998,7 +1021,6 @@ function previewGalleryImage() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -1045,6 +1067,20 @@ async function saveGalleryItem(
         null;
 
 
+    const selection =
+        category ===
+            "МЛАЂЕ КАТЕГОРИЈЕ"
+
+            ? (
+                gallerySelectionInput
+                    ?.value
+                    .trim() ||
+                null
+            )
+
+            : null;
+
+
     const altText =
         galleryAltInput
             ?.value
@@ -1079,11 +1115,6 @@ async function saveGalleryItem(
             ?.files?.[0];
 
 
-    /*
-        Kod nove fotografije slika je obavezna.
-        Kod izmene može ostati postojeća.
-    */
-
     if (
         !id &&
         !selectedFile
@@ -1093,6 +1124,25 @@ async function saveGalleryItem(
             "Изаберите фотографију.",
             "error"
         );
+
+        return;
+
+    }
+
+
+    if (
+        category ===
+            "МЛАЂЕ КАТЕГОРИЈЕ" &&
+        !selection
+    ) {
+
+        setGalleryFormMessage(
+            "Унесите назив селекције млађих категорија.",
+            "error"
+        );
+
+        gallerySelectionInput
+            ?.focus();
 
         return;
 
@@ -1116,6 +1166,7 @@ async function saveGalleryItem(
                 await uploadGalleryImage(
                     selectedFile,
                     title ||
+                    selection ||
                     category ||
                     "galerija"
                 );
@@ -1160,6 +1211,9 @@ async function saveGalleryItem(
             kategorija:
                 category,
 
+            selekcija:
+                selection,
+
             istaknuta:
                 Boolean(
                     galleryFeaturedInput
@@ -1167,9 +1221,7 @@ async function saveGalleryItem(
                 ),
 
             redosled:
-                Number.isFinite(
-                    order
-                )
+                Number.isFinite(order)
                     ? order
                     : 0,
 
@@ -1189,12 +1241,8 @@ async function saveGalleryItem(
 
             const result =
                 await galleryAdminSb
-                    .from(
-                        "galerija"
-                    )
-                    .update(
-                        payload
-                    )
+                    .from("galerija")
+                    .update(payload)
                     .eq(
                         "id",
                         id
@@ -1210,12 +1258,8 @@ async function saveGalleryItem(
 
             const result =
                 await galleryAdminSb
-                    .from(
-                        "galerija"
-                    )
-                    .insert(
-                        payload
-                    );
+                    .from("galerija")
+                    .insert(payload);
 
 
             error =
@@ -1225,17 +1269,14 @@ async function saveGalleryItem(
 
 
         if (error) {
-
             throw error;
-
         }
 
 
         /*
-            Tek kada je zapis uspešno sačuvan,
-            brišemo staru fotografiju.
+            Staru sliku brišemo tek
+            nakon uspešnog čuvanja.
         */
-
         if (
             uploadedImage &&
             oldImage &&
@@ -1257,11 +1298,11 @@ async function saveGalleryItem(
 
 
         await Promise.allSettled(
-    [
-        loadAdminGallery(),
-        loadGalleryDashboardCount()
-    ]
-);
+            [
+                loadAdminGallery(),
+                loadGalleryDashboardCount()
+            ]
+        );
 
 
         setTimeout(
@@ -1280,10 +1321,10 @@ async function saveGalleryItem(
 
 
         /*
-            Ako je upload uspeo, ali unos u bazu nije,
-            brišemo upravo uploadovanu fotografiju.
+            Ako je upload slike uspeo,
+            a baza nije sačuvala podatke,
+            brišemo novu sliku iz Storage-a.
         */
-
         if (uploadedImage) {
 
             await deleteGalleryImageFromUrl(
@@ -1314,7 +1355,6 @@ async function saveGalleryItem(
 }
 
 
-
 /* =========================================================
    BRISANJE
 ========================================================= */
@@ -1335,9 +1375,7 @@ async function deleteGalleryItem(
 
 
     if (!confirmed) {
-
         return;
-
     }
 
 
@@ -1345,9 +1383,7 @@ async function deleteGalleryItem(
         error
     } =
         await galleryAdminSb
-            .from(
-                "galerija"
-            )
+            .from("galerija")
             .delete()
             .eq(
                 "id",
@@ -1362,20 +1398,16 @@ async function deleteGalleryItem(
             error
         );
 
-
         window.alert(
             "Фотографију није могуће обрисати."
         );
-
 
         return;
 
     }
 
 
-    if (
-        item.fotografija
-    ) {
+    if (item.fotografija) {
 
         await deleteGalleryImageFromUrl(
             item.fotografija
@@ -1385,14 +1417,13 @@ async function deleteGalleryItem(
 
 
     await Promise.allSettled(
-    [
-        loadAdminGallery(),
-        loadGalleryDashboardCount()
-    ]
-);
+        [
+            loadAdminGallery(),
+            loadGalleryDashboardCount()
+        ]
+    );
 
 }
-
 
 
 /* =========================================================
@@ -1452,9 +1483,7 @@ async function uploadGalleryImage(
 
 
     if (error) {
-
         throw error;
-
     }
 
 
@@ -1488,7 +1517,6 @@ async function uploadGalleryImage(
 }
 
 
-
 /* =========================================================
    STORAGE BRISANJE
 ========================================================= */
@@ -1504,9 +1532,7 @@ async function deleteGalleryImageFromUrl(
 
 
     if (!path) {
-
         return;
-
     }
 
 
@@ -1519,9 +1545,7 @@ async function deleteGalleryImageFromUrl(
                 GALLERY_ADMIN_BUCKET
             )
             .remove(
-                [
-                    path
-                ]
+                [path]
             );
 
 
@@ -1537,7 +1561,6 @@ async function deleteGalleryImageFromUrl(
 }
 
 
-
 /* =========================================================
    PUTANJA IZ PUBLIC URL
 ========================================================= */
@@ -1547,9 +1570,7 @@ function getGalleryStoragePath(
 ) {
 
     if (!url) {
-
         return "";
-
     }
 
 
@@ -1572,12 +1593,8 @@ function getGalleryStoragePath(
                 );
 
 
-        if (
-            index === -1
-        ) {
-
+        if (index === -1) {
             return "";
-
         }
 
 
@@ -1598,7 +1615,6 @@ function getGalleryStoragePath(
     }
 
 }
-
 
 
 /* =========================================================
@@ -1648,7 +1664,6 @@ function validateGalleryImage(
     }
 
 }
-
 
 
 /* =========================================================
@@ -1711,7 +1726,6 @@ function getGalleryFileExtension(
 }
 
 
-
 /* =========================================================
    SLUG
 ========================================================= */
@@ -1741,7 +1755,6 @@ function createGallerySlug(
         );
 
 }
-
 
 
 /* =========================================================
@@ -1845,7 +1858,6 @@ function latinizeGalleryText(
 }
 
 
-
 /* =========================================================
    DATUM
 ========================================================= */
@@ -1855,9 +1867,7 @@ function formatGalleryDate(
 ) {
 
     if (!dateString) {
-
         return "";
-
     }
 
 
@@ -1885,7 +1895,6 @@ function formatGalleryDate(
     );
 
 }
-
 
 
 function getGalleryToday() {
@@ -1920,7 +1929,6 @@ function getGalleryToday() {
 }
 
 
-
 /* =========================================================
    DUGME - LOADING
 ========================================================= */
@@ -1930,9 +1938,7 @@ function setGalleryButtonLoading(
 ) {
 
     if (!gallerySaveButton) {
-
         return;
-
     }
 
 
@@ -1948,7 +1954,6 @@ function setGalleryButtonLoading(
 }
 
 
-
 /* =========================================================
    PORUKA FORME
 ========================================================= */
@@ -1959,9 +1964,7 @@ function setGalleryFormMessage(
 ) {
 
     if (!galleryFormMessage) {
-
         return;
-
     }
 
 
@@ -1984,7 +1987,6 @@ function setGalleryFormMessage(
     }
 
 }
-
 
 
 /* =========================================================
@@ -2036,12 +2038,24 @@ function getGalleryFriendlyError(
     }
 
 
+    if (
+        message.includes(
+            "selekcija"
+        )
+    ) {
+
+        return "Поље „selekcija“ не постоји у Supabase табели galerija. Прво покрените SQL за додавање колоне.";
+
+    }
+
+
     return (
         message ||
         fallback
     );
 
 }
+
 
 /* =========================================================
    BROJAČ GALERIJE NA KONTROLNOJ TABLI
@@ -2056,9 +2070,7 @@ async function loadGalleryDashboardCount() {
 
 
     if (!element) {
-
         return;
-
     }
 
 
@@ -2067,9 +2079,7 @@ async function loadGalleryDashboardCount() {
         error
     } =
         await galleryAdminSb
-            .from(
-                "galerija"
-            )
+            .from("galerija")
             .select(
                 "*",
                 {
@@ -2093,10 +2103,8 @@ async function loadGalleryDashboardCount() {
             error
         );
 
-
         element.textContent =
             "—";
-
 
         return;
 
@@ -2110,6 +2118,7 @@ async function loadGalleryDashboardCount() {
         );
 
 }
+
 
 /* =========================================================
    BEZBEDAN ISPIS
@@ -2144,7 +2153,6 @@ function escapeGalleryHtml(
         );
 
 }
-
 
 
 function escapeGalleryAttribute(

@@ -2803,21 +2803,72 @@
                 </div>
 
 
-                <!-- DATUM -->
+               <!-- DATUM -->
 
-                <div class="admin-field">
+<div class="admin-field">
 
-                    <label for="admin-gallery-date">
-                        ДАТУМ
-                    </label>
+    <label for="admin-gallery-date">
+        ДАТУМ
+    </label>
 
-                    <input
-                        type="date"
-                        id="admin-gallery-date"
-                    >
+    <input
+        type="date"
+        id="admin-gallery-date"
+    >
 
-                </div>
+</div>
 
+
+<!-- KATEGORIJA -->
+
+<div class="admin-field">
+
+    <label for="admin-gallery-category">
+        КАТЕГОРИЈА
+    </label>
+
+    <select id="admin-gallery-category">
+
+        <option value="">
+            Изабери категорију
+        </option>
+
+        <option value="ПРВИ ТИМ">
+            ПРВИ ТИМ
+        </option>
+
+        <option value="МЛАЂЕ КАТЕГОРИЈЕ">
+            МЛАЂЕ КАТЕГОРИЈЕ
+        </option>
+
+        <option value="ИСТОРИЈА КЛУБА">
+            ИСТОРИЈА КЛУБА
+        </option>
+
+    </select>
+
+</div>
+
+
+<!-- SELEKCIJA MLADJIH KATEGORIJA -->
+
+<div class="admin-field admin-field-full">
+
+    <label for="admin-gallery-selection">
+        СЕЛЕКЦИЈА МЛАЂИХ КАТЕГОРИЈА
+    </label>
+
+    <input
+        type="text"
+        id="admin-gallery-selection"
+        placeholder="нпр. Петлићи, Пионири, Омладинци..."
+    >
+
+    <small>
+        Попуњава се само ако је изабрана категорија „Млађе категорије“.
+    </small>
+
+</div>
 
                 <!-- KATEGORIJA -->
 

@@ -15,6 +15,15 @@ const PUBLIC_GALLERY_SUPABASE_KEY =
     "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
 
+/* =========================================================
+   PODACI GALERIJE
+========================================================= */
+
+let publicGalleryItems = [];
+
+let activePublicGalleryFilter =
+    "all";
+
 
 /* =========================================================
    START
@@ -24,7 +33,6 @@ document.addEventListener(
     "DOMContentLoaded",
     loadPublicGallery
 );
-
 
 
 /* =========================================================
@@ -61,6 +69,10 @@ async function loadPublicGallery() {
             await fetchPublicGallery();
 
 
+        publicGalleryItems =
+            items;
+
+
         if (homeGrid) {
 
             renderHomeGallery(
@@ -73,8 +85,11 @@ async function loadPublicGallery() {
 
         if (fullGrid) {
 
-            renderFullGallery(
-                items,
+            setupPublicGalleryFilters(
+                fullGrid
+            );
+
+            renderFilteredPublicGallery(
                 fullGrid
             );
 
@@ -93,7 +108,6 @@ async function loadPublicGallery() {
         if (homeGrid) {
 
             homeGrid.innerHTML = `
-
                 <div class="home-gallery-empty">
 
                     <img
@@ -106,7 +120,6 @@ async function loadPublicGallery() {
                     </span>
 
                 </div>
-
             `;
 
         }
@@ -115,7 +128,6 @@ async function loadPublicGallery() {
         if (fullGrid) {
 
             fullGrid.innerHTML = `
-
                 <div class="gallery-page-empty">
 
                     <img
@@ -128,7 +140,6 @@ async function loadPublicGallery() {
                     </span>
 
                 </div>
-
             `;
 
         }
@@ -136,7 +147,6 @@ async function loadPublicGallery() {
     }
 
 }
-
 
 
 /* =========================================================
@@ -161,6 +171,7 @@ async function fetchPublicGallery() {
             "alt_text",
             "datum",
             "kategorija",
+            "selekcija",
             "istaknuta",
             "redosled",
             "aktivna",
@@ -234,7 +245,6 @@ async function fetchPublicGallery() {
 }
 
 
-
 /* =========================================================
    POČETNA STRANA
 ========================================================= */
@@ -250,7 +260,6 @@ function renderHomeGallery(
     ) {
 
         container.innerHTML = `
-
             <div class="home-gallery-empty">
 
                 <img
@@ -263,7 +272,6 @@ function renderHomeGallery(
                 </span>
 
             </div>
-
         `;
 
         return;
@@ -273,7 +281,6 @@ function renderHomeGallery(
 
     /*
         Na početnoj prikazujemo najviše 6.
-        Istaknute su već prve zbog sortiranja.
     */
 
     const homeItems =
@@ -299,7 +306,6 @@ function renderHomeGallery(
 }
 
 
-
 /* =========================================================
    KARTICA NA POČETNOJ
 ========================================================= */
@@ -320,12 +326,12 @@ function createHomeGalleryItem(
 
 
     const category =
-        item.kategorija ||
-        "ГАЛЕРИЈА";
+        getPublicGalleryCategoryLabel(
+            item
+        );
 
 
     return `
-
         <button
             type="button"
             class="home-gallery-item"
@@ -335,7 +341,10 @@ function createHomeGalleryItem(
 
             <img
                 src="${escapeGalleryPublicAttribute(image)}"
-                alt="${escapeGalleryPublicAttribute(item.alt_text || title)}"
+                alt="${escapeGalleryPublicAttribute(
+                    item.alt_text ||
+                    title
+                )}"
                 loading="lazy"
                 onerror="
                     this.onerror=null;
@@ -360,11 +369,115 @@ function createHomeGalleryItem(
             </span>
 
         </button>
-
     `;
 
 }
 
+
+/* =========================================================
+   FILTERI
+========================================================= */
+
+function setupPublicGalleryFilters(
+    container
+) {
+
+    const filterContainer =
+        document.querySelector(
+            "#gallery-page-filters"
+        );
+
+
+    if (!filterContainer) {
+        return;
+    }
+
+
+    const buttons =
+        filterContainer.querySelectorAll(
+            "[data-gallery-filter]"
+        );
+
+
+    buttons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    activePublicGalleryFilter =
+                        button.dataset
+                            .galleryFilter ||
+                        "all";
+
+
+                    buttons.forEach(
+                        otherButton => {
+
+                            otherButton
+                                .classList
+                                .remove(
+                                    "active"
+                                );
+
+                        }
+                    );
+
+
+                    button
+                        .classList
+                        .add(
+                            "active"
+                        );
+
+
+                    renderFilteredPublicGallery(
+                        container
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTRIRANA GALERIJA
+========================================================= */
+
+function renderFilteredPublicGallery(
+    container
+) {
+
+    let items =
+        publicGalleryItems;
+
+
+    if (
+        activePublicGalleryFilter !==
+        "all"
+    ) {
+
+        items =
+            publicGalleryItems.filter(
+                item =>
+                    item.kategorija ===
+                    activePublicGalleryFilter
+            );
+
+    }
+
+
+    renderFullGallery(
+        items,
+        container
+    );
+
+}
 
 
 /* =========================================================
@@ -382,7 +495,6 @@ function renderFullGallery(
     ) {
 
         container.innerHTML = `
-
             <div class="gallery-page-empty">
 
                 <img
@@ -391,11 +503,10 @@ function renderFullGallery(
                 >
 
                 <span>
-                    Фотографије ће бити додате ускоро.
+                    Нема фотографија у овој категорији.
                 </span>
 
             </div>
-
         `;
 
         return;
@@ -419,7 +530,6 @@ function renderFullGallery(
 }
 
 
-
 /* =========================================================
    KARTICA NA STRANICI GALERIJE
 ========================================================= */
@@ -440,8 +550,9 @@ function createFullGalleryItem(
 
 
     const category =
-        item.kategorija ||
-        "ГАЛЕРИЈА";
+        getPublicGalleryCategoryLabel(
+            item
+        );
 
 
     const date =
@@ -453,7 +564,6 @@ function createFullGalleryItem(
 
 
     return `
-
         <button
             type="button"
             class="gallery-page-item"
@@ -463,7 +573,10 @@ function createFullGalleryItem(
 
             <img
                 src="${escapeGalleryPublicAttribute(image)}"
-                alt="${escapeGalleryPublicAttribute(item.alt_text || title)}"
+                alt="${escapeGalleryPublicAttribute(
+                    item.alt_text ||
+                    title
+                )}"
                 loading="lazy"
                 onerror="
                     this.onerror=null;
@@ -490,11 +603,9 @@ function createFullGalleryItem(
                 ${
                     date
                         ? `
-
                             <small>
                                 ${escapeGalleryPublicHtml(date)}
                             </small>
-
                         `
                         : ""
                 }
@@ -502,11 +613,45 @@ function createFullGalleryItem(
             </span>
 
         </button>
-
     `;
 
 }
 
+
+/* =========================================================
+   NAZIV KATEGORIJE
+========================================================= */
+
+function getPublicGalleryCategoryLabel(
+    item
+) {
+
+    const category =
+        item.kategorija ||
+        "ГАЛЕРИЈА";
+
+
+    /*
+        Ako je mlađa kategorija,
+        prikazujemo i konkretnu selekciju.
+    */
+
+    if (
+        category ===
+            "МЛАЂЕ КАТЕГОРИЈЕ" &&
+        item.selekcija
+    ) {
+
+        return (
+            `${category} • ${item.selekcija}`
+        );
+
+    }
+
+
+    return category;
+
+}
 
 
 /* =========================================================
@@ -537,7 +682,9 @@ function setupGalleryClicks(
 
 
                         if (
-                            Number.isInteger(index) &&
+                            Number.isInteger(
+                                index
+                            ) &&
                             items[index]
                         ) {
 
@@ -555,7 +702,6 @@ function setupGalleryClicks(
         );
 
 }
-
 
 
 /* =========================================================
@@ -607,7 +753,6 @@ function openPublicGalleryLightbox(
         "hidden";
 
 }
-
 
 
 /* =========================================================
@@ -767,7 +912,6 @@ function createPublicGalleryLightbox() {
 }
 
 
-
 /* =========================================================
    LIGHTBOX SADRŽAJ
 ========================================================= */
@@ -781,9 +925,7 @@ function updatePublicGalleryLightbox() {
 
 
     if (!item) {
-
         return;
-
     }
 
 
@@ -835,8 +977,9 @@ function updatePublicGalleryLightbox() {
     if (category) {
 
         category.textContent =
-            item.kategorija ||
-            "ГАЛЕРИЈА";
+            getPublicGalleryCategoryLabel(
+                item
+            );
 
     }
 
@@ -873,7 +1016,6 @@ function updatePublicGalleryLightbox() {
 }
 
 
-
 /* =========================================================
    PRETHODNA
 ========================================================= */
@@ -902,7 +1044,6 @@ function showPreviousPublicGalleryImage() {
     updatePublicGalleryLightbox();
 
 }
-
 
 
 /* =========================================================
@@ -934,7 +1075,6 @@ function showNextPublicGalleryImage() {
 }
 
 
-
 /* =========================================================
    ZATVARANJE
 ========================================================= */
@@ -948,9 +1088,7 @@ function closePublicGalleryLightbox() {
 
 
     if (!lightbox) {
-
         return;
-
     }
 
 
@@ -962,7 +1100,6 @@ function closePublicGalleryLightbox() {
         "";
 
 }
-
 
 
 /* =========================================================
@@ -1021,7 +1158,6 @@ function handlePublicGalleryKeyboard(
 }
 
 
-
 /* =========================================================
    DATUM
 ========================================================= */
@@ -1031,9 +1167,7 @@ function formatPublicGalleryDate(
 ) {
 
     if (!dateString) {
-
         return "";
-
     }
 
 
@@ -1061,7 +1195,6 @@ function formatPublicGalleryDate(
     );
 
 }
-
 
 
 /* =========================================================
