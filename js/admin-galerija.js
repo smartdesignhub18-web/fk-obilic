@@ -158,10 +158,6 @@ function setupGalleryAdmin() {
 
     loadGalleryDashboardCount();
 
-    /*
-        Admin.js možda još jednom menja broj
-        fotografija na kontrolnoj tabli.
-    */
     setTimeout(
         loadGalleryDashboardCount,
         1200
@@ -172,6 +168,7 @@ function setupGalleryAdmin() {
         document.querySelector(
             '[data-admin-page="dashboard"]'
         );
+
 
     if (dashboardNavButton) {
 
@@ -244,6 +241,7 @@ function setupGalleryAdmin() {
             '[data-admin-page="galerija"]'
         );
 
+
     if (galleryNavButton) {
 
         galleryNavButton.addEventListener(
@@ -273,6 +271,144 @@ function setupGalleryAdmin() {
 
 
     updateGallerySelectionVisibility();
+
+}
+
+
+/* =========================================================
+   SORTIRANJE GALERIJE
+
+   1, 2, 3... = RUČNI REDOSLED
+   0 = AUTOMATSKI, IDE IZA NUMERISANIH
+========================================================= */
+
+function sortGalleryItems(
+    items
+) {
+
+    return [...items].sort(
+        (a, b) => {
+
+            const orderA =
+                Number(a.redosled) || 0;
+
+            const orderB =
+                Number(b.redosled) || 0;
+
+
+            /*
+                Fotografija sa ručnim redosledom
+                ide pre fotografije sa 0.
+            */
+
+            if (
+                orderA > 0 &&
+                orderB <= 0
+            ) {
+
+                return -1;
+
+            }
+
+
+            if (
+                orderA <= 0 &&
+                orderB > 0
+            ) {
+
+                return 1;
+
+            }
+
+
+            /*
+                Ako obe imaju ručni redosled:
+                1, 2, 3...
+            */
+
+            if (
+                orderA > 0 &&
+                orderB > 0 &&
+                orderA !== orderB
+            ) {
+
+                return orderA - orderB;
+
+            }
+
+
+            /*
+                Ako su obe na 0,
+                istaknuta ide pre obične.
+            */
+
+            if (
+                Boolean(a.istaknuta) !==
+                Boolean(b.istaknuta)
+            ) {
+
+                return a.istaknuta
+                    ? -1
+                    : 1;
+
+            }
+
+
+            /*
+                Zatim noviji datum.
+            */
+
+            const dateA =
+                a.datum
+                    ? new Date(
+                        `${a.datum}T00:00:00`
+                    ).getTime()
+                    : 0;
+
+            const dateB =
+                b.datum
+                    ? new Date(
+                        `${b.datum}T00:00:00`
+                    ).getTime()
+                    : 0;
+
+
+            if (
+                dateA !==
+                dateB
+            ) {
+
+                return dateB - dateA;
+
+            }
+
+
+            /*
+                Na kraju vreme dodavanja.
+            */
+
+            const createdA =
+                a.created_at
+                    ? new Date(
+                        a.created_at
+                    ).getTime()
+                    : 0;
+
+            const createdB =
+                b.created_at
+                    ? new Date(
+                        b.created_at
+                    ).getTime()
+                    : 0;
+
+
+            return (
+                createdB -
+                createdA
+            );
+
+        }
+    );
 
 }
 
@@ -314,32 +450,7 @@ async function loadAdminGallery() {
                 redosled,
                 aktivna,
                 created_at
-            `)
-            .order(
-                "istaknuta",
-                {
-                    ascending: false
-                }
-            )
-            .order(
-                "redosled",
-                {
-                    ascending: true
-                }
-            )
-            .order(
-                "datum",
-                {
-                    ascending: false,
-                    nullsFirst: false
-                }
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+            `);
 
 
     if (error) {
@@ -348,6 +459,7 @@ async function loadAdminGallery() {
             "Gallery load error:",
             error
         );
+
 
         galleryList.innerHTML = `
             <div class="admin-gallery-empty">
@@ -376,9 +488,17 @@ async function loadAdminGallery() {
     }
 
 
+    const sortedData =
+        sortGalleryItems(
+            data
+        );
+
+
     galleryList.innerHTML =
-        data
-            .map(renderAdminGalleryItem)
+        sortedData
+            .map(
+                renderAdminGalleryItem
+            )
             .join("");
 
 
@@ -396,11 +516,13 @@ async function loadAdminGallery() {
                         button.dataset
                             .editGallery;
 
+
                     const item =
-                        data.find(
+                        sortedData.find(
                             galleryItem =>
                                 galleryItem.id === id
                         );
+
 
                     if (item) {
 
@@ -430,11 +552,13 @@ async function loadAdminGallery() {
                         button.dataset
                             .deleteGallery;
 
+
                     const item =
-                        data.find(
+                        sortedData.find(
                             galleryItem =>
                                 galleryItem.id === id
                         );
+
 
                     if (item) {
 
@@ -533,7 +657,8 @@ function renderAdminGalleryItem(
 
                 <img
                     src="${escapeGalleryAttribute(
-                        item.fotografija || ""
+                        item.fotografija ||
+                        ""
                     )}"
                     alt="${escapeGalleryAttribute(
                         item.alt_text ||
@@ -557,6 +682,7 @@ function renderAdminGalleryItem(
 
                 ${description}
 
+
                 <div class="admin-gallery-meta">
 
                     ${category}
@@ -574,6 +700,7 @@ function renderAdminGalleryItem(
                             )
                         )}
                     </span>
+
 
                     <span
                         class="
@@ -981,8 +1108,10 @@ function previewGalleryImage() {
             "error"
         );
 
+
         galleryImageInput.value =
             "";
+
 
         return;
 
@@ -1141,8 +1270,10 @@ async function saveGalleryItem(
             "error"
         );
 
+
         gallerySelectionInput
             ?.focus();
+
 
         return;
 
@@ -1273,10 +1404,6 @@ async function saveGalleryItem(
         }
 
 
-        /*
-            Staru sliku brišemo tek
-            nakon uspešnog čuvanja.
-        */
         if (
             uploadedImage &&
             oldImage &&
@@ -1320,11 +1447,6 @@ async function saveGalleryItem(
         );
 
 
-        /*
-            Ako je upload slike uspeo,
-            a baza nije sačuvala podatke,
-            brišemo novu sliku iz Storage-a.
-        */
         if (uploadedImage) {
 
             await deleteGalleryImageFromUrl(
@@ -1398,9 +1520,11 @@ async function deleteGalleryItem(
             error
         );
 
+
         window.alert(
             "Фотографију није могуће обрисати."
         );
+
 
         return;
 
@@ -2044,7 +2168,7 @@ function getGalleryFriendlyError(
         )
     ) {
 
-        return "Поље „selekcija“ не постоји у Supabase табели galerija. Прво покрените SQL за додавање колоне.";
+        return "Поље „selekcija“ не постоји у Supabase табели galerija.";
 
     }
 
@@ -2103,8 +2227,10 @@ async function loadGalleryDashboardCount() {
             error
         );
 
+
         element.textContent =
             "—";
+
 
         return;
 

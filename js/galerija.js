@@ -89,6 +89,7 @@ async function loadPublicGallery() {
                 fullGrid
             );
 
+
             renderFilteredPublicGallery(
                 fullGrid
             );
@@ -186,17 +187,6 @@ async function fetchPublicGallery() {
     );
 
 
-    url.searchParams.set(
-        "order",
-        [
-            "istaknuta.desc",
-            "redosled.asc",
-            "datum.desc.nullslast",
-            "created_at.desc"
-        ].join(",")
-    );
-
-
     const response =
         await fetch(
             url.toString(),
@@ -236,11 +226,159 @@ async function fetchPublicGallery() {
         await response.json();
 
 
-    return Array.isArray(
-        data
-    )
-        ? data
+    return Array.isArray(data)
+        ? sortPublicGalleryItems(data)
         : [];
+
+}
+
+
+/* =========================================================
+   SORTIRANJE GALERIJE
+
+   1, 2, 3... = RUČNO ZADAT REDOSLED
+   0 = AUTOMATSKI I IDE IZA NUMERISANIH
+========================================================= */
+
+function sortPublicGalleryItems(
+    items
+) {
+
+    return [...items].sort(
+        (a, b) => {
+
+            const orderA =
+                Number(
+                    a.redosled
+                ) || 0;
+
+
+            const orderB =
+                Number(
+                    b.redosled
+                ) || 0;
+
+
+            /*
+                Ručno numerisana fotografija
+                ide pre fotografije sa redosledom 0.
+            */
+
+            if (
+                orderA > 0 &&
+                orderB <= 0
+            ) {
+
+                return -1;
+
+            }
+
+
+            if (
+                orderA <= 0 &&
+                orderB > 0
+            ) {
+
+                return 1;
+
+            }
+
+
+            /*
+                Ako obe imaju redosled,
+                sortiramo 1, 2, 3...
+            */
+
+            if (
+                orderA > 0 &&
+                orderB > 0 &&
+                orderA !== orderB
+            ) {
+
+                return orderA - orderB;
+
+            }
+
+
+            /*
+                Ako obe imaju isti ručni broj
+                ili obe imaju 0,
+                istaknuta ima prednost.
+            */
+
+            if (
+                Boolean(
+                    a.istaknuta
+                ) !==
+                Boolean(
+                    b.istaknuta
+                )
+            ) {
+
+                return a.istaknuta
+                    ? -1
+                    : 1;
+
+            }
+
+
+            /*
+                Zatim noviji datum.
+            */
+
+            const dateA =
+                a.datum
+                    ? new Date(
+                        `${a.datum}T00:00:00`
+                    ).getTime()
+                    : 0;
+
+
+            const dateB =
+                b.datum
+                    ? new Date(
+                        `${b.datum}T00:00:00`
+                    ).getTime()
+                    : 0;
+
+
+            if (
+                dateA !==
+                dateB
+            ) {
+
+                return dateB - dateA;
+
+            }
+
+
+            /*
+                Na kraju vreme dodavanja.
+            */
+
+            const createdA =
+                a.created_at
+                    ? new Date(
+                        a.created_at
+                    ).getTime()
+                    : 0;
+
+
+            const createdB =
+                b.created_at
+                    ? new Date(
+                        b.created_at
+                    ).getTime()
+                    : 0;
+
+
+            return (
+                createdB -
+                createdA
+            );
+
+        }
+    );
 
 }
 
@@ -273,6 +411,7 @@ function renderHomeGallery(
 
             </div>
         `;
+
 
         return;
 
@@ -508,6 +647,7 @@ function renderFullGallery(
 
             </div>
         `;
+
 
         return;
 
