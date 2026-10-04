@@ -3,8 +3,8 @@ name: Ažuriranje fudbalskih podataka
 on:
   workflow_dispatch:
 
- schedule:
-  - cron: "*/15 * * * *"
+  schedule:
+    - cron: "*/15 * * * *"
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ jobs:
       - name: Podesi Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "20"
 
       - name: Ažuriraj fudbalske podatke
         run: node scripts/update-football.js
