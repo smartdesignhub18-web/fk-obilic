@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-04T22:08:08.699Z",
+  "updatedAt": "2026-10-04T22:54:21.142Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,18 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889553,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jadran",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889553-obilic-jadran",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889629,
       "round": null,
       "home": "Obilić",
@@ -507,6 +495,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889567-backa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889553,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jadran",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889553-obilic-jadran",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
