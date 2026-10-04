@@ -12,7 +12,6 @@
     let adminPartners = [];
 
 
-
     /* =====================================================
        START
     ===================================================== */
@@ -106,43 +105,12 @@
         }
 
 
-        /*
-            Admin.js i dalje učitava stari JSON brojač.
-            Zato ga ovde posle kratkog vremena
-            pregazimo stvarnim brojem iz Supabase-a.
-        */
-
         setTimeout(
             loadPartnersCount,
-            1200
-        );
-
-
-        /*
-            Kada se korisnik prijavi,
-            ponovo učitaj broj.
-        */
-
-        sb.auth.onAuthStateChange(
-            event => {
-
-                if (
-                    event === "SIGNED_IN" ||
-                    event === "INITIAL_SESSION"
-                ) {
-
-                    setTimeout(
-                        loadPartnersCount,
-                        600
-                    );
-
-                }
-
-            }
+            1000
         );
 
     }
-
 
 
     /* =====================================================
@@ -202,7 +170,6 @@
     }
 
 
-
     /* =====================================================
        UČITAVANJE PARTNERA
     ===================================================== */
@@ -244,7 +211,19 @@
                     "partneri"
                 )
                 .select(
-                    "id,naziv,opis,logo,link,istaknut,redosled,aktivan,created_at,updated_at"
+                    "id,naziv,opis,logo,link,generalni,istaknut,redosled,aktivan,created_at,updated_at"
+                )
+                .order(
+                    "generalni",
+                    {
+                        ascending: false
+                    }
+                )
+                .order(
+                    "istaknut",
+                    {
+                        ascending: false
+                    }
                 )
                 .order(
                     "redosled",
@@ -294,7 +273,6 @@
     }
 
 
-
     /* =====================================================
        PRIKAZ PARTNERA
     ===================================================== */
@@ -340,16 +318,19 @@
 
             <div class="partner-admin-grid">
 
-                ${adminPartners
-                    .map(renderPartnerCard)
-                    .join("")}
+                ${
+                    adminPartners
+                        .map(
+                            renderPartnerCard
+                        )
+                        .join("")
+                }
 
             </div>
 
         `;
 
     }
-
 
 
     function renderPartnerCard(
@@ -388,12 +369,19 @@
 
         return `
 
-            <article class="partner-admin-card">
+            <article
+                class="
+                    partner-admin-card
+                    ${
+                        partner.generalni
+                            ? "general"
+                            : ""
+                    }
+                "
+            >
 
                 <div class="partner-admin-logo">
-
                     ${logo}
-
                 </div>
 
 
@@ -414,6 +402,17 @@
                                     : "НЕАКТИВАН"
                             }
                         </span>
+
+
+                        ${
+                            partner.generalni
+                                ? `
+                                    <span class="partner-admin-badge general">
+                                        ГЕНЕРАЛНИ ПАРТНЕР
+                                    </span>
+                                `
+                                : ""
+                        }
 
 
                         ${
@@ -488,7 +487,6 @@
     }
 
 
-
     /* =====================================================
        KLIK NA LISTI
     ===================================================== */
@@ -558,7 +556,6 @@
     }
 
 
-
     /* =====================================================
        MODAL
     ===================================================== */
@@ -570,7 +567,9 @@
                 "#partner-admin-modal"
             )
         ) {
+
             return;
+
         }
 
 
@@ -583,8 +582,10 @@
         modal.id =
             "partner-admin-modal";
 
+
         modal.className =
             "partner-admin-modal";
+
 
         modal.hidden =
             true;
@@ -710,6 +711,20 @@
 
 
                         <div class="partner-admin-checks">
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    id="partner-admin-general"
+                                >
+
+                                <span>
+                                    Генерални партнер
+                                </span>
+
+                            </label>
+
 
                             <label>
 
@@ -898,7 +913,6 @@
     }
 
 
-
     /* =====================================================
        OTVARANJE EDITORA
     ===================================================== */
@@ -970,6 +984,12 @@
 
 
             document.querySelector(
+                "#partner-admin-general"
+            ).checked =
+                partner.generalni === true;
+
+
+            document.querySelector(
                 "#partner-admin-featured"
             ).checked =
                 partner.istaknut === true;
@@ -1028,7 +1048,6 @@
     }
 
 
-
     /* =====================================================
        ZATVARANJE
     ===================================================== */
@@ -1054,7 +1073,6 @@
             "";
 
     }
-
 
 
     /* =====================================================
@@ -1096,6 +1114,12 @@
 
 
         document.querySelector(
+            "#partner-admin-general"
+        ).checked =
+            false;
+
+
+        document.querySelector(
             "#partner-admin-featured"
         ).checked =
             false;
@@ -1125,7 +1149,6 @@
         );
 
     }
-
 
 
     /* =====================================================
@@ -1207,7 +1230,6 @@
     }
 
 
-
     /* =====================================================
        ČUVANJE
     ===================================================== */
@@ -1263,6 +1285,13 @@
                     "#partner-admin-order"
                 )?.value || 0
             );
+
+
+        const general =
+            document.querySelector(
+                "#partner-admin-general"
+            )
+                ?.checked === true;
 
 
         const featured =
@@ -1370,6 +1399,56 @@
                 null;
 
 
+            /*
+                Ako je ovaj partner označen
+                kao generalni, prethodnom
+                generalnom skidamo oznaku.
+            */
+
+            if (general) {
+
+                let clearQuery =
+                    sb
+                        .from(
+                            "partneri"
+                        )
+                        .update({
+                            generalni:
+                                false
+                        })
+                        .eq(
+                            "generalni",
+                            true
+                        );
+
+
+                if (id) {
+
+                    clearQuery =
+                        clearQuery.neq(
+                            "id",
+                            id
+                        );
+
+                }
+
+
+                const {
+                    error:
+                        clearGeneralError
+                } =
+                    await clearQuery;
+
+
+                if (clearGeneralError) {
+
+                    throw clearGeneralError;
+
+                }
+
+            }
+
+
             const payload = {
 
                 naziv:
@@ -1382,6 +1461,9 @@
                 logo,
 
                 link,
+
+                generalni:
+                    general,
 
                 istaknut:
                     featured,
@@ -1446,11 +1528,6 @@
             }
 
 
-            /*
-                Ako je postavljen novi logo,
-                brišemo stari.
-            */
-
             if (
                 uploadedLogo &&
                 oldLogo &&
@@ -1493,12 +1570,6 @@
             );
 
 
-            /*
-                Ako je upload uspeo,
-                a baza nije sačuvala zapis,
-                brišemo novi fajl da ne ostane višak.
-            */
-
             if (uploadedLogo) {
 
                 await deletePartnerLogo(
@@ -1529,9 +1600,8 @@
     }
 
 
-
     /* =====================================================
-       BRISANJE PARTNERA
+       BRISANJE
     ===================================================== */
 
     async function deletePartner(
@@ -1597,7 +1667,6 @@
         );
 
     }
-
 
 
     /* =====================================================
@@ -1692,7 +1761,6 @@
     }
 
 
-
     /* =====================================================
        STORAGE - BRISANJE
     ===================================================== */
@@ -1737,7 +1805,6 @@
         }
 
     }
-
 
 
     function getPartnerStoragePath(
@@ -1787,7 +1854,6 @@
     }
 
 
-
     /* =====================================================
        VALIDACIJA
     ===================================================== */
@@ -1835,7 +1901,6 @@
     }
 
 
-
     function getFileExtension(
         file
     ) {
@@ -1863,7 +1928,6 @@
         );
 
     }
-
 
 
     function normalizePartnerLink(
@@ -1910,7 +1974,6 @@
     }
 
 
-
     /* =====================================================
        PORUKE
     ===================================================== */
@@ -1948,7 +2011,6 @@
         }
 
     }
-
 
 
     function friendlyPartnerError(
@@ -1992,7 +2054,6 @@
     }
 
 
-
     function setSaveButton(
         button,
         loading
@@ -2013,7 +2074,6 @@
                 : "САЧУВАЈ ПАРТНЕРА";
 
     }
-
 
 
     /* =====================================================
@@ -2053,7 +2113,6 @@
             );
 
     }
-
 
 
     /* =====================================================
@@ -2105,9 +2164,8 @@
     }
 
 
-
     /* =====================================================
-       CSS SAMO ZA PARTNERE
+       CSS ADMIN PARTNERA
     ===================================================== */
 
     function injectPartnerStyles() {
@@ -2117,7 +2175,9 @@
                 "#partner-admin-styles"
             )
         ) {
+
             return;
+
         }
 
 
@@ -2139,6 +2199,7 @@
                 margin-top: 20px;
             }
 
+
             .partner-admin-card {
                 display: grid;
                 grid-template-columns: 120px 1fr auto;
@@ -2147,10 +2208,21 @@
 
                 padding: 18px;
 
-                background: #fff;
+                background: #ffffff;
+
                 border: 1px solid #e5e5e5;
                 border-radius: 10px;
             }
+
+
+            .partner-admin-card.general {
+                border: 2px solid #b1093d;
+
+                box-shadow:
+                    0 10px 26px
+                    rgba(177, 9, 61, 0.13);
+            }
+
 
             .partner-admin-logo {
                 width: 120px;
@@ -2161,134 +2233,176 @@
                 justify-content: center;
 
                 background: #f7f7f7;
+
                 border-radius: 8px;
+
                 overflow: hidden;
             }
+
 
             .partner-admin-logo img {
                 width: 100%;
                 height: 100%;
+
                 object-fit: contain;
+
                 padding: 10px;
             }
 
+
             .partner-admin-no-logo {
                 font-size: 40px;
+
                 opacity: .35;
             }
 
+
             .partner-admin-card-content h3 {
                 margin: 8px 0 6px;
+
                 font-size: 20px;
             }
 
+
             .partner-admin-card-content p {
                 margin: 0 0 10px;
-                color: #666;
+
+                color: #666666;
+
                 line-height: 1.5;
             }
+
 
             .partner-admin-badges {
                 display: flex;
                 flex-wrap: wrap;
+
                 gap: 6px;
             }
 
+
             .partner-admin-badge {
                 padding: 5px 8px;
+
                 border-radius: 4px;
 
                 font-size: 10px;
                 font-weight: 700;
+
                 letter-spacing: .5px;
             }
 
+
             .partner-admin-badge.active {
                 background: #e6f6ec;
+
                 color: #18723a;
             }
 
+
             .partner-admin-badge.inactive {
-                background: #eee;
-                color: #666;
+                background: #eeeeee;
+
+                color: #666666;
             }
 
+
             .partner-admin-badge.featured {
-                background: #fff2ce;
-                color: #8a5b00;
+                background: #fff3d2;
+
+                color: #8a6500;
             }
+
+
+            .partner-admin-badge.general {
+                background: #b1093d;
+
+                color: #ffffff;
+            }
+
 
             .partner-admin-meta {
                 display: flex;
-                align-items: center;
                 flex-wrap: wrap;
+                align-items: center;
+
                 gap: 15px;
 
                 font-size: 12px;
-                color: #777;
+
+                color: #777777;
             }
+
 
             .partner-admin-link {
                 color: #b1093d;
+
                 font-weight: 700;
+
+                text-decoration: none;
             }
+
 
             .partner-admin-actions {
                 display: flex;
+                flex-direction: column;
+
                 gap: 8px;
             }
 
-            .partner-admin-actions button {
-                border: 0;
-                border-radius: 6px;
 
-                padding: 10px 14px;
+            .partner-admin-actions button {
+                min-width: 85px;
+
+                padding: 9px 12px;
+
+                border: 0;
+                border-radius: 5px;
 
                 cursor: pointer;
+
                 font-weight: 700;
             }
 
-            .partner-admin-actions button:not(.delete) {
-                background: #191919;
-                color: #fff;
+
+            .partner-admin-actions button:first-child {
+                background: #111111;
+
+                color: #ffffff;
             }
+
 
             .partner-admin-actions .delete {
-                background: #f7e3e8;
-                color: #a50031;
+                background: #f6e5e8;
+
+                color: #a20c2c;
             }
 
+
             .partner-admin-empty {
-                margin-top: 20px;
-                padding: 40px 20px;
+                padding: 30px;
 
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                gap: 8px;
+
+                gap: 5px;
 
                 text-align: center;
 
-                background: #fff;
-                border: 1px dashed #ccc;
+                border: 1px dashed #dddddd;
+
                 border-radius: 10px;
+
+                color: #777777;
             }
 
-            .partner-admin-empty span {
-                color: #777;
-            }
-
-
-            /* MODAL */
-
-            .partner-admin-modal[hidden] {
-                display: none !important;
-            }
 
             .partner-admin-modal {
                 position: fixed;
+
                 inset: 0;
-                z-index: 9999;
+
+                z-index: 99999;
 
                 display: flex;
                 align-items: center;
@@ -2297,92 +2411,125 @@
                 padding: 20px;
             }
 
+
+            .partner-admin-modal[hidden] {
+                display: none;
+            }
+
+
             .partner-admin-overlay {
                 position: absolute;
+
                 inset: 0;
 
-                background: rgba(0, 0, 0, .72);
-                backdrop-filter: blur(4px);
+                background:
+                    rgba(0, 0, 0, .72);
             }
+
 
             .partner-admin-dialog {
                 position: relative;
+
                 z-index: 2;
 
                 width: min(760px, 100%);
-                max-height: calc(100vh - 40px);
+                max-height: 92vh;
+
                 overflow-y: auto;
 
-                background: #fff;
+                background: #ffffff;
+
                 border-radius: 12px;
 
                 box-shadow:
-                    0 25px 70px rgba(0, 0, 0, .35);
+                    0 30px 80px
+                    rgba(0, 0, 0, .30);
             }
+
 
             .partner-admin-modal-header {
                 display: flex;
-                justify-content: space-between;
                 align-items: center;
+                justify-content: space-between;
 
-                padding: 22px 24px;
+                gap: 20px;
 
-                border-bottom: 1px solid #e8e8e8;
+                padding: 20px 24px;
+
+                border-bottom:
+                    1px solid #eeeeee;
             }
+
 
             .partner-admin-modal-header span {
                 display: block;
-                margin-bottom: 4px;
 
-                font-size: 11px;
+                margin-bottom: 3px;
+
+                font-size: 10px;
                 font-weight: 700;
-                letter-spacing: 1.5px;
+
+                letter-spacing: 1px;
 
                 color: #b1093d;
             }
+
 
             .partner-admin-modal-header h2 {
                 margin: 0;
             }
 
+
             .partner-admin-close {
-                width: 40px;
-                height: 40px;
+                width: 38px;
+                height: 38px;
 
                 border: 0;
                 border-radius: 50%;
 
-                background: #f2f2f2;
+                background: #f1f1f1;
 
-                font-size: 26px;
+                font-size: 24px;
+
                 cursor: pointer;
             }
+
 
             .partner-admin-form {
                 padding: 24px;
             }
 
+
             .partner-admin-form-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+
+                grid-template-columns:
+                    1fr 1fr;
+
                 gap: 18px;
             }
+
 
             .partner-admin-field {
                 display: flex;
                 flex-direction: column;
+
                 gap: 7px;
             }
+
 
             .partner-admin-field.full {
                 grid-column: 1 / -1;
             }
 
+
             .partner-admin-field label {
                 font-size: 11px;
                 font-weight: 700;
+
                 letter-spacing: .7px;
             }
+
 
             .partner-admin-field input,
             .partner-admin-field textarea {
@@ -2394,41 +2541,54 @@
                 border-radius: 6px;
 
                 font: inherit;
+
                 outline: none;
             }
+
 
             .partner-admin-field input:focus,
             .partner-admin-field textarea:focus {
                 border-color: #b1093d;
             }
 
+
             .partner-admin-checks {
                 display: flex;
                 align-items: center;
-                gap: 20px;
+                flex-wrap: wrap;
+
+                gap: 16px;
 
                 padding-top: 24px;
             }
 
+
             .partner-admin-checks label {
                 display: flex;
                 align-items: center;
+
                 gap: 7px;
 
                 cursor: pointer;
             }
 
+
             .partner-admin-upload {
                 display: grid;
-                grid-template-columns: 150px 1fr;
+
+                grid-template-columns:
+                    150px 1fr;
+
                 gap: 18px;
 
                 padding: 15px;
 
-                border: 1px solid #ddd;
+                border: 1px solid #dddddd;
                 border-radius: 8px;
+
                 background: #fafafa;
             }
+
 
             .partner-admin-logo-preview {
                 height: 110px;
@@ -2437,99 +2597,119 @@
                 align-items: center;
                 justify-content: center;
 
-                background: #fff;
+                background: #ffffff;
+
                 border-radius: 7px;
+
                 overflow: hidden;
             }
+
 
             .partner-admin-logo-preview img {
                 width: 100%;
                 height: 100%;
+
                 object-fit: contain;
+
                 padding: 10px;
             }
+
 
             .partner-admin-upload-info {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
+
                 gap: 8px;
             }
 
+
             .partner-admin-upload-info small {
-                color: #777;
+                color: #777777;
             }
+
 
             .partner-admin-message {
-                min-height: 24px;
-                margin-top: 18px;
+                min-height: 22px;
+
+                margin-top: 15px;
 
                 font-size: 13px;
-                font-weight: 600;
             }
 
-            .partner-admin-message.success {
-                color: #18813d;
-            }
 
             .partner-admin-message.error {
-                color: #b00030;
+                color: #b1093d;
             }
+
+
+            .partner-admin-message.success {
+                color: #18723a;
+            }
+
 
             .partner-admin-form-actions {
                 display: flex;
                 justify-content: flex-end;
+
                 gap: 10px;
 
-                margin-top: 20px;
-                padding-top: 20px;
-
-                border-top: 1px solid #eee;
+                margin-top: 10px;
             }
 
+
             .partner-admin-cancel {
-                padding: 11px 18px;
+                padding: 11px 17px;
 
-                border: 1px solid #ccc;
-                border-radius: 6px;
+                border: 1px solid #dddddd;
+                border-radius: 5px;
 
-                background: #fff;
+                background: #ffffff;
+
                 cursor: pointer;
-                font-weight: 700;
             }
 
 
             @media (max-width: 700px) {
 
                 .partner-admin-card {
-                    grid-template-columns: 85px 1fr;
+                    grid-template-columns:
+                        80px 1fr;
                 }
 
+
                 .partner-admin-logo {
-                    width: 85px;
-                    height: 75px;
+                    width: 80px;
+                    height: 70px;
                 }
+
 
                 .partner-admin-actions {
                     grid-column: 1 / -1;
+
+                    flex-direction: row;
                 }
 
+
                 .partner-admin-form-grid {
-                    grid-template-columns: 1fr;
+                    grid-template-columns:
+                        1fr;
                 }
+
 
                 .partner-admin-field.full {
                     grid-column: auto;
                 }
 
+
                 .partner-admin-checks {
                     padding-top: 0;
-                    flex-direction: column;
-                    align-items: flex-start;
                 }
 
+
                 .partner-admin-upload {
-                    grid-template-columns: 1fr;
+                    grid-template-columns:
+                        1fr;
                 }
 
             }
@@ -2542,5 +2722,6 @@
         );
 
     }
+
 
 })();
