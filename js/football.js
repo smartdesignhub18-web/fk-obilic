@@ -434,30 +434,27 @@ async function loadFootballData() {
         getFootballCache();
 
 
-    /*
-        Ako imamo sveže podatke,
-        odmah ih prikazujemo.
-    */
-
-    if (isCacheValid(cached)) {
-
-        renderFootballData(
-            cached.data
-        );
-
-        return;
-
-    }
-
-
     try {
 
-       const url =
-    FOOTBALL_CONFIG.apiUrl;
+        /*
+            Uvek prvo pokušavamo da uzmemo
+            najnoviji football.json.
+
+            Dodajemo timestamp da browser/CDN
+            ne vrati staru keširanu verziju.
+        */
+
+        const url =
+            `${FOOTBALL_CONFIG.apiUrl}?t=${Date.now()}`;
 
 
         const response =
-            await fetch(url);
+            await fetch(
+                url,
+                {
+                    cache: "no-store"
+                }
+            );
 
 
         if (!response.ok) {
@@ -473,39 +470,48 @@ async function loadFootballData() {
             await response.json();
 
 
-        if (data.success === false) {
+        if (
+            data.success === false
+        ) {
 
             throw new Error(
-
                 data.error ||
                 "Подаци нису доступни."
-
             );
 
         }
 
 
-        saveFootballCache(data);
+        /*
+            Čuvamo najnovije podatke samo kao rezervu.
+        */
+
+        saveFootballCache(
+            data
+        );
 
 
-        renderFootballData(data);
+        /*
+            Uvek prikazujemo upravo preuzete podatke.
+        */
+
+        renderFootballData(
+            data
+        );
 
     }
 
     catch (error) {
 
         console.error(
-
             "Грешка при учитавању фудбалских података:",
-
             error
-
         );
 
 
         /*
-            Ako API trenutno ne radi,
-            koristimo poslednje poznate podatke.
+            Ako GitHub/SrbijaSport privremeno nije dostupan,
+            tek tada koristimo poslednje sačuvane podatke.
         */
 
         if (
@@ -529,7 +535,6 @@ async function loadFootballData() {
     }
 
 }
-
 
 
 /* =========================================================
