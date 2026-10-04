@@ -409,13 +409,12 @@
                 : "home-partner-placeholder";
 
 
-        const partnerLabel =
-            partner.generalni
-                ? "ГЕНЕРАЛНИ ПАРТНЕР"
-                : (
-                    partner.opis ||
-                    "ПАРТНЕР ФК ОБИЛИЋ"
-                );
+       const partnerLabel =
+    partner.generalni
+        ? "ГЕНЕРАЛНИ ПАРТНЕР"
+        : partner.istaknut
+            ? "ПАРТНЕР ФК ОБИЛИЋ"
+            : "ПАРТНЕР ФК ОБИЛИЋ";
 
 
         const generalBadge =
