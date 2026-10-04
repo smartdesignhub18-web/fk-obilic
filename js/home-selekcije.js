@@ -42,6 +42,15 @@ async function loadHomeSelections() {
     }
 
 
+    container.innerHTML = `
+
+        <div class="team-data-empty">
+            Учитавање селекција...
+        </div>
+
+    `;
+
+
     try {
 
         const url =
@@ -212,48 +221,17 @@ function createHomeSelectionCard(
             class="team-card"
         >
 
-            <svg
-                class="team-football-icon"
-                viewBox="0 0 64 64"
-                aria-hidden="true"
-            >
-
-                <circle
-                    cx="32"
-                    cy="32"
-                    r="27"
-                    fill="#ffffff"
-                    stroke="currentColor"
-                    stroke-width="3"
-                />
-
-                <path
-                    d="
-                        M32 19
-                        L42 26
-                        L38 38
-                        L26 38
-                        L22 26
-                        Z
-                    "
-                    fill="currentColor"
-                />
-
-                <path
-                    d="
-                        M32 19 L32 6
-                        M42 26 L55 22
-                        M38 38 L46 51
-                        M26 38 L18 51
-                        M22 26 L9 22
-                    "
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                />
-
-            </svg>
+            <span
+    class="home-team-ball"
+    aria-hidden="true"
+    style="
+        filter:
+            hue-rotate(150deg)
+            saturate(1.6);
+    "
+>
+    ⚽
+</span>
 
 
             <h3>

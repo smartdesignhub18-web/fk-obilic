@@ -13249,3 +13249,10 @@ p {
 
     color: #777;
 }
+
+.home-team-ball {
+    display: block;
+    margin-bottom: 22px;
+    font-size: 48px;
+    line-height: 1;
+}
