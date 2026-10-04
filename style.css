@@ -13151,3 +13151,84 @@ p {
 .smart-design a:hover {
     text-decoration: underline;
 }
+
+/* ==================================================
+   STRUČNI ŠTAB - GRUPE PO SELEKCIJAMA
+================================================== */
+
+.club-staff-section {
+    grid-column: 1 / -1;
+
+    margin-bottom: 42px;
+}
+
+
+.club-staff-section:last-child {
+    margin-bottom: 0;
+}
+
+
+.club-staff-selection-title {
+    margin-bottom: 20px;
+
+    padding-bottom: 10px;
+
+    border-bottom: 2px solid var(--red);
+
+    font-family: "Oswald", sans-serif;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: #111111;
+}
+
+
+.club-staff-selection-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+
+    .club-staff-selection-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* MOBILNI */
+
+@media (max-width: 600px) {
+
+    .club-staff-section {
+        margin-bottom: 32px;
+    }
+
+
+    .club-staff-selection-title {
+        margin-bottom: 16px;
+
+        font-size: 19px;
+    }
+
+
+    .club-staff-selection-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+}
