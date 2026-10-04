@@ -175,9 +175,9 @@ async function loadPlayers() {
 
 
         container.innerHTML =
-    renderPlayerGroups(
-        players
-    );
+            renderPlayerGroups(
+                players
+            );
 
     }
 
@@ -289,11 +289,14 @@ function sortPlayers(
 }
 
 
+
 /* =========================================================
    GRUPISANJE IGRAČA PO POZICIJAMA
 ========================================================= */
 
-function renderPlayerGroups(players) {
+function renderPlayerGroups(
+    players
+) {
 
     const groups = [
         "ГОЛМАНИ",
@@ -356,6 +359,9 @@ function renderPlayerGroups(players) {
     return html;
 
 }
+
+
+
 /* =========================================================
    KARTICA IGRAČA
 ========================================================= */
@@ -375,18 +381,23 @@ function createPlayerCard(
 
 
     const hasNumber =
-        player.broj !==
-            null &&
-        player.broj !==
-            undefined &&
-        player.broj !==
-            "";
+        player.broj !== null &&
+        player.broj !== undefined &&
+        player.broj !== "";
 
 
     const position =
         getPlayerPosition(
             player
         );
+
+
+    const birthDate =
+        player.datum_rodjenja
+            ? formatPlayerBirthDate(
+                player.datum_rodjenja
+            )
+            : "";
 
 
     return `
@@ -498,6 +509,21 @@ function createPlayerCard(
                     `
                 }
 
+
+                ${
+                    birthDate
+
+                    ? `
+
+                        <span class="player-birth-date">
+                            Рођен: ${escapeHtml(birthDate)}
+                        </span>
+
+                    `
+
+                    : ""
+                }
+
             </div>
 
 
@@ -554,6 +580,49 @@ function getPlayerPosition(
         ] ||
         ""
     );
+
+}
+
+
+
+/* =========================================================
+   DATUM ROĐENJA
+========================================================= */
+
+function formatPlayerBirthDate(
+    dateString
+) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const date =
+        new Date(
+            `${dateString}T00:00:00`
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return new Intl.DateTimeFormat(
+        "sr-Cyrl-RS",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    ).format(date);
 
 }
 
@@ -642,6 +711,7 @@ async function loadStaff() {
 
                         "Accept":
                             "application/json"
+
                     },
 
                     cache:
@@ -709,6 +779,7 @@ async function loadStaff() {
     }
 
 }
+
 
 
 /* =========================================================
@@ -814,6 +885,7 @@ function createStaffCard(
     `;
 
 }
+
 
 
 /* =========================================================
