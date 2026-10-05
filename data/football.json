@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-05T00:11:51.025Z",
+  "updatedAt": "2026-10-05T00:39:34.413Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -428,18 +428,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889632,
       "round": null,
       "home": "Tisa",
@@ -447,6 +435,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889632-tisa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
