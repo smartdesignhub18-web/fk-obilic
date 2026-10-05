@@ -210,7 +210,7 @@ img {
             rgba(120, 0, 30, 0.30),
             rgba(10, 10, 10, 0.82)
         ),
-        url("images/teren.jpg");
+        url("images/teren.webp");
 
     background-size: cover;
     background-position: center 55%;
@@ -1382,7 +1382,7 @@ img {
             rgba(90, 0, 25, 0.90),
             rgba(20, 20, 20, 0.82)
         ),
-        url("images/teren.jpg");
+        url("images/teren.webp");
 
     background-size: cover;
     background-position: center;
