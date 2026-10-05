@@ -8,6 +8,7 @@
     const SUPABASE_URL =
         "https://uvevthgxlnzzkapkjxky.supabase.co";
 
+
     const SUPABASE_KEY =
         "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
 
@@ -18,6 +19,10 @@
     );
 
 
+
+    /* =====================================================
+       UČITAVANJE KONTAKATA
+    ===================================================== */
 
     async function loadFooterContacts() {
 
@@ -98,17 +103,13 @@
 
 
             /*
-                VAŽNO:
-
                 Ako Supabase još nema nijedan
-                validan kontakt, NE DIRAMO
-                postojeći footer.js sadržaj.
+                validan kontakt, ne diramo
+                postojeći footer sadržaj.
             */
 
             if (!validContacts.length) {
-
                 return;
-
             }
 
 
@@ -126,10 +127,9 @@
                 error
             );
 
-
             /*
                 Ako Supabase ne radi,
-                ostaje postojeći footer.js.
+                ostaje postojeći footer sadržaj.
             */
 
         }
@@ -137,6 +137,10 @@
     }
 
 
+
+    /* =====================================================
+       PRIKAZ KONTAKATA
+    ===================================================== */
 
     function renderFooterContacts(
         contacts,
@@ -198,6 +202,10 @@
 
 
 
+    /* =====================================================
+       JEDAN KONTAKT
+    ===================================================== */
+
     function renderFooterContact(
         item
     ) {
@@ -236,6 +244,10 @@
     }
 
 
+
+    /* =====================================================
+       NAZIV KONTAKTA
+    ===================================================== */
 
     function getFooterLabel(
         item
@@ -279,6 +291,16 @@
                 return "ВЕБ САЈТ";
 
 
+            case "adresa":
+
+            case "address":
+
+                return (
+                    item.naziv ||
+                    "АДРЕСА"
+                );
+
+
             default:
 
                 return (
@@ -292,9 +314,15 @@
 
 
 
+    /* =====================================================
+       IKONICE
+    ===================================================== */
+
     function getFooterIcon(
         type
     ) {
+
+        /* TELEFON */
 
         if (type === "telefon") {
 
@@ -312,6 +340,8 @@
         }
 
 
+        /* EMAIL */
+
         if (type === "email") {
 
             return `
@@ -327,6 +357,8 @@
 
         }
 
+
+        /* INSTAGRAM */
 
         if (type === "instagram") {
 
@@ -364,6 +396,8 @@
         }
 
 
+        /* FACEBOOK */
+
         if (type === "facebook") {
 
             return `
@@ -379,6 +413,8 @@
 
         }
 
+
+        /* YOUTUBE */
 
         if (type === "youtube") {
 
@@ -396,6 +432,97 @@
         }
 
 
+        /* ADRESA */
+
+        if (
+            type === "adresa" ||
+            type === "address"
+        ) {
+
+            return `
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="
+                            M12 2
+                            C7.6 2 4 5.6 4 10
+                            C4 15.7 12 22 12 22
+                            C12 22 20 15.7 20 10
+                            C20 5.6 16.4 2 12 2
+                            Z
+
+                            M12 6
+                            C14.2 6 16 7.8 16 10
+                            C16 12.2 14.2 14 12 14
+                            C9.8 14 8 12.2 8 10
+                            C8 7.8 9.8 6 12 6
+                            Z
+                        "
+                        fill-rule="evenodd"
+                    />
+                </svg>
+            `;
+
+        }
+
+
+        /* WEB SAJT */
+
+        if (type === "website") {
+
+            return `
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="
+                            M12 2
+                            a10 10 0 1 0 0 20
+                            a10 10 0 0 0 0-20
+
+                            M4.1 11
+                            h3.1
+                            c.1-2 .5-3.8 1.1-5.2
+                            A8 8 0 0 0 4.1 11
+
+                            M4.1 13
+                            a8 8 0 0 0 4.2 5.2
+                            c-.6-1.4-1-3.2-1.1-5.2
+
+                            M9.2 11
+                            h5.6
+                            c-.2-2.2-.8-4.1-1.6-5.4
+                            C12.8 5 12.4 4.5 12 4.2
+                            c-.4.3-.8.8-1.2 1.4
+                            c-.8 1.3-1.4 3.2-1.6 5.4
+
+                            M9.2 13
+                            c.2 2.2.8 4.1 1.6 5.4
+                            c.4.6.8 1.1 1.2 1.4
+                            c.4-.3.8-.8 1.2-1.4
+                            c.8-1.3 1.4-3.2 1.6-5.4
+
+                            M16.8 11
+                            h3.1
+                            a8 8 0 0 0-4.2-5.2
+                            c.6 1.4 1 3.2 1.1 5.2
+
+                            M16.8 13
+                            c-.1 2-.5 3.8-1.1 5.2
+                            a8 8 0 0 0 4.2-5.2
+                        "
+                    />
+                </svg>
+            `;
+
+        }
+
+
+        /* OSTALO / GENERIČKI LINK */
+
         return `
             <svg
                 viewBox="0 0 24 24"
@@ -410,6 +537,10 @@
     }
 
 
+
+    /* =====================================================
+       PROVERA LINKA
+    ===================================================== */
 
     function getSafeFooterLink(
         value
@@ -465,6 +596,10 @@
 
 
 
+    /* =====================================================
+       EXTERNAL LINK ATRIBUTI
+    ===================================================== */
+
     function getExternalAttributes(
         link
     ) {
@@ -488,17 +623,40 @@
 
 
 
+    /* =====================================================
+       BEZBEDAN ISPIS
+    ===================================================== */
+
     function escapeHtml(
         value = ""
     ) {
 
         return String(value)
 
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
 
     }
 
@@ -508,8 +666,11 @@
         value = ""
     ) {
 
-        return escapeHtml(value);
+        return escapeHtml(
+            value
+        );
 
     }
+
 
 })();
