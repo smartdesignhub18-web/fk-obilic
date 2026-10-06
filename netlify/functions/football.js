@@ -10,7 +10,9 @@ const AJAX_URL =
 const CLUB_ID = 787;
 const CLUB_NAME = "Obilić";
 
+
 const REQUEST_HEADERS = {
+
     "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
 
@@ -19,115 +21,407 @@ const REQUEST_HEADERS = {
 
     "Accept-Language":
         "sr-RS,sr;q=0.9,en-US;q=0.8,en;q=0.7,hr;q=0.6"
+
 };
+
+
+/* ==================================================
+   RETRY ZA PRIVREMENE GREŠKE
+================================================== */
+
+const RETRYABLE_HTTP_STATUSES =
+    new Set([
+        408,
+        429,
+        500,
+        502,
+        503,
+        504,
+        520,
+        521,
+        522,
+        523,
+        524
+    ]);
+
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+async function fetchWithRetry(
+    url,
+    options = {},
+    label = "Srbijasport",
+    maxAttempts = 4
+) {
+
+    let lastError = null;
+
+
+    for (
+        let attempt = 1;
+        attempt <= maxAttempts;
+        attempt++
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    options
+                );
+
+
+            if (response.ok) {
+
+                return response;
+
+            }
+
+
+            if (
+                !RETRYABLE_HTTP_STATUSES.has(
+                    response.status
+                )
+            ) {
+
+                return response;
+
+            }
+
+
+            lastError =
+                new Error(
+                    `${label} HTTP greška: ${response.status}`
+                );
+
+
+            console.warn(
+                `${label}: pokušaj ${attempt}/${maxAttempts} nije uspeo. HTTP ${response.status}.`
+            );
+
+
+            if (
+                attempt ===
+                maxAttempts
+            ) {
+
+                return response;
+
+            }
+
+        }
+
+        catch (error) {
+
+            lastError =
+                error;
+
+
+            console.warn(
+                `${label}: pokušaj ${attempt}/${maxAttempts} nije uspeo. ${error.message}`
+            );
+
+
+            if (
+                attempt ===
+                maxAttempts
+            ) {
+
+                throw error;
+
+            }
+
+        }
+
+
+        const waitTime =
+            attempt *
+            10000;
+
+
+        console.log(
+            `${label}: novi pokušaj za ${waitTime / 1000} sekundi...`
+        );
+
+
+        await sleep(
+            waitTime
+        );
+
+    }
+
+
+    throw (
+        lastError ||
+        new Error(
+            `${label}: zahtev nije uspeo.`
+        )
+    );
+
+}
 
 
 /* ==================================================
    POMOĆNE FUNKCIJE
 ================================================== */
 
-function decodeHtml(value = "") {
+function decodeHtml(
+    value = ""
+) {
+
     return String(value)
-        .replace(/&nbsp;/gi, " ")
-        .replace(/&amp;/gi, "&")
-        .replace(/&quot;/gi, '"')
-        .replace(/&#039;/gi, "'")
-        .replace(/&#39;/gi, "'")
-        .replace(/&lt;/gi, "<")
-        .replace(/&gt;/gi, ">")
-        .replace(/&#9650;/gi, "▲")
-        .replace(/&#9660;/gi, "▼");
+
+        .replace(
+            /&nbsp;/gi,
+            " "
+        )
+
+        .replace(
+            /&amp;/gi,
+            "&"
+        )
+
+        .replace(
+            /&quot;/gi,
+            '"'
+        )
+
+        .replace(
+            /&#039;/gi,
+            "'"
+        )
+
+        .replace(
+            /&#39;/gi,
+            "'"
+        )
+
+        .replace(
+            /&lt;/gi,
+            "<"
+        )
+
+        .replace(
+            /&gt;/gi,
+            ">"
+        )
+
+        .replace(
+            /&#9650;/gi,
+            "▲"
+        )
+
+        .replace(
+            /&#9660;/gi,
+            "▼"
+        );
+
 }
 
 
-function cleanText(value = "") {
-    return decodeHtml(value)
-        .replace(/<[^>]*>/g, "")
-        .replace(/\s+/g, " ")
+function cleanText(
+    value = ""
+) {
+
+    return decodeHtml(
+        value
+    )
+
+        .replace(
+            /<[^>]*>/g,
+            ""
+        )
+
+        .replace(
+            /\s+/g,
+            " "
+        )
+
         .trim();
+
 }
 
 
-function escapeRegex(value = "") {
-    return value.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&"
-    );
+function escapeRegex(
+    value = ""
+) {
+
+    return String(value)
+        .replace(
+            /[.*+?^${}()|[\]\\]/g,
+            "\\$&"
+        );
+
 }
 
 
-function getCell(row, className) {
-    const regex = new RegExp(
-        `<td[^>]*class=["'][^"']*${escapeRegex(className)}[^"']*["'][^>]*>([\\s\\S]*?)<\\/td>`,
-        "i"
-    );
+function getCell(
+    row,
+    className
+) {
 
-    const match = row.match(regex);
+    const regex =
+        new RegExp(
+
+            `<td[^>]*class=["'][^"']*${escapeRegex(className)}[^"']*["'][^>]*>([\\s\\S]*?)<\\/td>`,
+
+            "i"
+
+        );
+
+
+    const match =
+        row.match(
+            regex
+        );
+
 
     return match
-        ? cleanText(match[1])
+        ? cleanText(
+            match[1]
+        )
         : "";
+
 }
 
 
-function isObilicName(name = "") {
+function isObilicName(
+    name = ""
+) {
+
     return String(name)
-        .toLocaleLowerCase("sr-Latn")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .includes("obilic");
+
+        .toLocaleLowerCase(
+            "sr-Latn"
+        )
+
+        .normalize(
+            "NFD"
+        )
+
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+
+        .includes(
+            "obilic"
+        );
+
 }
 
 
-function absoluteUrl(url = "") {
+function absoluteUrl(
+    url = ""
+) {
+
     if (!url) {
+
         return "";
+
     }
 
-    if (/^https?:\/\//i.test(url)) {
+
+    if (
+        /^https?:\/\//i.test(
+            url
+        )
+    ) {
+
         return url;
+
     }
+
 
     return `https://srbijasport.net${
-        url.startsWith("/") ? "" : "/"
+        url.startsWith("/")
+            ? ""
+            : "/"
     }${url}`;
+
 }
 
 
-/*
- * AJAX odgovor Srbijasporta može da sadrži
- * HTML sa escape-ovanim navodnicima:
- *
- * class=\"game-row\"
- *
- * Ova funkcija ga pretvara u normalan HTML:
- *
- * class="game-row"
- */
-function normalizeAjaxHtml(value = "") {
-    let html = String(value);
+function normalizeAjaxHtml(
+    value = ""
+) {
 
-    /*
-     * Ponekad sadržaj ostane escape-ovan
-     * jedan nivo i nakon JSON.parse().
-     */
-    for (let i = 0; i < 3; i++) {
-        const before = html;
+    let html =
+        String(
+            value
+        );
 
-        html = html
-            .replace(/\\"/g, '"')
-            .replace(/\\'/g, "'")
-            .replace(/\\\//g, "/")
-            .replace(/\\r/g, "")
-            .replace(/\\n/g, "\n")
-            .replace(/\\t/g, "\t");
 
-        if (html === before) {
+    for (
+        let i = 0;
+        i < 3;
+        i++
+    ) {
+
+        const before =
+            html;
+
+
+        html =
+            html
+
+                .replace(
+                    /\\"/g,
+                    '"'
+                )
+
+                .replace(
+                    /\\'/g,
+                    "'"
+                )
+
+                .replace(
+                    /\\\//g,
+                    "/"
+                )
+
+                .replace(
+                    /\\r/g,
+                    ""
+                )
+
+                .replace(
+                    /\\n/g,
+                    "\n"
+                )
+
+                .replace(
+                    /\\t/g,
+                    "\t"
+                );
+
+
+        if (
+            html ===
+            before
+        ) {
+
             break;
+
         }
+
     }
 
+
     return html;
+
 }
 
 
@@ -135,67 +429,108 @@ function normalizeAjaxHtml(value = "") {
    TABELA
 ================================================== */
 
-function parseStandings(html) {
-    const standings = [];
+function parseStandings(
+    html
+) {
+
+    const standings =
+        [];
+
 
     const rowRegex =
         /<tr[^>]*data-club-id=["'](\d+)["'][^>]*>([\s\S]*?)<\/tr>/gi;
 
+
     let match;
 
+
     while (
-        (match = rowRegex.exec(html)) !== null
+        (
+            match =
+                rowRegex.exec(
+                    html
+                )
+        ) !== null
     ) {
+
         const clubId =
-            Number(match[1]);
+            Number(
+                match[1]
+            );
+
 
         const row =
             match[2];
 
+
         const positionMatch =
             row.match(
+
                 /<span[^>]*class=["'][^"']*pos-deleg[^"']*["'][^>]*>([\s\S]*?)<\/span>/i
+
             );
+
 
         const teamMatch =
             row.match(
+
                 /<div[^>]*class=["'][^"']*team-name[^"']*["'][^>]*>([\s\S]*?)<\/div>/i
+
             );
+
 
         const cityMatch =
             row.match(
+
                 /<div[^>]*class=["'][^"']*team-city[^"']*["'][^>]*>([\s\S]*?)<\/div>/i
+
             );
+
 
         const pointsMatch =
             row.match(
+
                 /<div[^>]*class=["'][^"']*pts-wrapper[^"']*["'][^>]*>([\s\S]*?)<\/div>/i
+
             );
 
-        if (!teamMatch) {
+
+        if (
+            !teamMatch
+        ) {
+
             continue;
+
         }
+
 
         const position =
             positionMatch
+
                 ? Number(
                     cleanText(
                         positionMatch[1]
                     )
                 )
+
                 : null;
+
 
         const team =
             cleanText(
                 teamMatch[1]
             );
 
+
         const city =
             cityMatch
+
                 ? cleanText(
                     cityMatch[1]
                 )
+
                 : "";
+
 
         const played =
             Number(
@@ -205,6 +540,7 @@ function parseStandings(html) {
                 )
             ) || 0;
 
+
         const won =
             Number(
                 getCell(
@@ -212,6 +548,7 @@ function parseStandings(html) {
                     "col-POB"
                 )
             ) || 0;
+
 
         const drawn =
             Number(
@@ -221,6 +558,7 @@ function parseStandings(html) {
                 )
             ) || 0;
 
+
         const lost =
             Number(
                 getCell(
@@ -228,6 +566,7 @@ function parseStandings(html) {
                     "col-POR"
                 )
             ) || 0;
+
 
         const goalsFor =
             Number(
@@ -237,6 +576,7 @@ function parseStandings(html) {
                 )
             ) || 0;
 
+
         const goalsAgainst =
             Number(
                 getCell(
@@ -245,51 +585,95 @@ function parseStandings(html) {
                 )
             ) || 0;
 
+
         const goalDifferenceText =
             getCell(
                 row,
                 "col-GR"
             );
 
+
         const goalDifference =
             Number(
+
                 goalDifferenceText
-                    .replace("+", "")
-                    .replace("−", "-")
+
+                    .replace(
+                        "+",
+                        ""
+                    )
+
+                    .replace(
+                        "−",
+                        "-"
+                    )
+
             ) || 0;
+
 
         const points =
             pointsMatch
+
                 ? Number(
                     cleanText(
                         pointsMatch[1]
                     )
                 ) || 0
+
                 : 0;
 
+
         standings.push({
+
             position,
+
             clubId,
+
             team,
+
             city,
+
             played,
+
             won,
+
             drawn,
+
             lost,
+
             goalsFor,
+
             goalsAgainst,
+
             goalDifference,
+
             points,
+
             isObilic:
-                clubId === CLUB_ID
+                clubId ===
+                CLUB_ID
+
         });
+
     }
 
+
     return standings.sort(
+
         (a, b) =>
-            (a.position || 999) -
-            (b.position || 999)
+
+            (
+                a.position ||
+                999
+            ) -
+
+            (
+                b.position ||
+                999
+            )
+
     );
+
 }
 
 
@@ -301,57 +685,101 @@ function parseSerbianDate(
     dateText,
     timeText = ""
 ) {
-    if (!dateText) {
+
+    if (
+        !dateText
+    ) {
+
         return null;
+
     }
+
 
     const match =
-        String(dateText).match(
-            /(\d{1,2})\.(\d{1,2})\.(\d{4})/
-        );
+        String(
+            dateText
+        )
+            .match(
 
-    if (!match) {
+                /(\d{1,2})\.(\d{1,2})\.(\d{4})/
+
+            );
+
+
+    if (
+        !match
+    ) {
+
         return null;
+
     }
 
+
     const day =
-        match[1].padStart(
-            2,
-            "0"
-        );
-
-    const month =
-        match[2].padStart(
-            2,
-            "0"
-        );
-
-    const year =
-        match[3];
-
-    let hour = "00";
-    let minute = "00";
-
-    const timeMatch =
-        String(timeText).match(
-            /(\d{1,2}):(\d{2})/
-        );
-
-    if (timeMatch) {
-        hour =
-            timeMatch[1].padStart(
+        match[1]
+            .padStart(
                 2,
                 "0"
             );
 
+
+    const month =
+        match[2]
+            .padStart(
+                2,
+                "0"
+            );
+
+
+    const year =
+        match[3];
+
+
+    let hour =
+        "00";
+
+
+    let minute =
+        "00";
+
+
+    const timeMatch =
+        String(
+            timeText
+        )
+            .match(
+
+                /(\d{1,2}):(\d{2})/
+
+            );
+
+
+    if (
+        timeMatch
+    ) {
+
+        hour =
+            timeMatch[1]
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
         minute =
             timeMatch[2];
+
     }
 
+
     return (
+
         `${year}-${month}-${day}` +
+
         `T${hour}:${minute}:00`
+
     );
+
 }
 
 
@@ -359,55 +787,88 @@ function parseSerbianDate(
    UTAKMICE
 ================================================== */
 
-function splitGameRows(html) {
-    /*
-     * Za svaki slučaj normalizujemo HTML i ovde.
-     */
-    html = normalizeAjaxHtml(html);
+function splitGameRows(
+    html
+) {
 
-    const starts = [];
+    html =
+        normalizeAjaxHtml(
+            html
+        );
+
+
+    const starts =
+        [];
+
 
     const startRegex =
+
         /<div\b(?=[^>]*\bclass=["'][^"']*\bgame-row\b[^"']*["'])(?=[^>]*\bdata-id=["']\d+["'])[^>]*>/gi;
+
 
     let match;
 
+
     while (
-        (match =
-            startRegex.exec(html)) !== null
+        (
+            match =
+                startRegex.exec(
+                    html
+                )
+        ) !== null
     ) {
+
         starts.push(
             match.index
         );
+
     }
 
-    const blocks = [];
+
+    const blocks =
+        [];
+
 
     for (
         let i = 0;
         i < starts.length;
         i++
     ) {
+
         const start =
             starts[i];
 
+
         const end =
-            i + 1 < starts.length
-                ? starts[i + 1]
+
+            i + 1 <
+            starts.length
+
+                ? starts[
+                    i + 1
+                ]
+
                 : Math.min(
                     html.length,
-                    start + 20000
+                    start +
+                        20000
                 );
 
+
         blocks.push(
+
             html.substring(
                 start,
                 end
             )
+
         );
+
     }
 
+
     return blocks;
+
 }
 
 
@@ -415,20 +876,31 @@ function extractTeam(
     block,
     className
 ) {
+
     const regex =
         new RegExp(
+
             `<div[^>]*class=["'][^"']*\\b${escapeRegex(className)}\\b[^"']*["'][^>]*>([\\s\\S]*?)<\\/div>`,
+
             "i"
+
         );
 
+
     const match =
-        block.match(regex);
+        block.match(
+            regex
+        );
+
 
     return match
+
         ? cleanText(
             match[1]
         )
+
         : "";
+
 }
 
 
@@ -436,29 +908,50 @@ function extractScore(
     block,
     className
 ) {
+
     const regex =
         new RegExp(
+
             `<div[^>]*class=["'][^"']*\\b${escapeRegex(className)}\\b[^"']*["'][^>]*>[\\s\\S]*?<div[^>]*class=["'][^"']*text-base[^"']*["'][^>]*>\\s*([^<]+)\\s*<\\/div>`,
+
             "i"
+
         );
 
-    const match =
-        block.match(regex);
 
-    if (!match) {
+    const match =
+        block.match(
+            regex
+        );
+
+
+    if (
+        !match
+    ) {
+
         return null;
+
     }
+
 
     const value =
         Number(
+
             cleanText(
                 match[1]
             )
+
         );
 
-    return Number.isFinite(value)
+
+    return Number.isFinite(
+        value
+    )
+
         ? value
+
         : null;
+
 }
 
 
@@ -466,73 +959,105 @@ function parseClubGames(
     html,
     forcedStatus = null
 ) {
+
     html =
         normalizeAjaxHtml(
             html
         );
 
-    const games = [];
+
+    const games =
+        [];
+
 
     const blocks =
         splitGameRows(
             html
         );
 
-    for (const block of blocks) {
+
+    for (
+        const block of
+        blocks
+    ) {
 
         const idMatch =
             block.match(
+
                 /\bdata-id=["'](\d+)["']/i
+
             );
 
-        if (!idMatch) {
+
+        if (
+            !idMatch
+        ) {
+
             continue;
+
         }
+
 
         const id =
             Number(
                 idMatch[1]
             );
 
-        /*
-         * URL utakmice.
-         */
+
         const urlMatch =
             block.match(
+
                 /location\.href\s*=\s*['"]([^'"]+)['"]/i
+
             );
 
-        /*
-         * Datum.
-         *
-         * Za odigrane utakmice datum postoji.
-         * Kod planiranih može trenutno biti prazan.
-         */
+
         const dateMatch =
             block.match(
+
                 /(\d{1,2}\.\d{1,2}\.\d{4})/
+
             );
 
-        let timeText = "";
 
-        if (dateMatch) {
+        let timeText =
+            "";
+
+
+        if (
+            dateMatch
+        ) {
+
             const afterDate =
                 block.substring(
+
                     dateMatch.index,
+
                     dateMatch.index +
                         1500
+
                 );
+
 
             const timeMatch =
                 afterDate.match(
+
                     /(\d{1,2}:\d{2})/
+
                 );
 
-            if (timeMatch) {
+
+            if (
+                timeMatch
+            ) {
+
                 timeText =
                     timeMatch[1];
+
             }
+
         }
+
 
         const home =
             extractTeam(
@@ -540,29 +1065,38 @@ function parseClubGames(
                 "team-host"
             );
 
+
         const away =
             extractTeam(
                 block,
                 "team-guest"
             );
 
+
         if (
             !home ||
             !away
         ) {
+
             continue;
+
         }
 
-        /*
-         * Sa stranice kluba uzimamo samo
-         * utakmice FK Obilić.
-         */
+
         if (
-            !isObilicName(home) &&
-            !isObilicName(away)
+            !isObilicName(
+                home
+            ) &&
+
+            !isObilicName(
+                away
+            )
         ) {
+
             continue;
+
         }
+
 
         const homeScore =
             extractScore(
@@ -570,58 +1104,87 @@ function parseClubGames(
                 "res-host"
             );
 
+
         const awayScore =
             extractScore(
                 block,
                 "res-guest"
             );
 
+
         const hasScore =
-            homeScore !== null &&
-            awayScore !== null;
+
+            homeScore !==
+                null &&
+
+            awayScore !==
+                null;
+
 
         let status =
             forcedStatus;
 
-        if (!status) {
-            status =
-                hasScore
-                    ? "finished"
-                    : "scheduled";
-        }
 
         if (
-            status === "finished" &&
-            !hasScore
+            !status
         ) {
+
             status =
-                "unknown";
+                hasScore
+
+                    ? "finished"
+
+                    : "scheduled";
+
         }
 
+
+        if (
+            status ===
+                "finished" &&
+
+            !hasScore
+        ) {
+
+            status =
+                "unknown";
+
+        }
+
+
         games.push({
+
             id,
 
-            round: null,
+            round:
+                null,
 
             home,
 
             away,
 
             startDate:
+
                 dateMatch
+
                     ? parseSerbianDate(
                         dateMatch[1],
                         timeText
                     )
+
                     : null,
 
-            location: "",
+            location:
+                "",
 
             url:
+
                 urlMatch
+
                     ? absoluteUrl(
                         urlMatch[1]
                     )
+
                     : "",
 
             homeScore,
@@ -629,24 +1192,33 @@ function parseClubGames(
             awayScore,
 
             status
+
         });
+
     }
+
 
     const unique =
         new Map();
 
+
     for (
-        const game of games
+        const game of
+        games
     ) {
+
         unique.set(
             game.id,
             game
         );
+
     }
+
 
     return [
         ...unique.values()
     ];
+
 }
 
 
@@ -658,65 +1230,102 @@ function getHiddenInput(
     html,
     name
 ) {
+
     const escapedName =
-        escapeRegex(name);
+        escapeRegex(
+            name
+        );
+
 
     const regex1 =
         new RegExp(
+
             `<input[^>]*\\bname=["']${escapedName}["'][^>]*\\bvalue=["']([^"']*)["'][^>]*>`,
+
             "i"
+
         );
+
 
     const regex2 =
         new RegExp(
+
             `<input[^>]*\\bvalue=["']([^"']*)["'][^>]*\\bname=["']${escapedName}["'][^>]*>`,
+
             "i"
+
         );
 
+
     const match =
-        html.match(regex1) ||
-        html.match(regex2);
+
+        html.match(
+            regex1
+        ) ||
+
+        html.match(
+            regex2
+        );
+
 
     return match
+
         ? decodeHtml(
             match[1]
         )
+
         : "";
+
 }
 
 
 function getClubGamesFormHtml(
     html
 ) {
+
     const componentIndex =
         html.indexOf(
             'id="club_games"'
         );
 
+
     if (
-        componentIndex === -1
+        componentIndex ===
+        -1
     ) {
+
         return html;
+
     }
 
+
     return html.substring(
+
         componentIndex,
+
         Math.min(
+
             html.length,
+
             componentIndex +
                 100000
+
         )
+
     );
+
 }
 
 
 function getAjaxState(
     clubHtml
 ) {
+
     const formHtml =
         getClubGamesFormHtml(
             clubHtml
         );
+
 
     const sfView =
         getHiddenInput(
@@ -724,11 +1333,13 @@ function getAjaxState(
             "sf_view"
         );
 
+
     const sfViewId =
         getHiddenInput(
             formHtml,
             "sf_view_id"
         );
+
 
     const sfStateId =
         getHiddenInput(
@@ -736,23 +1347,30 @@ function getAjaxState(
             "sf_state_id"
         );
 
+
     const sfStateData =
         getHiddenInput(
             formHtml,
             "sf_state_data"
         );
 
+
     const sfStateStore =
+
         getHiddenInput(
             formHtml,
             "sf_state_store"
-        ) || "client";
+        ) ||
+
+        "client";
+
 
     const sfAjaxKey =
         getHiddenInput(
             formHtml,
             "sf_ajax_key"
         );
+
 
     if (
         !sfView ||
@@ -761,19 +1379,30 @@ function getAjaxState(
         !sfStateData ||
         !sfAjaxKey
     ) {
+
         throw new Error(
             "Nisu pronađeni svi Srbijasport AJAX parametri."
         );
+
     }
 
+
     return {
+
         sfView,
+
         sfViewId,
+
         sfStateId,
+
         sfStateData,
+
         sfStateStore,
+
         sfAjaxKey
+
     };
+
 }
 
 
@@ -784,7 +1413,10 @@ function getAjaxState(
 function getSessionCookie(
     response
 ) {
-    let setCookies = [];
+
+    let setCookies =
+        [];
+
 
     if (
         response &&
@@ -793,47 +1425,75 @@ function getSessionCookie(
             .getSetCookie ===
             "function"
     ) {
+
         setCookies =
             response.headers
                 .getSetCookie();
 
-    } else if (
+    }
+
+    else if (
         response &&
         response.headers
     ) {
+
         const single =
             response.headers.get(
                 "set-cookie"
             );
 
-        if (single) {
+
+        if (
+            single
+        ) {
+
             setCookies = [
                 single
             ];
+
         }
+
     }
 
-    const cookiePairs = [];
+
+    const cookiePairs =
+        [];
+
 
     for (
         const cookie of
-            setCookies
+        setCookies
     ) {
+
         const firstPart =
-            String(cookie)
-                .split(";")[0]
+            String(
+                cookie
+            )
+
+                .split(
+                    ";"
+                )[0]
+
                 .trim();
 
-        if (firstPart) {
+
+        if (
+            firstPart
+        ) {
+
             cookiePairs.push(
                 firstPart
             );
+
         }
+
     }
+
 
     return cookiePairs.join(
         "; "
     );
+
 }
 
 
@@ -845,70 +1505,88 @@ async function fetchScheduledGames(
     clubHtml,
     sessionCookie = ""
 ) {
+
     const state =
         getAjaxState(
             clubHtml
         );
 
+
     const formData =
         new URLSearchParams();
+
 
     formData.set(
         "sf_view",
         state.sfView
     );
 
+
     formData.set(
         "sf_view_id",
         state.sfViewId
     );
+
 
     formData.set(
         "sf_state_id",
         state.sfStateId
     );
 
+
     formData.set(
         "sf_state_data",
         state.sfStateData
     );
+
 
     formData.set(
         "sf_state_store",
         state.sfStateStore
     );
 
+
     formData.set(
         "sf_ajax_key",
         state.sfAjaxKey
     );
 
+
     const body =
         new URLSearchParams();
+
 
     body.set(
         "sf_source",
         ""
     );
 
+
     body.set(
         "sf_form_data",
         formData.toString()
     );
+
 
     body.set(
         "sf_action",
         "#[$view->switchTab('scheduled')]"
     );
 
+
     const response =
-        await fetch(
+
+        await fetchWithRetry(
+
             AJAX_URL,
+
             {
+
                 method:
                     "POST",
 
                 headers: {
+
                     ...REQUEST_HEADERS,
 
                     "Accept":
@@ -930,25 +1608,43 @@ async function fetchScheduledGames(
                         "https://srbijasport.net",
 
                     ...(sessionCookie
+
                         ? {
+
                             "Cookie":
                                 sessionCookie
+
                         }
+
                         : {})
+
                 },
 
                 body:
                     body.toString()
-            }
+
+            },
+
+            "Srbijasport AJAX"
+
         );
 
-    if (!response.ok) {
+
+    if (
+        !response.ok
+    ) {
+
         throw new Error(
+
             `Srbijasport AJAX greška: ${response.status}`
+
         );
+
     }
 
+
     return await response.text();
+
 }
 
 
@@ -960,171 +1656,207 @@ function collectHtmlStrings(
     value,
     result = []
 ) {
+
     if (
         typeof value ===
         "string"
     ) {
+
         const normalized =
             normalizeAjaxHtml(
                 value
             );
 
+
         if (
             normalized.includes(
                 "game-row"
             ) ||
+
             normalized.includes(
                 "team-host"
             ) ||
+
             normalized.includes(
                 "team-guest"
             ) ||
+
             normalized.includes(
                 "club_games"
             )
         ) {
+
             result.push(
                 normalized
             );
+
         }
 
+
         return result;
+
     }
 
+
     if (
-        Array.isArray(value)
+        Array.isArray(
+            value
+        )
     ) {
+
         for (
-            const item of value
+            const item of
+            value
         ) {
+
             collectHtmlStrings(
                 item,
                 result
             );
+
         }
 
+
         return result;
+
     }
+
 
     if (
         value &&
         typeof value ===
             "object"
     ) {
+
         for (
             const item of
-                Object.values(value)
+            Object.values(
+                value
+            )
         ) {
+
             collectHtmlStrings(
                 item,
                 result
             );
+
         }
+
     }
 
+
     return result;
+
 }
 
 
 function extractScheduledHtml(
     responseText
 ) {
-    /*
-     * PRVO pokušavamo normalan JSON.parse().
-     */
+
     try {
+
         const data =
             JSON.parse(
                 responseText
             );
+
 
         const htmlParts =
             collectHtmlStrings(
                 data
             );
 
+
         if (
             htmlParts.length
         ) {
+
             return normalizeAjaxHtml(
+
                 htmlParts.join(
                     "\n"
                 )
+
             );
+
         }
 
-    } catch (error) {
-        /*
-         * Ako nije običan JSON,
-         * nastavljamo ispod.
-         */
+    }
+
+    catch (error) {
+
+        // Nastavljamo dalje.
+
     }
 
 
-    /*
-     * Ako je kompletan odgovor još uvek
-     * escape-ovan, normalizujemo ga.
-     */
     const normalized =
         normalizeAjaxHtml(
             responseText
         );
 
 
-    /*
-     * Moguće je da smo tek sada dobili
-     * validan JSON.
-     */
     try {
+
         const data =
             JSON.parse(
                 normalized
             );
+
 
         const htmlParts =
             collectHtmlStrings(
                 data
             );
 
+
         if (
             htmlParts.length
         ) {
+
             return normalizeAjaxHtml(
+
                 htmlParts.join(
                     "\n"
                 )
+
             );
+
         }
 
-    } catch (error) {
-        /*
-         * Nije problem.
-         * Možda je direktan HTML.
-         */
+    }
+
+    catch (error) {
+
+        // Možda je direktan HTML.
+
     }
 
 
-    /*
-     * Direktan HTML fallback.
-     */
     if (
         normalized.includes(
             "game-row"
         ) &&
+
         (
             normalized.includes(
                 "team-host"
             ) ||
+
             normalized.includes(
                 "team-guest"
             )
         )
     ) {
+
         return normalized;
+
     }
 
 
     return "";
+
 }
 
 
@@ -1136,8 +1868,10 @@ function mergeMatches(
     playedMatches,
     scheduledMatches
 ) {
+
     const map =
         new Map();
+
 
     for (
         const match of [
@@ -1145,144 +1879,235 @@ function mergeMatches(
             ...scheduledMatches
         ]
     ) {
+
         const key =
+
             match.id ||
+
             `${match.home}|${match.away}|${match.startDate}`;
 
+
         if (
-            !map.has(key)
+            !map.has(
+                key
+            )
         ) {
+
             map.set(
                 key,
                 match
             );
 
+
             continue;
+
         }
 
+
         const old =
-            map.get(key);
+            map.get(
+                key
+            );
+
 
         if (
             match.status ===
                 "finished" &&
+
             old.status !==
                 "finished"
         ) {
+
             map.set(
                 key,
                 match
             );
+
         }
+
     }
 
+
     return [
+
         ...map.values()
+
     ].sort(
+
         (a, b) => {
+
             if (
                 !a.startDate &&
                 !b.startDate
             ) {
+
                 return 0;
+
             }
 
-            if (!a.startDate) {
+
+            if (
+                !a.startDate
+            ) {
+
                 return 1;
+
             }
 
-            if (!b.startDate) {
+
+            if (
+                !b.startDate
+            ) {
+
                 return -1;
+
             }
+
 
             return (
+
                 new Date(
                     a.startDate
                 ).getTime() -
+
                 new Date(
                     b.startDate
                 ).getTime()
+
             );
+
         }
+
     );
+
 }
 
 
 function findPreviousAndNextMatch(
     matches
 ) {
+
     const finished =
+
         matches
+
             .filter(
+
                 match =>
+
                     match.status ===
                     "finished"
+
             )
+
             .sort(
+
                 (a, b) =>
+
                     new Date(
-                        a.startDate || 0
+                        a.startDate ||
+                        0
                     ).getTime() -
+
                     new Date(
-                        b.startDate || 0
+                        b.startDate ||
+                        0
                     ).getTime()
+
             );
 
 
     const scheduled =
+
         matches
+
             .filter(
+
                 match =>
+
                     match.status ===
                     "scheduled"
+
             )
+
             .sort(
+
                 (a, b) => {
+
                     if (
                         !a.startDate &&
                         !b.startDate
                     ) {
+
                         return 0;
+
                     }
 
-                    if (!a.startDate) {
+
+                    if (
+                        !a.startDate
+                    ) {
+
                         return 1;
+
                     }
 
-                    if (!b.startDate) {
+
+                    if (
+                        !b.startDate
+                    ) {
+
                         return -1;
+
                     }
+
 
                     return (
+
                         new Date(
                             a.startDate
                         ).getTime() -
+
                         new Date(
                             b.startDate
                         ).getTime()
+
                     );
+
                 }
+
             );
 
 
     const lastMatch =
+
         finished.length
+
             ? finished[
-                finished.length - 1
+                finished.length -
+                1
             ]
+
             : null;
 
 
     const nextMatch =
+
         scheduled.length
+
             ? scheduled[0]
+
             : null;
 
 
     return {
+
         lastMatch,
+
         nextMatch
+
     };
+
 }
 
 
@@ -1299,44 +2124,71 @@ async function () {
             leagueResponse,
             clubResponse
         ] =
+
             await Promise.all([
-                fetch(
+
+                fetchWithRetry(
+
                     LEAGUE_URL,
+
                     {
+
                         headers:
                             REQUEST_HEADERS
-                    }
+
+                    },
+
+                    "Srbijasport liga"
+
                 ),
 
-                fetch(
+
+                fetchWithRetry(
+
                     CLUB_URL,
+
                     {
+
                         headers:
                             REQUEST_HEADERS
-                    }
+
+                    },
+
+                    "Srbijasport klub"
+
                 )
+
             ]);
 
 
         if (
             !leagueResponse.ok
         ) {
+
             throw new Error(
+
                 `Srbijasport liga HTTP greška: ${leagueResponse.status}`
+
             );
+
         }
 
 
         if (
             !clubResponse.ok
         ) {
+
             throw new Error(
+
                 `Srbijasport klub HTTP greška: ${clubResponse.status}`
+
             );
+
         }
 
 
         const sessionCookie =
+
             getSessionCookie(
                 clubResponse
             );
@@ -1346,9 +2198,13 @@ async function () {
             leagueHtml,
             clubHtml
         ] =
+
             await Promise.all([
+
                 leagueResponse.text(),
+
                 clubResponse.text()
+
             ]);
 
 
@@ -1357,6 +2213,7 @@ async function () {
         ============================== */
 
         const standings =
+
             parseStandings(
                 leagueHtml
             );
@@ -1367,6 +2224,7 @@ async function () {
         ============================== */
 
         const playedMatches =
+
             parseClubGames(
                 clubHtml,
                 "finished"
@@ -1380,6 +2238,7 @@ async function () {
         let scheduledMatches =
             [];
 
+
         let scheduledError =
             null;
 
@@ -1387,29 +2246,42 @@ async function () {
         try {
 
             const scheduledResponseText =
+
                 await fetchScheduledGames(
+
                     clubHtml,
+
                     sessionCookie
+
                 );
 
 
             const scheduledHtml =
+
                 extractScheduledHtml(
+
                     scheduledResponseText
+
                 );
 
 
             scheduledMatches =
+
                 parseClubGames(
+
                     scheduledHtml,
+
                     "scheduled"
+
                 );
 
+        }
 
-        } catch (error) {
+        catch (error) {
 
             scheduledError =
                 error.message;
+
         }
 
 
@@ -1418,9 +2290,13 @@ async function () {
         ============================== */
 
         const matches =
+
             mergeMatches(
+
                 playedMatches,
+
                 scheduledMatches
+
             );
 
 
@@ -1428,16 +2304,21 @@ async function () {
             lastMatch,
             nextMatch
         } =
+
             findPreviousAndNextMatch(
                 matches
             );
 
 
         const obilicStanding =
+
             standings.find(
+
                 team =>
+
                     team.clubId ===
                     CLUB_ID
+
             ) || null;
 
 
@@ -1446,55 +2327,81 @@ async function () {
         ============================== */
 
         return {
-            statusCode: 200,
+
+            statusCode:
+                200,
+
 
             headers: {
+
                 "Content-Type":
                     "application/json; charset=utf-8",
 
                 "Cache-Control":
                     "public, max-age=0, s-maxage=1800"
+
             },
 
+
             body:
+
                 JSON.stringify(
+
                     {
+
                         success:
                             true,
+
 
                         source:
                             "srbijasport.net",
 
+
                         league: {
-                            id: 8794,
+
+                            id:
+                                8794,
 
                             name:
                                 "Potiska međuopštinska liga"
+
                         },
 
+
                         club: {
+
                             id:
                                 CLUB_ID,
 
                             name:
                                 CLUB_NAME
+
                         },
 
+
                         updatedAt:
+
                             new Date()
                                 .toISOString(),
 
+
                         obilicStanding,
+
 
                         standings,
 
+
                         matches,
+
 
                         lastMatch,
 
+
                         nextMatch,
 
+
                         debug: {
+
                             standingsFound:
                                 standings.length,
 
@@ -1513,27 +2420,43 @@ async function () {
                                 ),
 
                             scheduledError
+
                         }
+
                     },
+
                     null,
+
                     2
+
                 )
+
         };
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         return {
-            statusCode: 500,
+
+            statusCode:
+                500,
+
 
             headers: {
+
                 "Content-Type":
                     "application/json; charset=utf-8"
+
             },
 
+
             body:
+
                 JSON.stringify(
+
                     {
+
                         success:
                             false,
 
@@ -1542,10 +2465,17 @@ async function () {
 
                         error:
                             error.message
+
                     },
+
                     null,
+
                     2
+
                 )
+
         };
+
     }
+
 };
