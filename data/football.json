@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-06T20:54:16.504Z",
+  "updatedAt": "2026-10-06T21:07:09.120Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889584,
       "round": null,
       "home": "Obilić",
@@ -452,18 +464,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889567,
-      "round": null,
-      "home": "Bačka",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889606,
       "round": null,
       "home": "Potisje",
@@ -471,6 +471,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889606-potisje-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889567,
+      "round": null,
+      "home": "Bačka",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889567-backa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889614-obilic-sampion",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
