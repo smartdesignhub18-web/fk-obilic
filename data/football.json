@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-08T16:45:31.120Z",
+  "updatedAt": "2026-10-08T17:09:47.471Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889632,
+      "round": null,
+      "home": "Tisa",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889632-tisa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889619,
       "round": null,
       "home": "Jedinstvo (SK)",
@@ -404,18 +416,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889606,
-      "round": null,
-      "home": "Potisje",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889606-potisje-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889567,
       "round": null,
       "home": "Bačka",
@@ -423,6 +423,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889567-backa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889606,
+      "round": null,
+      "home": "Potisje",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889606-potisje-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889553-obilic-jadran",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889632,
-      "round": null,
-      "home": "Tisa",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889632-tisa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
