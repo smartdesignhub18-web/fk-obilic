@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-10T08:46:55.263Z",
+  "updatedAt": "2026-10-10T09:07:05.897Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,13 +368,37 @@
       "status": "scheduled"
     },
     {
-      "id": 889593,
+      "id": 889569,
       "round": null,
-      "home": "Slavija",
+      "home": "Obilić",
+      "away": "Tromeđa",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889569-obilic-tromedja",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889553,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jadran",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889553-obilic-jadran",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889632,
+      "round": null,
+      "home": "Tisa",
       "away": "Obilić",
       "startDate": null,
       "location": "",
-      "url": "https://srbijasport.net/game/889593-slavija-obilic",
+      "url": "https://srbijasport.net/game/889632-tisa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -387,6 +411,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889593,
+      "round": null,
+      "home": "Slavija",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889593-slavija-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -471,42 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889569,
-      "round": null,
-      "home": "Obilić",
-      "away": "Tromeđa",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889569-obilic-tromedja",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889553,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jadran",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889553-obilic-jadran",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889632,
-      "round": null,
-      "home": "Tisa",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889632-tisa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
