@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-10T07:44:35.602Z",
+  "updatedAt": "2026-10-10T08:11:40.811Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,30 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889584,
-      "round": null,
-      "home": "Obilić",
-      "away": "Jedinstvo (M)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889569,
-      "round": null,
-      "home": "Obilić",
-      "away": "Tromeđa",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889569-obilic-tromedja",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889553,
       "round": null,
       "home": "Obilić",
@@ -416,18 +392,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889619,
-      "round": null,
-      "home": "Jedinstvo (SK)",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889593,
       "round": null,
       "home": "Slavija",
@@ -435,6 +399,18 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889593-slavija-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889619,
+      "round": null,
+      "home": "Jedinstvo (SK)",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889619-jedinstvo-sk-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -507,6 +483,30 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889584,
+      "round": null,
+      "home": "Obilić",
+      "away": "Jedinstvo (M)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889584-obilic-jedinstvo-m",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
+      "id": 889569,
+      "round": null,
+      "home": "Obilić",
+      "away": "Tromeđa",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889569-obilic-tromedja",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
