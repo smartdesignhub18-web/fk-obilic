@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-13T08:58:53.346Z",
+  "updatedAt": "2026-10-13T09:19:18.336Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -368,18 +368,6 @@
       "status": "scheduled"
     },
     {
-      "id": 889567,
-      "round": null,
-      "home": "Bačka",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
       "id": 889629,
       "round": null,
       "home": "Obilić",
@@ -488,6 +476,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889606,
+      "round": null,
+      "home": "Potisje",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889606-potisje-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889580,
       "round": null,
       "home": "Đala 1922",
@@ -500,13 +500,13 @@
       "status": "scheduled"
     },
     {
-      "id": 889606,
+      "id": 889567,
       "round": null,
-      "home": "Potisje",
+      "home": "Bačka",
       "away": "Obilić",
       "startDate": null,
       "location": "",
-      "url": "https://srbijasport.net/game/889606-potisje-obilic",
+      "url": "https://srbijasport.net/game/889567-backa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
