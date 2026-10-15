@@ -11601,78 +11601,362 @@ img[src$="grb.png"] {
     }
 
 }
-
 /* =========================================================
-   POJEDINAČNA SELEKCIJA
+   POJEDINAČNA SELEKCIJA - PREMIUM PRIKAZ
 ========================================================= */
 
 .selection-detail-section {
-    padding: 80px 0 100px;
+    position: relative;
+
+    padding:
+        95px 0
+        120px;
+
+    overflow: hidden;
 
     background:
-        #f5f5f5;
+        linear-gradient(
+            180deg,
+            #f4f4f4 0%,
+            #eeeeee 100%
+        );
 }
 
+
+/* =========================================================
+   GLAVNI SHOWCASE
+========================================================= */
 
 .selection-detail-header {
-    display: grid;
-
-    grid-template-columns:
-        320px
-        minmax(0, 1fr);
-
-    gap: 45px;
-
-    align-items: center;
-
-    margin-bottom: 70px;
-
-    padding: 35px;
-
-    background:
-        #ffffff;
-
-    border-radius:
-        16px;
-
-    box-shadow:
-        0 12px 35px
-        rgba(0,0,0,0.07);
-}
-
-
-.selection-detail-photo {
-    width: 100%;
-    height: 230px;
+    position: relative;
 
     display: flex;
+    flex-direction: column;
 
     align-items: center;
-    justify-content: center;
+
+    width: 100%;
+
+    max-width: 1280px;
+
+    margin:
+        0 auto
+        80px;
+
+    padding:
+        65px
+        55px
+        70px;
 
     overflow: hidden;
 
     border-radius:
-        12px;
+        28px;
 
     background:
-        #f3f3f3;
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(215, 11, 69, 0.18),
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #1d1d1d,
+            #0b0b0b 72%
+        );
+
+    box-shadow:
+        0 28px 70px
+        rgba(0, 0, 0, 0.20);
+}
+
+
+/* VELIKI WATERMARK U POZADINI */
+
+.selection-detail-header::before {
+    content:
+        "ОБИЛИЋ";
+
+    position:
+        absolute;
+
+    top:
+        10px;
+
+    left:
+        50%;
+
+    transform:
+        translateX(-50%);
+
+    z-index:
+        0;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size:
+        clamp(
+            100px,
+            14vw,
+            210px
+        );
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+    letter-spacing:
+        8px;
+
+    color:
+        rgba(255,255,255,0.025);
+
+    white-space:
+        nowrap;
+
+    pointer-events:
+        none;
+}
+
+
+/* CRVENI DETALJ */
+
+.selection-detail-header::after {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        50%;
+
+    width:
+        180px;
+
+    height:
+        4px;
+
+    transform:
+        translateX(-50%);
+
+    background:
+        var(--red);
+
+    box-shadow:
+        0 0 24px
+        rgba(215, 11, 69, 0.55);
+}
+
+
+/* =========================================================
+   FOTOGRAFIJA
+========================================================= */
+
+.selection-detail-photo {
+    position: relative;
+
+    z-index:
+        2;
+
+    width:
+        min(100%, 980px);
+
+    aspect-ratio:
+        16 / 9;
+
+    margin:
+        0 auto;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.12);
+
+    border-radius:
+        22px;
+
+    background:
+        #161616;
+
+    box-shadow:
+        0 30px 60px
+        rgba(0,0,0,0.42),
+        0 0 0 1px
+        rgba(215,11,69,0.15);
+
+    transform:
+        translateZ(0);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+
+.selection-detail-photo::after {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    pointer-events:
+        none;
+
+    border-radius:
+        inherit;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(255,255,255,0.08);
+}
+
+
+.selection-detail-photo:hover {
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 36px 72px
+        rgba(0,0,0,0.50),
+        0 0 36px
+        rgba(215,11,69,0.15);
 }
 
 
 .selection-detail-photo img {
-    width: 100%;
-    height: 100%;
+    display:
+        block;
+
+    width:
+        100%;
+
+    height:
+        100%;
 
     object-fit:
-        contain;
+        cover;
+
+    object-position:
+        center;
+
+    filter:
+        none;
+
+    transition:
+        transform .5s ease;
 }
 
 
-.selection-detail-info > span {
-    display: block;
+.selection-detail-photo:hover img {
+    transform:
+        scale(1.015);
+}
 
-    margin-bottom: 7px;
+
+/* =========================================================
+   INFO PANEL
+========================================================= */
+
+.selection-detail-info {
+    position:
+        relative;
+
+    z-index:
+        3;
+
+    width:
+        min(88%, 760px);
+
+    margin:
+        -34px auto
+        0;
+
+    padding:
+        34px
+        48px
+        32px;
+
+    text-align:
+        center;
+
+    border-radius:
+        18px;
+
+    background:
+        rgba(255,255,255,0.97);
+
+    box-shadow:
+        0 22px 50px
+        rgba(0,0,0,0.22);
+
+    backdrop-filter:
+        blur(12px);
+}
+
+
+/* MALI CRVENI DETALJ NA PANELU */
+
+.selection-detail-info::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        50%;
+
+    width:
+        75px;
+
+    height:
+        4px;
+
+    transform:
+        translateX(-50%);
+
+    background:
+        var(--red);
+
+    border-radius:
+        0 0 4px 4px;
+}
+
+
+/* FK OBILIĆ */
+
+.selection-detail-info > span:not(.selection-detail-year) {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        12px;
+
+    margin:
+        2px 0
+        12px;
 
     color:
         var(--red);
@@ -11682,77 +11966,127 @@ img[src$="grb.png"] {
         sans-serif;
 
     font-size:
-        11px;
+        10px;
 
     font-weight:
-        600;
+        700;
 
     letter-spacing:
-        3px;
+        4px;
 }
 
 
+.selection-detail-info > span:not(.selection-detail-year)::before,
+.selection-detail-info > span:not(.selection-detail-year)::after {
+    content:
+        "";
+
+    width:
+        28px;
+
+    height:
+        1px;
+
+    background:
+        var(--red);
+}
+
+
+/* NASLOV */
+
 .selection-detail-info h2 {
     margin:
-        0 0 14px;
+        0;
 
     font-family:
         "Oswald",
         sans-serif;
 
     font-size:
-        42px;
+        clamp(
+            40px,
+            5vw,
+            64px
+        );
+
+    font-weight:
+        700;
 
     line-height:
-        1.1;
+        .98;
+
+    letter-spacing:
+        .5px;
 
     color:
         #111111;
 }
 
 
+/* OPIS */
+
 .selection-detail-info p {
     max-width:
-        650px;
+        600px;
 
     margin:
-        14px 0 0;
+        16px auto
+        0;
 
     color:
         #666666;
 
     font-size:
-        13px;
+        14px;
 
     line-height:
-        1.8;
+        1.7;
 }
 
+
+/* =========================================================
+   GODIŠTE
+========================================================= */
 
 .selection-detail-year {
     display:
         inline-flex;
 
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin:
+        18px auto
+        0;
+
     padding:
-        6px 10px;
+        7px
+        12px;
+
+    border:
+        1px solid
+        rgba(215,11,69,0.15);
 
     border-radius:
-        5px;
+        30px;
 
     background:
-        rgba(215, 11, 69, 0.08);
+        rgba(215,11,69,0.06);
 
     color:
         var(--red);
 
     font-size:
-        10px;
+        9px;
 
     font-weight:
         800;
 
     letter-spacing:
-        1px;
+        1.3px;
 }
 
 
@@ -11762,6 +12096,10 @@ img[src$="grb.png"] {
 }
 
 
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
 #selection-content[hidden],
 #selection-error[hidden],
 #selection-loading[hidden] {
@@ -11770,75 +12108,172 @@ img[src$="grb.png"] {
 }
 
 
-@media (max-width: 800px) {
+/* =========================================================
+   TABLET
+========================================================= */
 
-    .selection-detail-header {
-        grid-template-columns:
-            1fr;
+@media (max-width: 900px) {
 
-        gap:
-            25px;
-
+    .selection-detail-section {
         padding:
-            25px;
+            70px 0
+            90px;
     }
 
 
-    .selection-detail-photo {
-        max-width:
-            420px;
+    .selection-detail-header {
+        padding:
+            45px
+            30px
+            55px;
 
-        height:
-            250px;
-
-        margin:
-            0 auto;
+        border-radius:
+            22px;
     }
 
 
     .selection-detail-info {
-        text-align:
-            center;
-    }
+        width:
+            90%;
 
-
-    .selection-detail-info p {
-        margin-left:
-            auto;
-
-        margin-right:
-            auto;
+        padding:
+            30px
+            30px
+            28px;
     }
 
 }
 
 
-@media (max-width: 520px) {
+/* =========================================================
+   MOBILNI
+========================================================= */
+
+@media (max-width: 620px) {
 
     .selection-detail-section {
         padding:
-            55px 0 75px;
+            45px 0
+            65px;
     }
 
 
     .selection-detail-header {
-        padding:
-            18px;
-
         margin-bottom:
             50px;
+
+        padding:
+            30px
+            12px
+            42px;
+
+        border-radius:
+            16px;
+    }
+
+
+    .selection-detail-header::before {
+        top:
+            20px;
+
+        font-size:
+            85px;
+
+        letter-spacing:
+            4px;
+    }
+
+
+    .selection-detail-header::after {
+        width:
+            110px;
     }
 
 
     .selection-detail-photo {
-        height:
-            200px;
+        width:
+            100%;
+
+        aspect-ratio:
+            4 / 3;
+
+        border-radius:
+            14px;
+    }
+
+
+    .selection-detail-photo:hover {
+        transform:
+            none;
+    }
+
+
+    .selection-detail-photo:hover img {
+        transform:
+            none;
+    }
+
+
+    .selection-detail-info {
+        width:
+            calc(100% - 24px);
+
+        margin-top:
+            -20px;
+
+        padding:
+            27px
+            18px
+            24px;
+
+        border-radius:
+            14px;
+    }
+
+
+    .selection-detail-info > span:not(.selection-detail-year) {
+        gap:
+            8px;
+
+        margin-bottom:
+            9px;
+
+        font-size:
+            8px;
+
+        letter-spacing:
+            3px;
+    }
+
+
+    .selection-detail-info > span:not(.selection-detail-year)::before,
+    .selection-detail-info > span:not(.selection-detail-year)::after {
+        width:
+            18px;
     }
 
 
     .selection-detail-info h2 {
         font-size:
-            32px;
+            38px;
+    }
+
+
+    .selection-detail-info p {
+        margin-top:
+            12px;
+
+        font-size:
+            12px;
+
+        line-height:
+            1.6;
+    }
+
+
+    .selection-detail-year {
+        margin-top:
+            14px;
     }
 
 }
@@ -13255,4 +13690,683 @@ p {
     margin-bottom: 22px;
     font-size: 48px;
     line-height: 1;
+}
+/* =========================================================
+   EKIPE - PREMIUM COVER KARTICE
+========================================================= */
+
+.teams-main-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 30px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   OSNOVNA KARTICA
+========================================================= */
+
+.teams-main-grid .team-page-card {
+    position: relative;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: stretch;
+    justify-content: flex-start;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    text-align: left;
+
+    border-radius: 22px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        rgba(0, 0, 0, 0.06);
+
+    box-shadow:
+        0 16px 42px
+        rgba(0, 0, 0, 0.10);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+
+    text-decoration: none;
+}
+
+
+/* CRVENA LINIJA GORE */
+
+.teams-main-grid .team-page-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    z-index: 10;
+
+    width: 100%;
+    height: 5px;
+
+    background:
+        var(--red);
+}
+
+
+.teams-main-grid .team-page-card:hover {
+    transform:
+        translateY(-7px);
+
+    box-shadow:
+        0 24px 58px
+        rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   FOTOGRAFIJA - CEO GORNJI DEO
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+.team-page-logo,
+
+.teams-main-grid
+.team-page-card
+.team-page-logo.team-selection-photo {
+
+    position: relative;
+
+    width: 100%;
+    height: 285px;
+
+    flex-shrink: 0;
+
+    display: block;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    border-radius: 0;
+
+    background:
+        #181818;
+
+    box-shadow:
+        none;
+}
+
+
+/* TAMNI GRADIJENT PREKO DONJEG DELA SLIKE */
+
+.teams-main-grid
+.team-page-card
+.team-page-logo::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.85) 0%,
+            rgba(0, 0, 0, 0.45) 27%,
+            rgba(0, 0, 0, 0.08) 58%,
+            rgba(0, 0, 0, 0) 78%
+        );
+}
+
+
+.teams-main-grid
+.team-page-card
+.team-page-logo img,
+
+.teams-main-grid
+.team-page-card
+.team-page-logo.team-selection-photo img {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    filter: none;
+
+    transition:
+        transform .55s ease;
+}
+
+
+.teams-main-grid
+.team-page-card:hover
+.team-page-logo img {
+
+    transform:
+        scale(1.045);
+}
+
+
+/* =========================================================
+   OZNAKA PREKO SLIKE
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+> .team-label {
+
+    position: absolute;
+
+    top: 190px;
+    left: 26px;
+
+    z-index: 5;
+
+    margin: 0;
+    padding: 0;
+
+    color:
+        rgba(255,255,255,0.78);
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 2.4px;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 2px 8px
+        rgba(0,0,0,0.45);
+}
+
+
+/* =========================================================
+   NAZIV EKIPE PREKO SLIKE
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+> h3 {
+
+    position: absolute;
+
+    top: 215px;
+    left: 26px;
+    right: 26px;
+
+    z-index: 5;
+
+    margin: 0;
+    padding: 0;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size: 38px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: .3px;
+
+    text-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.55);
+}
+
+
+/* =========================================================
+   GODIŠTE - BADGE NA SLICI
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+> .team-selection-year {
+
+    position: absolute;
+
+    top: 20px;
+    right: 18px;
+
+    z-index: 6;
+
+    display: inline-flex;
+
+    width: auto;
+
+    margin: 0;
+
+    padding:
+        7px
+        11px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(15,15,15,0.66);
+
+    backdrop-filter:
+        blur(8px);
+
+    color:
+        #ffffff;
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        1px;
+
+    box-shadow:
+        0 5px 16px
+        rgba(0,0,0,0.18);
+}
+
+
+/* =========================================================
+   DONJI SADRŽAJ
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+> p {
+
+    width: 100%;
+    max-width: none;
+
+    min-height: 78px;
+
+    margin: 0;
+
+    padding:
+        25px
+        27px
+        10px;
+
+    color:
+        #707070;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+
+    text-align: left;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   LINK / DUGME
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+> .team-soon,
+
+.teams-main-grid
+.team-page-card
+> .team-card-link {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    width: calc(100% - 54px);
+
+    margin:
+        auto
+        27px
+        25px;
+
+    padding:
+        15px
+        0
+        0;
+
+    border: 0;
+
+    border-top:
+        1px solid
+        rgba(0,0,0,0.08);
+
+    color:
+        var(--red);
+
+    font-family:
+        "Oswald",
+        sans-serif;
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.2;
+
+    letter-spacing:
+        1.3px;
+
+    text-transform: uppercase;
+}
+
+
+/* STRELICA DESNO */
+
+.teams-main-grid
+.team-page-card
+> .team-soon::after,
+
+.teams-main-grid
+.team-page-card
+> .team-card-link::after {
+
+    content:
+        "→";
+
+    margin-left:
+        auto;
+
+    font-size:
+        18px;
+
+    line-height:
+        1;
+
+    transition:
+        transform .25s ease;
+}
+
+
+.teams-main-grid
+.team-page-card:hover
+> .team-soon::after,
+
+.teams-main-grid
+.team-page-card:hover
+> .team-card-link::after {
+
+    transform:
+        translateX(5px);
+}
+
+
+/* =========================================================
+   PRVI TIM
+========================================================= */
+
+.teams-main-grid
+.team-primary {
+
+    background:
+        #111111;
+
+    border-color:
+        rgba(255,255,255,0.06);
+}
+
+
+.teams-main-grid
+.team-primary
+> p {
+
+    color:
+        rgba(255,255,255,0.64);
+}
+
+
+.teams-main-grid
+.team-primary
+> .team-card-link {
+
+    border-top-color:
+        rgba(255,255,255,0.12);
+
+    color:
+        #ffffff;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .teams-main-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILNI
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .teams-main-grid {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            22px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card {
+
+        border-radius:
+            17px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    .team-page-logo,
+
+    .teams-main-grid
+    .team-page-card
+    .team-page-logo.team-selection-photo {
+
+        height:
+            235px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    > .team-label {
+
+        top:
+            150px;
+
+        left:
+            20px;
+
+        font-size:
+            9px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    > h3 {
+
+        top:
+            175px;
+
+        left:
+            20px;
+
+        right:
+            20px;
+
+        font-size:
+            32px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    > p {
+
+        min-height:
+            auto;
+
+        padding:
+            21px
+            20px
+            8px;
+
+        font-size:
+            12px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    > .team-soon,
+
+    .teams-main-grid
+    .team-page-card
+    > .team-card-link {
+
+        width:
+            calc(100% - 40px);
+
+        margin:
+            auto
+            20px
+            21px;
+
+        padding-top:
+            14px;
+
+    }
+
+
+    .teams-main-grid
+    .team-page-card
+    > .team-selection-year {
+
+        top:
+            16px;
+
+        right:
+            14px;
+
+    }
+
+}
+/* =========================================================
+   ISPRAVKA - DA SE TEKST PREKO SLIKE LEPO VIDI
+========================================================= */
+
+.teams-main-grid
+.team-page-card
+.team-page-logo::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.88) 0%,
+            rgba(0, 0, 0, 0.62) 30%,
+            rgba(0, 0, 0, 0.22) 58%,
+            rgba(0, 0, 0, 0.05) 78%,
+            rgba(0, 0, 0, 0) 100%
+        );
+}
+
+
+.teams-main-grid
+.team-page-card
+> .team-label {
+    color: rgba(255, 255, 255, 0.92) !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+    z-index: 5;
+}
+
+
+.teams-main-grid
+.team-page-card
+> h3 {
+    color: #ffffff !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.75);
+    z-index: 5;
 }
