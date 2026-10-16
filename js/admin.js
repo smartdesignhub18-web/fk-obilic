@@ -548,10 +548,7 @@ function getAdminPageTitle(
     );
 
 }
-    return (
-        titles[pageName] ||
-        "Админ панел"
-    );
+    
 
 
 
