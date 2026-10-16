@@ -424,49 +424,12 @@ function setupNavigation() {
                         }
                     );
 
-                    if (adminPageTitle) {
+                   if (adminPageTitle) {
 
-                        adminPageTitle.textContent =
-                           function getAdminPageTitle(
-    pageName
-) {
-
-    const titles = {
-
-        dashboard:
-            "Контролна табла",
-
-        vesti:
-            "Вести",
-
-        igraci:
-            "Играчи",
-
-        "strucni-stab":
-            "Особље",
-
-        uprava:
-            "Управа",
-
-        selekcije:
-            "Селекције",
-
-        galerija:
-            "Галерија",
-
-        partneri:
-            "Партнери",
-
-        kontakt:
-            "Контакт"
-
-    };
-
-
-    return (
-        titles[pageName] ||
-        "Админ панел"
-    );
+    adminPageTitle.textContent =
+        getAdminPageTitle(
+            pageName
+        );
 
 }
 
@@ -542,7 +505,7 @@ function getAdminPageTitle(
             "Играчи",
 
         "strucni-stab":
-            "Стручни штаб",
+              "Особље",
 
         uprava:
             "Управа",
