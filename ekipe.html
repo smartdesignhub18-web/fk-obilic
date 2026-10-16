@@ -857,5 +857,57 @@
 <script src="js/selekcije.js?v=2"></script>
 <script src="js/footer-kontakt.js?v=3"></script>
 
+<script>
+(() => {
+
+    function scrollToFirstTeam() {
+
+        if (window.location.hash !== "#prvi-tim") {
+            return;
+        }
+
+        const firstTeam =
+            document.getElementById(
+                "prvi-tim"
+            );
+
+        if (!firstTeam) {
+            return;
+        }
+
+        firstTeam.scrollIntoView({
+            behavior: "auto",
+            block: "start"
+        });
+
+    }
+
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            scrollToFirstTeam();
+
+            setTimeout(
+                scrollToFirstTeam,
+                300
+            );
+
+            setTimeout(
+                scrollToFirstTeam,
+                800
+            );
+
+            setTimeout(
+                scrollToFirstTeam,
+                1500
+            );
+
+        }
+    );
+
+})();
+</script>
 </body>
 </html>
