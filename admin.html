@@ -237,7 +237,7 @@
                     data-admin-page="strucni-stab"
                 >
                     <span>◆</span>
-                    Стручни штаб
+                    Особље
                 </button>
 
 
@@ -616,11 +616,11 @@
             </span>
 
             <h2>
-                Стручни штаб
+                Особље клуба
             </h2>
 
             <p>
-                Управљање тренерима и члановима стручног штаба.
+                Управљање стручним штабом и техничким особљем клуба.
             </p>
 
         </div>
@@ -643,7 +643,7 @@
     >
 
         <div class="admin-list-loading">
-            Учитавање стручног штаба...
+            Учитавање особља...
         </div>
 
     </div>
@@ -1976,18 +1976,49 @@
 
 
 
+                <!-- KATEGORIJA OSOBLJA -->
+
+                <div class="admin-field">
+
+                    <label for="admin-staff-type">
+                        КАТЕГОРИЈА *
+                    </label>
+
+                    <select
+                        id="admin-staff-type"
+                        required
+                    >
+
+                        <option value="СТРУЧНИ ШТАБ">
+                            СТРУЧНИ ШТАБ
+                        </option>
+
+                        <option value="ТЕХНИЧКО ОСОБЉЕ">
+                            ТЕХНИЧКО ОСОБЉЕ
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
                 <!-- SELEKCIJA -->
 
                 <div class="admin-field">
 
                     <label for="admin-staff-selection">
-                        СЕЛЕКЦИЈА *
+                        СЕЛЕКЦИЈА / КЛУБ *
                     </label>
 
                     <select
                         id="admin-staff-selection"
                         required
                     >
+
+                        <option value="КЛУБ">
+                            КЛУБ
+                        </option>
 
                         <option value="ПРВИ ТИМ">
                             ПРВИ ТИМ
@@ -3075,7 +3106,7 @@
     ========================================================== -->
 
     <script
-        src="js/admin.js?v=9"
+        src="js/admin.js?v=10"
     ></script>
 
     <script src="js/admin-galerija.js?v=2"></script>

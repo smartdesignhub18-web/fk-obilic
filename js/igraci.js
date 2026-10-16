@@ -668,6 +668,7 @@ async function loadStaff() {
                 "id",
                 "ime_prezime",
                 "uloga",
+                "tip_osoblja",
                 "selekcija",
                 "datum_rodjenja",
                 "fotografija",
@@ -680,6 +681,12 @@ async function loadStaff() {
         url.searchParams.set(
             "aktivan",
             "eq.true"
+        );
+
+
+        url.searchParams.set(
+            "tip_osoblja",
+            "eq.СТРУЧНИ ШТАБ"
         );
 
 

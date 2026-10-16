@@ -26,7 +26,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   UČITAVANJE
+   UČITAVANJE SELEKCIJA
 ========================================================= */
 
 async function loadHomeSelections() {
@@ -90,7 +90,8 @@ async function loadHomeSelections() {
             await fetch(
                 url.toString(),
                 {
-                    method: "GET",
+                    method:
+                        "GET",
 
                     headers: {
 
@@ -129,13 +130,9 @@ async function loadHomeSelections() {
             selections.length === 0
         ) {
 
-            container.innerHTML = `
-
-                <div class="team-data-empty">
-                    Тренутно нема активних селекција.
-                </div>
-
-            `;
+            showHomeSelectionsEmpty(
+                container
+            );
 
             return;
 
@@ -173,7 +170,7 @@ async function loadHomeSelections() {
 
 
 /* =========================================================
-   KARTICA
+   KARTICA SELEKCIJE
 ========================================================= */
 
 function createHomeSelectionCard(
@@ -187,17 +184,41 @@ function createHomeSelectionCard(
 
     const name =
         selection.naziv ||
-        "";
-
-
-    const description =
-        selection.opis ||
-        "";
+        "Селекција";
 
 
     const isFirstTeam =
         code === "prvi-tim";
 
+
+    const description =
+        selection.opis ||
+        (
+            isFirstTeam
+                ? "Сениорска екипа ФК Обилић."
+                : "Млађа селекција ФК Обилић."
+        );
+
+
+    /*
+        Ako selekcija ima svoju fotografiju,
+        koristimo nju.
+
+        Ako nema fotografiju,
+        prikazujemo teren.
+    */
+
+    const image =
+        selection.fotografija ||
+        "images/teren.webp";
+
+
+    /*
+        PRVI TIM vodi na ekipе.html.
+
+        Sve mlađe selekcije vode
+        na dinamičku stranicu selekcije.
+    */
 
     const href =
         isFirstTeam
@@ -205,45 +226,113 @@ function createHomeSelectionCard(
             : `selekcija.html?kod=${encodeURIComponent(code)}`;
 
 
-    const text =
-        description ||
-        (
-            isFirstTeam
-                ? "Играчи и стручни штаб"
-                : "Млађе селекције клуба"
-        );
+    const label =
+        isFirstTeam
+            ? "СЕНИОРИ"
+            : "МЛАЂЕ СЕЛЕКЦИЈЕ";
+
+
+    const linkText =
+        isFirstTeam
+            ? "ПОГЛЕДАЈ ЕКИПУ"
+            : "ПОГЛЕДАЈ СЕЛЕКЦИЈУ";
+
+
+    const year =
+        selection.godiste
+            ? `
+
+                <span class="home-team-card-year">
+                    ${escapeHomeSelectionHtml(
+                        selection.godiste
+                    )}
+                </span>
+
+            `
+            : "";
 
 
     return `
 
         <a
             href="${escapeHomeSelectionAttribute(href)}"
-            class="team-card"
+            class="
+                home-team-card
+                ${
+                    isFirstTeam
+                        ? "home-team-card-primary"
+                        : ""
+                }
+            "
         >
 
-            <span
-    class="home-team-ball"
-    aria-hidden="true"
-    style="
-        filter:
-            hue-rotate(150deg)
-            saturate(1.6);
-    "
->
-    ⚽
-</span>
+            <div class="home-team-card-image">
+
+                <img
+                    src="${escapeHomeSelectionAttribute(image)}"
+                    alt="${escapeHomeSelectionAttribute(name)}"
+                    loading="lazy"
+                    onerror="
+                        this.onerror=null;
+                        this.src='images/teren.webp';
+                    "
+                >
+
+            </div>
 
 
-            <h3>
-                ${escapeHomeSelectionHtml(name)}
-            </h3>
+            <div class="home-team-card-content">
+
+                ${year}
 
 
-            <p>
-                ${escapeHomeSelectionHtml(text)}
-            </p>
+                <span class="home-team-card-label">
+                    ${escapeHomeSelectionHtml(label)}
+                </span>
+
+
+                <h3 class="home-team-card-title">
+                    ${escapeHomeSelectionHtml(name)}
+                </h3>
+
+
+                <p class="home-team-card-text">
+                    ${escapeHomeSelectionHtml(description)}
+                </p>
+
+
+                <span class="home-team-card-link">
+
+                    ${escapeHomeSelectionHtml(linkText)}
+
+                    <span aria-hidden="true">
+                        →
+                    </span>
+
+                </span>
+
+            </div>
 
         </a>
+
+    `;
+
+}
+
+
+/* =========================================================
+   PRAZNO STANJE
+========================================================= */
+
+function showHomeSelectionsEmpty(
+    container
+) {
+
+    container.innerHTML = `
+
+        <div class="team-data-empty">
+            Тренутно нема активних селекција.
+        </div>
 
     `;
 

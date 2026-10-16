@@ -427,9 +427,48 @@ function setupNavigation() {
                     if (adminPageTitle) {
 
                         adminPageTitle.textContent =
-                            getAdminPageTitle(
-                                pageName
-                            );
+                           function getAdminPageTitle(
+    pageName
+) {
+
+    const titles = {
+
+        dashboard:
+            "Контролна табла",
+
+        vesti:
+            "Вести",
+
+        igraci:
+            "Играчи",
+
+        "strucni-stab":
+            "Особље",
+
+        uprava:
+            "Управа",
+
+        selekcije:
+            "Селекције",
+
+        galerija:
+            "Галерија",
+
+        partneri:
+            "Партнери",
+
+        kontakt:
+            "Контакт"
+
+    };
+
+
+    return (
+        titles[pageName] ||
+        "Админ панел"
+    );
+
+}
 
                     }
 
@@ -730,7 +769,7 @@ async function loadPartnersCount() {
 }
 
 /* =========================================================
-   SELEKCIJE ZA IGRAČE I STRUČNI ŠTAB
+   SELEKCIJE ZA IGRAČE I OSOBLJE
 ========================================================= */
 
 async function loadAdminSelectionOptions() {
@@ -761,6 +800,7 @@ async function loadAdminSelectionOptions() {
                 }
             );
 
+
     if (error) {
 
         console.error(
@@ -772,6 +812,7 @@ async function loadAdminSelectionOptions() {
 
     }
 
+
     adminSelections =
         Array.isArray(
             data
@@ -779,20 +820,30 @@ async function loadAdminSelectionOptions() {
             ? data
             : [];
 
+
     populateAdminSelectionSelect(
         playerSelectionInput
     );
 
+
     populateAdminSelectionSelect(
-        staffSelectionInput
+        staffSelectionInput,
+        "",
+        true
     );
 
 }
 
 
+
+/* =========================================================
+   POPUNJAVANJE SELEKCIJA
+========================================================= */
+
 function populateAdminSelectionSelect(
     selectElement,
-    selectedValue = ""
+    selectedValue = "",
+    includeClub = false
 ) {
 
     if (!selectElement) {
@@ -801,14 +852,58 @@ function populateAdminSelectionSelect(
 
     }
 
+
     const currentValue =
         selectedValue ||
         selectElement.value ||
         "";
 
+
+    /* =====================================================
+       AKO SELEKCIJE JOŠ NISU UČITANE
+    ===================================================== */
+
     if (
         !adminSelections.length
     ) {
+
+        if (includeClub) {
+
+            const hasClubOption =
+                Array.from(
+                    selectElement.options
+                )
+                    .some(
+                        option =>
+                            option.value ===
+                            "КЛУБ"
+                    );
+
+
+            if (!hasClubOption) {
+
+                const clubOption =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                clubOption.value =
+                    "КЛУБ";
+
+
+                clubOption.textContent =
+                    "КЛУБ";
+
+
+                selectElement.prepend(
+                    clubOption
+                );
+
+            }
+
+        }
+
 
         if (currentValue) {
 
@@ -822,6 +917,7 @@ function populateAdminSelectionSelect(
                             currentValue
                     );
 
+
             if (exists) {
 
                 selectElement.value =
@@ -831,9 +927,15 @@ function populateAdminSelectionSelect(
 
         }
 
+
         return;
 
     }
+
+
+    /* =====================================================
+       POSTOJEĆE SELEKCIJE
+    ===================================================== */
 
     const existingNames =
         adminSelections.map(
@@ -841,27 +943,73 @@ function populateAdminSelectionSelect(
                 selection.naziv
         );
 
-    let html =
-        "";
+
+    const additionalValues =
+        [];
+
+
+    /* =====================================================
+       KLUB - SAMO ZA OSOBLJE
+    ===================================================== */
+
+    if (
+        includeClub &&
+        !existingNames.includes(
+            "КЛУБ"
+        )
+    ) {
+
+        additionalValues.push(
+            "КЛУБ"
+        );
+
+    }
+
+
+    /* =====================================================
+       STARA / POSEBNA VREDNOST
+    ===================================================== */
 
     if (
         currentValue &&
         !existingNames.includes(
             currentValue
+        ) &&
+        !additionalValues.includes(
+            currentValue
         )
     ) {
 
-        html += `
-
-            <option
-                value="${escapeAttribute(currentValue)}"
-            >
-                ${escapeHtml(currentValue)}
-            </option>
-
-        `;
+        additionalValues.push(
+            currentValue
+        );
 
     }
+
+
+    /* =====================================================
+       DODATNE OPCIJE
+    ===================================================== */
+
+    let html =
+        additionalValues
+            .map(
+                value => `
+
+                    <option
+                        value="${escapeAttribute(value)}"
+                    >
+                        ${escapeHtml(value)}
+                    </option>
+
+                `
+            )
+            .join("");
+
+
+    /* =====================================================
+       SELEKCIJE IZ SUPABASE
+    ===================================================== */
 
     html +=
         adminSelections
@@ -871,6 +1019,7 @@ function populateAdminSelectionSelect(
                     const inactive =
                         selection.aktivna ===
                         false;
+
 
                     return `
 
@@ -887,18 +1036,22 @@ function populateAdminSelectionSelect(
             )
             .join("");
 
+
     selectElement.innerHTML =
         html;
+
 
     const targetValue =
         currentValue ||
         getDefaultAdminSelectionName();
+
 
     if (!targetValue) {
 
         return;
 
     }
+
 
     const optionExists =
         Array.from(
@@ -910,6 +1063,7 @@ function populateAdminSelectionSelect(
                     targetValue
             );
 
+
     if (optionExists) {
 
         selectElement.value =
@@ -919,6 +1073,11 @@ function populateAdminSelectionSelect(
 
 }
 
+
+
+/* =========================================================
+   PODRAZUMEVANA SELEKCIJA
+========================================================= */
 
 function getDefaultAdminSelectionName() {
 
@@ -931,11 +1090,13 @@ function getDefaultAdminSelectionName() {
                     false
         );
 
+
     if (firstTeam) {
 
         return firstTeam.naziv;
 
     }
+
 
     const firstActive =
         adminSelections.find(
@@ -944,6 +1105,7 @@ function getDefaultAdminSelectionName() {
                     false
         );
 
+
     return (
         firstActive?.naziv ||
         "ПРВИ ТИМ"
@@ -951,6 +1113,11 @@ function getDefaultAdminSelectionName() {
 
 }
 
+
+
+/* =========================================================
+   REDOSLED SELEKCIJE
+========================================================= */
 
 function getAdminSelectionOrder(
     selectionName
@@ -963,12 +1130,12 @@ function getAdminSelectionOrder(
                 selectionName
         );
 
+
     return index === -1
         ? 999
         : index + 1;
 
 }
-
 
 /* =========================================================
    VESTI
@@ -3436,7 +3603,12 @@ async function deletePlayer(
 
 
 /* =========================================================
-   STRUČNI ŠTAB
+   OSOBLJE KLUBA
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTI
 ========================================================= */
 
 const addStaffButton =
@@ -3444,91 +3616,119 @@ const addStaffButton =
         "#admin-add-staff"
     );
 
+
 const staffList =
     document.querySelector(
         "#admin-staff-list"
     );
+
 
 const staffModal =
     document.querySelector(
         "#admin-staff-modal"
     );
 
+
 const staffForm =
     document.querySelector(
         "#admin-staff-form"
     );
+
 
 const staffModalTitle =
     document.querySelector(
         "#admin-staff-modal-title"
     );
 
+
 const staffIdInput =
     document.querySelector(
         "#admin-staff-id"
     );
+
 
 const staffCurrentImage =
     document.querySelector(
         "#admin-staff-current-image"
     );
 
+
 const staffNameInput =
     document.querySelector(
         "#admin-staff-name"
     );
+
 
 const staffRoleInput =
     document.querySelector(
         "#admin-staff-role"
     );
 
+
+const staffTypeInput =
+    document.querySelector(
+        "#admin-staff-type"
+    );
+
+
 const staffSelectionInput =
     document.querySelector(
         "#admin-staff-selection"
     );
+
 
 const staffBirthDateInput =
     document.querySelector(
         "#admin-staff-birth-date"
     );
 
+
 const staffOrderInput =
     document.querySelector(
         "#admin-staff-order"
     );
+
 
 const staffImageInput =
     document.querySelector(
         "#admin-staff-image"
     );
 
+
 const staffImagePreview =
     document.querySelector(
         "#admin-staff-image-preview img"
     );
+
 
 const staffImageName =
     document.querySelector(
         "#admin-staff-image-name"
     );
 
+
 const staffActiveInput =
     document.querySelector(
         "#admin-staff-active"
     );
+
 
 const staffFormMessage =
     document.querySelector(
         "#admin-staff-form-message"
     );
 
+
 const staffSaveButton =
     document.querySelector(
         "#admin-staff-save-button"
     );
 
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
 
 function setupStaffAdmin() {
 
@@ -3545,6 +3745,7 @@ function setupStaffAdmin() {
 
     }
 
+
     document
         .querySelectorAll(
             "[data-close-staff-modal]"
@@ -3560,6 +3761,7 @@ function setupStaffAdmin() {
             }
         );
 
+
     if (staffImageInput) {
 
         staffImageInput.addEventListener(
@@ -3569,6 +3771,39 @@ function setupStaffAdmin() {
 
     }
 
+
+    /*
+        Ako se izabere tehničko osoblje,
+        automatski postavljamo KЛУБ.
+    */
+
+    if (staffTypeInput) {
+
+        staffTypeInput.addEventListener(
+            "change",
+            () => {
+
+                const targetSelection =
+                    staffTypeInput.value ===
+                        "ТЕХНИЧКО ОСОБЉЕ"
+
+                        ? "КЛУБ"
+
+                        : getDefaultAdminSelectionName();
+
+
+                populateAdminSelectionSelect(
+                    staffSelectionInput,
+                    targetSelection,
+                    true
+                );
+
+            }
+        );
+
+    }
+
+
     if (staffForm) {
 
         staffForm.addEventListener(
@@ -3577,6 +3812,7 @@ function setupStaffAdmin() {
         );
 
     }
+
 
     document.addEventListener(
         "keydown",
@@ -3599,6 +3835,11 @@ function setupStaffAdmin() {
 }
 
 
+
+/* =========================================================
+   UČITAVANJE OSOBLJA
+========================================================= */
+
 async function loadAdminStaff() {
 
     if (!staffList) {
@@ -3607,13 +3848,15 @@ async function loadAdminStaff() {
 
     }
 
+
     staffList.innerHTML = `
 
         <div class="admin-list-loading">
-            Учитавање стручног штаба...
+            Учитавање особља...
         </div>
 
     `;
+
 
     const {
         data,
@@ -3624,7 +3867,7 @@ async function loadAdminStaff() {
                 "strucni_stab"
             )
             .select(
-                "id,ime_prezime,uloga,selekcija,datum_rodjenja,fotografija,redosled,aktivan,created_at"
+                "id,ime_prezime,uloga,tip_osoblja,selekcija,datum_rodjenja,fotografija,redosled,aktivan,created_at"
             )
             .order(
                 "redosled",
@@ -3641,6 +3884,7 @@ async function loadAdminStaff() {
                 }
             );
 
+
     if (error) {
 
         console.error(
@@ -3648,17 +3892,20 @@ async function loadAdminStaff() {
             error
         );
 
+
         staffList.innerHTML = `
 
             <div class="admin-list-loading">
-                Грешка при учитавању стручног штаба.
+                Грешка при учитавању особља.
             </div>
 
         `;
 
+
         return;
 
     }
+
 
     if (
         !Array.isArray(
@@ -3671,14 +3918,16 @@ async function loadAdminStaff() {
         staffList.innerHTML = `
 
             <div class="admin-staff-empty">
-                Још нема унетих чланова стручног штаба.
+                Још нема унетих чланова особља.
             </div>
 
         `;
 
+
         return;
 
     }
+
 
     staffList.innerHTML =
         data
@@ -3686,6 +3935,11 @@ async function loadAdminStaff() {
                 renderAdminStaffMember
             )
             .join("");
+
+
+    /* =====================================================
+       IZMENU
+    ===================================================== */
 
     staffList
         .querySelectorAll(
@@ -3702,12 +3956,14 @@ async function loadAdminStaff() {
                             button.dataset
                                 .editStaff;
 
+
                         const member =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
+
 
                         if (member) {
 
@@ -3722,6 +3978,11 @@ async function loadAdminStaff() {
 
             }
         );
+
+
+    /* =====================================================
+       BRISANJE
+    ===================================================== */
 
     staffList
         .querySelectorAll(
@@ -3738,12 +3999,14 @@ async function loadAdminStaff() {
                             button.dataset
                                 .deleteStaff;
 
+
                         const member =
                             data.find(
                                 item =>
                                     item.id ===
                                     id
                             );
+
 
                         if (member) {
 
@@ -3762,6 +4025,11 @@ async function loadAdminStaff() {
 }
 
 
+
+/* =========================================================
+   KARTICA OSOBLJA
+========================================================= */
+
 function renderAdminStaffMember(
     member
 ) {
@@ -3770,20 +4038,32 @@ function renderAdminStaffMember(
         member.fotografija ||
         "images/grb.png";
 
+
+    const type =
+        member.tip_osoblja ||
+        "СТРУЧНИ ШТАБ";
+
+
     const birthDate =
         member.datum_rodjenja
 
             ? `
                 <span>
-                    ${escapeHtml(formatBirthDate(member.datum_rodjenja))}
+                    ${escapeHtml(
+                        formatBirthDate(
+                            member.datum_rodjenja
+                        )
+                    )}
                 </span>
             `
 
             : "";
 
+
     return `
 
         <article class="admin-staff-item">
+
 
             <div class="admin-staff-photo">
 
@@ -3795,23 +4075,34 @@ function renderAdminStaffMember(
 
             </div>
 
+
             <div class="admin-staff-info">
 
                 <strong>
                     ${escapeHtml(member.ime_prezime || "")}
                 </strong>
 
+
                 <div class="admin-staff-meta">
+
 
                     <span class="admin-staff-role">
                         ${escapeHtml(member.uloga || "")}
                     </span>
 
+
+                    <span>
+                        ${escapeHtml(type)}
+                    </span>
+
+
                     <span>
                         ${escapeHtml(member.selekcija || "")}
                     </span>
 
+
                     ${birthDate}
+
 
                     <span
                         class="
@@ -3823,16 +4114,20 @@ function renderAdminStaffMember(
                             }
                         "
                     >
+
                         ${
                             member.aktivan
                                 ? "АКТИВАН"
                                 : "НЕАКТИВАН"
                         }
+
                     </span>
+
 
                 </div>
 
             </div>
+
 
             <div class="admin-staff-actions">
 
@@ -3844,6 +4139,7 @@ function renderAdminStaffMember(
                     ИЗМЕНИ
                 </button>
 
+
                 <button
                     type="button"
                     class="admin-staff-delete"
@@ -3854,12 +4150,18 @@ function renderAdminStaffMember(
 
             </div>
 
+
         </article>
 
     `;
 
 }
 
+
+
+/* =========================================================
+   OTVARANJE MODALA
+========================================================= */
 
 function openStaffModal(
     member = null
@@ -3874,46 +4176,76 @@ function openStaffModal(
 
     }
 
+
     resetStaffForm();
+
 
     if (member) {
 
         staffModalTitle.textContent =
             "Измени члана";
 
+
         staffIdInput.value =
             member.id ||
             "";
+
 
         staffCurrentImage.value =
             member.fotografija ||
             "";
 
+
         staffNameInput.value =
             member.ime_prezime ||
             "";
+
 
         staffRoleInput.value =
             member.uloga ||
             "";
 
+
+        if (staffTypeInput) {
+
+            staffTypeInput.value =
+                member.tip_osoblja ||
+                "СТРУЧНИ ШТАБ";
+
+        }
+
+
         populateAdminSelectionSelect(
             staffSelectionInput,
+
             member.selekcija ||
-                getDefaultAdminSelectionName()
+                (
+                    member.tip_osoblja ===
+                        "ТЕХНИЧКО ОСОБЉЕ"
+
+                        ? "КЛУБ"
+
+                        : getDefaultAdminSelectionName()
+                ),
+
+            true
         );
+
 
         staffBirthDateInput.value =
             member.datum_rodjenja ||
             "";
 
+
         staffOrderInput.value =
             member.redosled ??
             0;
 
+
         staffActiveInput.checked =
             member.aktivan !==
             false;
+
 
         if (
             member.fotografija
@@ -3933,14 +4265,21 @@ function openStaffModal(
 
     }
 
+
     staffModal.hidden =
         false;
+
 
     document.body.style.overflow =
         "hidden";
 
 }
 
+
+
+/* =========================================================
+   ZATVARANJE MODALA
+========================================================= */
 
 function closeStaffModal() {
 
@@ -3950,14 +4289,21 @@ function closeStaffModal() {
 
     }
 
+
     staffModal.hidden =
         true;
+
 
     document.body.style.overflow =
         "";
 
 }
 
+
+
+/* =========================================================
+   RESET FORME
+========================================================= */
 
 function resetStaffForm() {
 
@@ -3967,30 +4313,48 @@ function resetStaffForm() {
 
     }
 
+
     staffForm.reset();
+
 
     staffIdInput.value =
         "";
 
+
     staffCurrentImage.value =
         "";
 
+
+    if (staffTypeInput) {
+
+        staffTypeInput.value =
+            "СТРУЧНИ ШТАБ";
+
+    }
+
+
     populateAdminSelectionSelect(
         staffSelectionInput,
-        getDefaultAdminSelectionName()
+        getDefaultAdminSelectionName(),
+        true
     );
+
 
     staffOrderInput.value =
         "0";
 
+
     staffActiveInput.checked =
         true;
+
 
     staffImagePreview.src =
         "images/grb.png";
 
+
     staffImageName.textContent =
         "Није изабрана фотографија";
+
 
     setStaffFormMessage(
         "",
@@ -4000,11 +4364,17 @@ function resetStaffForm() {
 }
 
 
+
+/* =========================================================
+   PREVIEW FOTOGRAFIJE
+========================================================= */
+
 function previewStaffImage() {
 
     const file =
         staffImageInput
             ?.files?.[0];
+
 
     if (!file) {
 
@@ -4012,16 +4382,20 @@ function previewStaffImage() {
 
     }
 
+
     staffImageName.textContent =
         file.name;
+
 
     const objectUrl =
         URL.createObjectURL(
             file
         );
 
+
     staffImagePreview.src =
         objectUrl;
+
 
     staffImagePreview.onload =
         () => {
@@ -4035,41 +4409,66 @@ function previewStaffImage() {
 }
 
 
+
+/* =========================================================
+   ČUVANJE OSOBLJA
+========================================================= */
+
 async function saveStaffMember(
     event
 ) {
 
     event.preventDefault();
 
+
     setStaffFormMessage(
         "",
         ""
     );
+
 
     const id =
         staffIdInput
             ?.value
             .trim();
 
+
     const name =
         staffNameInput
             ?.value
             .trim();
+
 
     const role =
         staffRoleInput
             ?.value
             .trim();
 
+
+    const staffType =
+        staffTypeInput
+            ?.value ||
+        "СТРУЧНИ ШТАБ";
+
+
     const selection =
         staffSelectionInput
             ?.value ||
-        getDefaultAdminSelectionName();
+        (
+            staffType ===
+                "ТЕХНИЧКО ОСОБЉЕ"
+
+                ? "КЛУБ"
+
+                : getDefaultAdminSelectionName()
+        );
+
 
     const birthDate =
         staffBirthDateInput
             ?.value ||
         null;
+
 
     const order =
         Number(
@@ -4077,6 +4476,7 @@ async function saveStaffMember(
                 ?.value ||
             0
         );
+
 
     if (
         !name ||
@@ -4088,9 +4488,11 @@ async function saveStaffMember(
             "error"
         );
 
+
         return;
 
     }
+
 
     const oldImage =
         staffCurrentImage
@@ -4098,8 +4500,10 @@ async function saveStaffMember(
             .trim() ||
         "";
 
+
     let uploadedImage =
         null;
+
 
     setButtonLoading(
         staffSaveButton,
@@ -4107,11 +4511,13 @@ async function saveStaffMember(
         "ЧУВАЊЕ..."
     );
 
+
     try {
 
         const selectedFile =
             staffImageInput
                 ?.files?.[0];
+
 
         if (selectedFile) {
 
@@ -4124,10 +4530,12 @@ async function saveStaffMember(
 
         }
 
+
         const photo =
             uploadedImage ||
             oldImage ||
             null;
+
 
         const payload = {
 
@@ -4136,6 +4544,9 @@ async function saveStaffMember(
 
             uloga:
                 role,
+
+            tip_osoblja:
+                staffType,
 
             selekcija:
                 selection,
@@ -4161,7 +4572,9 @@ async function saveStaffMember(
 
         };
 
+
         let error;
+
 
         if (id) {
 
@@ -4177,6 +4590,7 @@ async function saveStaffMember(
                         "id",
                         id
                     );
+
 
             error =
                 result.error;
@@ -4194,16 +4608,19 @@ async function saveStaffMember(
                         payload
                     );
 
+
             error =
                 result.error;
 
         }
+
 
         if (error) {
 
             throw error;
 
         }
+
 
         if (
             uploadedImage &&
@@ -4219,12 +4636,15 @@ async function saveStaffMember(
 
         }
 
+
         setStaffFormMessage(
-            "Члан стручног штаба је успешно сачуван.",
+            "Члан особља је успешно сачуван.",
             "success"
         );
 
+
         await loadAdminStaff();
+
 
         setTimeout(
             closeStaffModal,
@@ -4240,6 +4660,7 @@ async function saveStaffMember(
             error
         );
 
+
         if (uploadedImage) {
 
             await deleteStorageImageFromUrl(
@@ -4248,6 +4669,7 @@ async function saveStaffMember(
             );
 
         }
+
 
         setStaffFormMessage(
             getFriendlyError(
@@ -4272,6 +4694,11 @@ async function saveStaffMember(
 }
 
 
+
+/* =========================================================
+   BRISANJE ČLANA OSOBLJA
+========================================================= */
+
 async function deleteStaffMember(
     member
 ) {
@@ -4281,11 +4708,13 @@ async function deleteStaffMember(
             `Обрисати члана „${member.ime_prezime}“?`
         );
 
+
     if (!confirmed) {
 
         return;
 
     }
+
 
     const {
         error
@@ -4300,6 +4729,7 @@ async function deleteStaffMember(
                 member.id
             );
 
+
     if (error) {
 
         console.error(
@@ -4307,13 +4737,16 @@ async function deleteStaffMember(
             error
         );
 
+
         window.alert(
             "Члана није могуће обрисати."
         );
 
+
         return;
 
     }
+
 
     if (
         member.fotografija
@@ -4326,10 +4759,16 @@ async function deleteStaffMember(
 
     }
 
+
     await loadAdminStaff();
 
 }
 
+
+
+/* =========================================================
+   PORUKA FORME
+========================================================= */
 
 function setStaffFormMessage(
     message,
@@ -4342,11 +4781,14 @@ function setStaffFormMessage(
 
     }
 
+
     staffFormMessage.textContent =
         message;
 
+
     staffFormMessage.className =
         "admin-form-message";
+
 
     if (type) {
 
