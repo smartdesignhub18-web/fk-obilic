@@ -372,6 +372,10 @@ function showLoginScreen() {
 }
 
 
+/* =========================================================
+   NAVIGACIJA
+========================================================= */
+
 function setupNavigation() {
 
     const navButtons =
@@ -379,10 +383,12 @@ function setupNavigation() {
             "[data-admin-page]"
         );
 
+
     const pages =
         document.querySelectorAll(
             ".admin-page"
         );
+
 
     navButtons.forEach(
         button => {
@@ -395,6 +401,7 @@ function setupNavigation() {
                         button.dataset
                             .adminPage;
 
+
                     navButtons.forEach(
                         item => {
 
@@ -406,10 +413,12 @@ function setupNavigation() {
                         }
                     );
 
+
                     button.classList
                         .add(
                             "active"
                         );
+
 
                     pages.forEach(
                         page => {
@@ -424,16 +433,16 @@ function setupNavigation() {
                         }
                     );
 
-                   if (adminPageTitle) {
 
-    adminPageTitle.textContent =
-        getAdminPageTitle(
-            pageName
-        );
+                    if (adminPageTitle) {
 
-}
+                        adminPageTitle.textContent =
+                            getAdminPageTitle(
+                                pageName
+                            );
 
                     }
+
 
                     if (
                         pageName ===
@@ -444,6 +453,7 @@ function setupNavigation() {
 
                     }
 
+
                     if (
                         pageName ===
                         "igraci"
@@ -452,6 +462,7 @@ function setupNavigation() {
                         loadAdminPlayers();
 
                     }
+
 
                     if (
                         pageName ===
@@ -462,6 +473,7 @@ function setupNavigation() {
 
                     }
 
+
                     if (
                         pageName ===
                         "uprava"
@@ -470,6 +482,7 @@ function setupNavigation() {
                         loadAdminManagement();
 
                     }
+
 
                     if (
                         pageName ===
@@ -489,6 +502,10 @@ function setupNavigation() {
 }
 
 
+/* =========================================================
+   NASLOV ADMIN STRANICE
+========================================================= */
+
 function getAdminPageTitle(
     pageName
 ) {
@@ -505,7 +522,7 @@ function getAdminPageTitle(
             "Играчи",
 
         "strucni-stab":
-              "Особље",
+            "Особље",
 
         uprava:
             "Управа",
@@ -524,12 +541,18 @@ function getAdminPageTitle(
 
     };
 
+
     return (
         titles[pageName] ||
         "Админ панел"
     );
 
 }
+    return (
+        titles[pageName] ||
+        "Админ панел"
+    );
+
 
 
 async function loadDashboardStats() {
