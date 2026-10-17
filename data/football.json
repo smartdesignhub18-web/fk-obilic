@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-17T14:15:25.449Z",
+  "updatedAt": "2026-10-17T14:50:32.932Z",
   "obilicStanding": {
     "position": 1,
     "clubId": 787,
@@ -196,14 +196,14 @@
       "clubId": 1442,
       "team": "Tromeđa",
       "city": "Majdan",
-      "played": 6,
-      "won": 0,
+      "played": 7,
+      "won": 1,
       "drawn": 0,
       "lost": 6,
-      "goalsFor": 2,
-      "goalsAgainst": 36,
-      "goalDifference": -34,
-      "points": 0,
+      "goalsFor": 5,
+      "goalsAgainst": 37,
+      "goalDifference": -32,
+      "points": 3,
       "isObilic": false
     },
     {
@@ -211,13 +211,13 @@
       "clubId": 5139,
       "team": "Jedinstvo (M)",
       "city": "Martonoš",
-      "played": 6,
+      "played": 7,
       "won": 0,
       "drawn": 0,
-      "lost": 6,
-      "goalsFor": 5,
-      "goalsAgainst": 90,
-      "goalDifference": -85,
+      "lost": 7,
+      "goalsFor": 6,
+      "goalsAgainst": 93,
+      "goalDifference": -87,
       "points": 0,
       "isObilic": false
     }
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889599,
+      "round": null,
+      "home": "Obilić",
+      "away": "Sloga (O)",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889584,
       "round": null,
       "home": "Obilić",
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889614-obilic-sampion",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889599,
-      "round": null,
-      "home": "Obilić",
-      "away": "Sloga (O)",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889599-obilic-sloga-o",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
