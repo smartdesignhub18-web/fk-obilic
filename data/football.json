@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-18T18:37:44.294Z",
+  "updatedAt": "2026-10-18T21:02:27.996Z",
   "obilicStanding": {
     "position": 2,
     "clubId": 787,
@@ -368,6 +368,18 @@
       "status": "scheduled"
     },
     {
+      "id": 889629,
+      "round": null,
+      "home": "Obilić",
+      "away": "Horgoš 1911",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
+    },
+    {
       "id": 889614,
       "round": null,
       "home": "Obilić",
@@ -495,18 +507,6 @@
       "startDate": null,
       "location": "",
       "url": "https://srbijasport.net/game/889567-backa-obilic",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889629,
-      "round": null,
-      "home": "Obilić",
-      "away": "Horgoš 1911",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889629-obilic-horgos-1911",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
