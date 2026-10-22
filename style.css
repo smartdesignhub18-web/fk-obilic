@@ -17279,3 +17279,51 @@ p {
 #prvi-tim {
     scroll-margin-top: 80px;
 }
+
+
+/* =========================================
+   MLAĐE SELEKCIJE - NASLOVI I POZICIJE
+========================================= */
+
+/* Igrački kadar i stručni štab - levo */
+
+#selection-detail .first-team-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 5px;
+    width: 100%;
+}
+
+/* Naslovi na beloj pozadini */
+
+#selection-detail .first-team-heading h2 {
+    color: #171717 !important;
+    -webkit-text-fill-color: #171717 !important;
+    text-align: left;
+    margin: 0;
+}
+
+/* Mali crveni natpisi */
+
+#selection-detail .first-team-heading span {
+    color: var(--red) !important;
+    text-align: left;
+    margin: 0;
+}
+
+/* Pozicije: golmani, odbrana, vezni red... */
+
+#selection-detail .player-position-heading h3 {
+    color: #242424 !important;
+    -webkit-text-fill-color: #242424 !important;
+    text-align: left;
+}
+
+/* Vidljivija linija ispod pozicije */
+
+#selection-detail .player-position-heading {
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+}
