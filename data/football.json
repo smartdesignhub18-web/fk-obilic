@@ -9,7 +9,7 @@
     "id": 787,
     "name": "Obilić"
   },
-  "updatedAt": "2026-10-20T07:03:34.389Z",
+  "updatedAt": "2026-10-22T19:01:42.996Z",
   "obilicStanding": {
     "position": 2,
     "clubId": 787,
@@ -312,7 +312,7 @@
       "round": null,
       "home": "Obilić",
       "away": "Potisje",
-      "startDate": "2026-10-25T13:30:00",
+      "startDate": "2026-10-24T13:30:00",
       "location": "",
       "url": "https://srbijasport.net/game/889515-obilic-potisje",
       "homeScore": null,
@@ -363,18 +363,6 @@
       "startDate": "2026-11-22T13:00:00",
       "location": "",
       "url": "https://srbijasport.net/game/889541-obilic-tisa",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "scheduled"
-    },
-    {
-      "id": 889632,
-      "round": null,
-      "home": "Tisa",
-      "away": "Obilić",
-      "startDate": null,
-      "location": "",
-      "url": "https://srbijasport.net/game/889632-tisa-obilic",
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
@@ -510,6 +498,18 @@
       "homeScore": null,
       "awayScore": null,
       "status": "scheduled"
+    },
+    {
+      "id": 889632,
+      "round": null,
+      "home": "Tisa",
+      "away": "Obilić",
+      "startDate": null,
+      "location": "",
+      "url": "https://srbijasport.net/game/889632-tisa-obilic",
+      "homeScore": null,
+      "awayScore": null,
+      "status": "scheduled"
     }
   ],
   "lastMatch": {
@@ -529,7 +529,7 @@
     "round": null,
     "home": "Obilić",
     "away": "Potisje",
-    "startDate": "2026-10-25T13:30:00",
+    "startDate": "2026-10-24T13:30:00",
     "location": "",
     "url": "https://srbijasport.net/game/889515-obilic-potisje",
     "homeScore": null,
