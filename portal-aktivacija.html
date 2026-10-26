@@ -1,0 +1,870 @@
+
+<!DOCTYPE html>
+<html lang="sr-Cyrl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="robots"
+        content="noindex,nofollow"
+    >
+
+    <meta
+        name="referrer"
+        content="no-referrer"
+    >
+
+    <title>
+        Активација налога | ФК Обилић
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                145deg,
+                #151519,
+                #303036
+            );
+
+            font-family: "Roboto", sans-serif;
+            color: #222;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 460px;
+
+            padding: 32px;
+            border-radius: 20px;
+
+            background: #fff;
+            text-align: center;
+
+            box-shadow: 0 20px 65px rgba(0,0,0,.3);
+        }
+
+        .logo {
+            width: 95px;
+            height: 105px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            display: block;
+
+            color: #c41e32;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            margin: 10px 0;
+
+            font-family: "Oswald", sans-serif;
+            font-size: 30px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .form {
+            display: grid;
+            gap: 17px;
+            text-align: left;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+
+            background: #fff;
+            color: #222;
+
+            border: 1px solid #d9dce1;
+            border-radius: 10px;
+
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #c41e32;
+        }
+
+        .button {
+            width: 100%;
+            padding: 14px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: #c41e32;
+            color: #fff;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin: 20px 0;
+            min-height: 20px;
+
+            font-size: 13px;
+            line-height: 1.7;
+            font-weight: 700;
+        }
+
+        .message.error {
+            color: #b91c34;
+        }
+
+        .message.success {
+            color: #14804b;
+        }
+
+        .message.info {
+            color: #555;
+        }
+
+        .account {
+            margin-bottom: 20px;
+            padding: 14px;
+
+            border-radius: 10px;
+            background: #f6f6f7;
+
+            text-align: left;
+        }
+
+        .account strong {
+            overflow-wrap: anywhere;
+        }
+
+        .hint {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #777;
+        }
+
+        .divider {
+            border-top: 1px solid #eee;
+            margin: 25px 0;
+        }
+
+        .link {
+            display: inline-block;
+            margin-top: 20px;
+
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #c41e32;
+        }
+
+        .success-link {
+            display: block;
+            margin-top: 20px;
+            padding: 14px;
+
+            border-radius: 10px;
+            background: #c41e32;
+            color: #fff;
+
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media(max-width:480px) {
+            .card {
+                padding: 23px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+
+        <img
+            src="images/grb.png"
+            class="logo"
+            alt="ФК Обилић"
+        >
+
+        <span class="subtitle">
+            ФК ОБИЛИЋ · НОВИ КНЕЖЕВАЦ
+        </span>
+
+        <h1>
+            АКТИВАЦИЈА НАЛОГА
+        </h1>
+
+        <p class="description">
+            Поставите своју лозинку
+            за приступ приватном порталу клуба.
+        </p>
+
+        <div
+            id="account"
+            class="account"
+            hidden
+        >
+            <strong id="account-email"></strong>
+        </div>
+
+        <!-- POSTAVLJANJE LOZINKE -->
+
+        <form
+            id="password-form"
+            class="form"
+            hidden
+        >
+
+            <div class="field">
+
+                <label for="password">
+                    НОВА ЛОЗИНКА
+                </label>
+
+                <input
+                    id="password"
+                    type="password"
+                    minlength="10"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="password-confirm">
+                    ПОТВРДИ ЛОЗИНКУ
+                </label>
+
+                <input
+                    id="password-confirm"
+                    type="password"
+                    minlength="10"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="button"
+                id="save-button"
+            >
+                САЧУВАЈ ЛОЗИНКУ
+            </button>
+
+        </form>
+
+        <p
+            id="message"
+            class="message info"
+            role="status"
+            aria-live="polite"
+        >
+            Провера линка...
+        </p>
+
+        <!-- NOVI LINK ZA POSTAVLJANJE LOZINKE -->
+
+        <div
+            id="recovery-section"
+            hidden
+        >
+
+            <div class="divider"></div>
+
+            <p class="hint">
+                Ако је позивница истекла
+                или је већ искоришћена,
+                затражите нови линк за
+                постављање лозинке.
+            </p>
+
+            <form
+                id="recovery-form"
+                class="form"
+            >
+
+                <div class="field">
+
+                    <label for="recovery-email">
+                        ВАША Е-МАИЛ АДРЕСА
+                    </label>
+
+                    <input
+                        id="recovery-email"
+                        type="email"
+                        placeholder="primer@gmail.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    id="recovery-button"
+                    class="button"
+                >
+                    ПОШАЉИ НОВИ ЛИНК
+                </button>
+
+            </form>
+
+        </div>
+
+        <a
+            id="success-link"
+            href="portal.html"
+            class="success-link"
+            hidden
+        >
+            ПРИЈАВИ СЕ НА ПОРТАЛ
+        </a>
+
+        <a
+            href="portal.html"
+            class="link"
+        >
+            ← НАЗАД НА ПРИЈАВУ
+        </a>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+    (() => {
+        "use strict";
+
+        const SUPABASE_URL =
+            "https://uvevthgxlnzzkapkjxky.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg";
+
+        const client = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY,
+            {
+                auth: {
+                    storageKey:
+                        "fk-obilic-activation-auth",
+
+                    detectSessionInUrl: true,
+
+                    persistSession: true,
+
+                    autoRefreshToken: true
+                }
+            }
+        );
+
+        const passwordForm =
+            document.getElementById(
+                "password-form"
+            );
+
+        const recoveryForm =
+            document.getElementById(
+                "recovery-form"
+            );
+
+        const recoverySection =
+            document.getElementById(
+                "recovery-section"
+            );
+
+        const messageBox =
+            document.getElementById(
+                "message"
+            );
+
+        const accountBox =
+            document.getElementById(
+                "account"
+            );
+
+        const accountEmail =
+            document.getElementById(
+                "account-email"
+            );
+
+        const successLink =
+            document.getElementById(
+                "success-link"
+            );
+
+        let ready = false;
+        let saving = false;
+
+        function message(text, type = "info") {
+            messageBox.textContent = text;
+            messageBox.className =
+                "message " + type;
+        }
+
+        /* =======================================
+           PROVERA LINKA
+        ======================================= */
+
+        async function initialize() {
+
+            try {
+
+                const query = new URLSearchParams(
+                    window.location.search
+                );
+
+                const hash = new URLSearchParams(
+                    window.location.hash.substring(1)
+                );
+
+                const errorCode =
+                    query.get("error_code") ||
+                    hash.get("error_code");
+
+                /*
+                  Ako link sadrzi token_hash,
+                  sami proveravamo OTP.
+
+                  Standardne pozivnice i recovery
+                  linkove sa access_token obradjuje
+                  Supabase klijent automatski.
+                */
+
+                const tokenHash =
+                    query.get("token_hash");
+
+                const type =
+                    query.get("type");
+
+                if (
+                    tokenHash &&
+                    ["invite", "recovery"].includes(type)
+                ) {
+
+                    const { error } =
+                        await client.auth.verifyOtp({
+                            token_hash: tokenHash,
+                            type: type
+                        });
+
+                    if (error) {
+                        throw error;
+                    }
+                }
+
+                /*
+                  getSession ceka inicijalizaciju
+                  Supabase Auth klijenta.
+
+                  Zato ne zahtevamo da URL i dalje
+                  sadrzi token - klijent je mozda
+                  vec sacuvao uspesnu sesiju.
+                */
+
+                const {
+                    data: sessionData,
+                    error: sessionError
+                } = await client.auth.getSession();
+
+                if (sessionError) {
+                    throw sessionError;
+                }
+
+                if (!sessionData.session) {
+
+                    const text =
+                        errorCode === "otp_expired"
+                            ? "Линк је истекао или је већ искоришћен."
+                            : "Није пронађена важећа пријава за активацију.";
+
+                    message(
+                        text +
+                        " Можете затражити нови линк.",
+                        "error"
+                    );
+
+                    recoverySection.hidden = false;
+                    return;
+                }
+
+                const {
+                    data: userData,
+                    error: userError
+                } = await client.auth.getUser();
+
+                if (
+                    userError ||
+                    !userData.user
+                ) {
+                    throw new Error(
+                        "Корисник није потврђен."
+                    );
+                }
+
+                const user = userData.user;
+
+                /*
+                  Dodatna provera da je korisnik
+                  povezan sa portalom kluba.
+                */
+
+                const {
+                    data: profile,
+                    error: profileError
+                } = await client
+                    .from("portal_korisnici")
+                    .select(
+                        "user_id,ime_prezime,aktivan"
+                    )
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+
+                if (profileError) {
+                    throw profileError;
+                }
+
+                if (!profile) {
+
+                    message(
+                        "Налог није повезан са " +
+                        "профилом у клубу. " +
+                        "Обратите се управи.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                if (profile.aktivan !== true) {
+
+                    message(
+                        "Налог није активан. " +
+                        "Обратите се управи.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                accountEmail.textContent =
+                    user.email ||
+                    profile.ime_prezime;
+
+                accountBox.hidden = false;
+
+                recoverySection.hidden = true;
+                passwordForm.hidden = false;
+
+                ready = true;
+
+                /*
+                  Uklanjanje tokena iz adresne
+                  linije nakon obrade.
+                */
+
+                window.history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname
+                );
+
+                message(
+                    "Налог је потврђен. " +
+                    "Поставите нову лозинку.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "FK Obilic aktivacija:",
+                    error
+                );
+
+                message(
+                    "Активација није успела. " +
+                    "Затражите нови линк.",
+                    "error"
+                );
+
+                recoverySection.hidden = false;
+
+            }
+        }
+
+        /* =======================================
+           NOVI LINK ZA LOZINKU
+        ======================================= */
+
+        recoveryForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const email =
+                    document.getElementById(
+                        "recovery-email"
+                    ).value.trim();
+
+                const button =
+                    document.getElementById(
+                        "recovery-button"
+                    );
+
+                button.disabled = true;
+
+                message(
+                    "Слање новог линка..."
+                );
+
+                try {
+
+                    /*
+                      Koristimo trenutnu adresu
+                      Live Server stranice.
+
+                      Na primer:
+                      http://127.0.0.1:5500/
+                      portal-aktivacija.html
+                    */
+
+                    const redirectTo =
+                        window.location.origin +
+                        window.location.pathname;
+
+                    const { error } =
+                        await client.auth
+                            .resetPasswordForEmail(
+                                email,
+                                {
+                                    redirectTo
+                                }
+                            );
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    message(
+                        "Ако налог постоји, " +
+                        "нови линк је послат " +
+                        "на унету адресу. " +
+                        "Проверите пошту.",
+                        "success"
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Slanje recovery linka:",
+                        error
+                    );
+
+                    message(
+                        "Није успело слање линка: " +
+                        (
+                            error.message ||
+                            "Покушајте поново."
+                        ),
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled = false;
+
+                }
+
+            }
+        );
+
+        /* =======================================
+           CUVANJE NOVE LOZINKE
+        ======================================= */
+
+        passwordForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                if (!ready || saving) return;
+
+                const password =
+                    document.getElementById(
+                        "password"
+                    ).value;
+
+                const repeat =
+                    document.getElementById(
+                        "password-confirm"
+                    ).value;
+
+                if (password.length < 10) {
+
+                    message(
+                        "Лозинка мора имати " +
+                        "најмање 10 карактера.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                if (password !== repeat) {
+
+                    message(
+                        "Лозинке се не поклапају.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                saving = true;
+
+                const button =
+                    document.getElementById(
+                        "save-button"
+                    );
+
+                button.disabled = true;
+
+                message(
+                    "Чување лозинке..."
+                );
+
+                try {
+
+                    const { error } =
+                        await client.auth
+                            .updateUser({
+                                password
+                            });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    ready = false;
+
+                    passwordForm.hidden = true;
+
+                    document.getElementById(
+                        "password"
+                    ).value = "";
+
+                    document.getElementById(
+                        "password-confirm"
+                    ).value = "";
+
+                    successLink.hidden = false;
+
+                    message(
+                        "Лозинка је успешно " +
+                        "постављена! " +
+                        "Можете се пријавити.",
+                        "success"
+                    );
+
+                    await client.auth.signOut();
+
+                } catch (error) {
+
+                    console.error(
+                        "Cuvanje lozinke:",
+                        error
+                    );
+
+                    message(
+                        "Грешка при чувању: " +
+                        (
+                            error.message ||
+                            "Покушајте поново."
+                        ),
+                        "error"
+                    );
+
+                } finally {
+
+                    saving = false;
+                    button.disabled = false;
+
+                }
+
+            }
+        );
+
+        initialize();
+
+    })();
+
+    </script>
+
+</body>
+</html>
