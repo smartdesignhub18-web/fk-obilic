@@ -1,0 +1,27 @@
+
+{
+  "id": "./portal.html",
+  "name": "FK Obilić - Portal kluba",
+  "short_name": "FK Obilić",
+  "description": "Portal fudbalskog kluba Obilić Novi Kneževac",
+  "lang": "sr",
+  "start_url": "./portal.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#151519",
+  "theme_color": "#bd1836",
+  "icons": [
+    {
+      "src": "./images/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./images/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
