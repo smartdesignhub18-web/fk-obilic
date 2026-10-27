@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+<html lang="sr-Cyrl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+    <title>
+        Обнова лозинке | ФК Обилић
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    #3b1e26 0%,
+                    #17171c 48%,
+                    #101014 100%
+                );
+
+            color: #202025;
+
+            font-family: "Roboto", Arial, sans-serif;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 24px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 440px;
+
+            padding: 36px;
+
+            background: #fff;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 24px 70px rgba(0,0,0,.3);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 32px;
+        }
+
+        .brand img {
+            width: 65px;
+            height: 65px;
+
+            object-fit: contain;
+        }
+
+        .brand span {
+            display: block;
+
+            color: #b91936;
+
+            font-family: "Oswald", sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            letter-spacing: 2px;
+        }
+
+        .brand strong {
+            display: block;
+
+            font-family: "Oswald", sans-serif;
+
+            font-size: 23px;
+
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+
+            font-family: "Oswald", sans-serif;
+
+            font-size: 31px;
+
+            font-weight: 600;
+        }
+
+        .description {
+            margin: 0 0 28px;
+
+            color: #686870;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+        }
+
+        input {
+            display: block;
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border: 1px solid #d7d7dc;
+            border-radius: 9px;
+
+            background: #fafafa;
+
+            color: #202025;
+
+            font-family: inherit;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #bc1936;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(188,25,54,.1);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .submit {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 15px;
+
+            border: 0;
+            border-radius: 9px;
+
+            background: #bd1836;
+
+            color: white;
+
+            font-family: "Oswald", sans-serif;
+
+            font-weight: 600;
+
+            font-size: 15px;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+        }
+
+        .submit:hover {
+            background: #9f1029;
+        }
+
+        .submit:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .message {
+            margin-top: 20px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            line-height: 1.6;
+        }
+
+        .message.success {
+            color: #207648;
+        }
+
+        .message.error {
+            color: #ad1831;
+        }
+
+        .back {
+            display: block;
+
+            margin-top: 28px;
+
+            color: #777780;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #bd1836;
+        }
+
+        @media(max-width: 480px) {
+            .card {
+                padding: 26px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+
+        <div class="brand">
+
+            <img
+                src="images/grb.png"
+                alt="ФК Обилић"
+            >
+
+            <div>
+                <span>ФК ОБИЛИЋ</span>
+                <strong>ПОРТАЛ КЛУБА</strong>
+            </div>
+
+        </div>
+
+        <!-- SLANJE MEJLA -->
+
+        <section id="request-section" hidden>
+
+            <h1>Заборављена лозинка?</h1>
+
+            <p class="description">
+                Унесите е-маил адресу са којом сте
+                регистровани на портал клуба.
+
+                Послаћемо вам линк преко којег
+                можете да поставите нову лозинку.
+            </p>
+
+            <form id="request-form">
+
+                <div class="field">
+
+                    <label for="email">
+                        Е-МАИЛ АДРЕСА
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        autocomplete="email"
+                        placeholder="Унесите е-маил"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    id="request-button"
+                    class="submit"
+                >
+                    ПОШАЉИ ЛИНК
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- POSTAVLJANJE NOVE LOZINKE -->
+
+        <section id="password-section" hidden>
+
+            <h1>Нова лозинка</h1>
+
+            <p class="description">
+                Унесите нову лозинку за свој
+                налог на порталу ФК Обилић.
+            </p>
+
+            <form id="password-form">
+
+                <div class="field">
+
+                    <label for="new-password">
+                        НОВА ЛОЗИНКА
+                    </label>
+
+                    <input
+                        type="password"
+                        id="new-password"
+                        minlength="10"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label for="repeat-password">
+                        ПОТВРДИ ЛОЗИНКУ
+                    </label>
+
+                    <input
+                        type="password"
+                        id="repeat-password"
+                        minlength="10"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    id="password-button"
+                    class="submit"
+                >
+                    САЧУВАЈ НОВУ ЛОЗИНКУ
+                </button>
+
+            </form>
+
+        </section>
+
+        <div
+            id="message"
+            class="message"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <a
+            href="portal.html"
+            class="back"
+        >
+            ← НАЗАД НА ПРИЈАВУ
+        </a>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    (() => {
+        "use strict";
+
+        const sb = window.supabase.createClient(
+            "https://uvevthgxlnzzkapkjxky.supabase.co",
+            "sb_publishable_xFUfALjFsxDlA_b5-SRxBA_5R42c8Xg",
+            {
+                auth: {
+                    storageKey: "fk-obilic-portal-auth",
+                    detectSessionInUrl: true
+                }
+            }
+        );
+
+        const requestSection =
+            document.getElementById("request-section");
+
+        const passwordSection =
+            document.getElementById("password-section");
+
+        const requestForm =
+            document.getElementById("request-form");
+
+        const passwordForm =
+            document.getElementById("password-form");
+
+        const messageBox =
+            document.getElementById("message");
+
+        function message(text, success = false) {
+
+            messageBox.textContent = text;
+
+            messageBox.className =
+                "message " +
+                (success ? "success" : "error");
+        }
+
+        /* ==========================================
+           DA LI POSTOJI LINK ZA OBNOVU?
+        ========================================== */
+
+        const query = new URLSearchParams(
+            window.location.search
+        );
+
+        const hash = new URLSearchParams(
+            window.location.hash.slice(1)
+        );
+
+        const tokenHash =
+            query.get("token_hash");
+
+        const isRecoveryToken =
+            query.get("type") === "recovery" &&
+            Boolean(tokenHash);
+
+        const isRecoveryHash =
+            hash.get("type") === "recovery" &&
+            Boolean(hash.get("access_token"));
+
+        const isRecoveryCode =
+            Boolean(query.get("code"));
+
+        const hasRecoveryLink =
+            isRecoveryToken ||
+            isRecoveryHash ||
+            isRecoveryCode;
+
+        /* ==========================================
+           POCETNO STANJE
+        ========================================== */
+
+        async function initialize() {
+
+            if (!hasRecoveryLink) {
+
+                requestSection.hidden = false;
+
+                if (
+                    query.get("error") ||
+                    hash.get("error")
+                ) {
+                    message(
+                        "Линк није важећи или је истекао. Затражите нови."
+                    );
+                }
+
+                return;
+            }
+
+            message("Провера линка...");
+
+            try {
+
+                if (isRecoveryToken) {
+
+                    const { error } =
+                        await sb.auth.verifyOtp({
+                            token_hash: tokenHash,
+                            type: "recovery"
+                        });
+
+                    if (error) {
+                        throw error;
+                    }
+                }
+
+                /*
+                   Supabase obradjuje i linkove
+                   sa access_token ili code.
+                */
+
+                const {
+                    data,
+                    error
+                } = await sb.auth.getSession();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (!data.session?.user) {
+                    throw new Error(
+                        "Неважећи или истекао линк."
+                    );
+                }
+
+                history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname
+                );
+
+                passwordSection.hidden = false;
+
+                message(
+                    "Линк је потврђен. Поставите нову лозинку.",
+                    true
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Password recovery error:",
+                    error
+                );
+
+                requestSection.hidden = false;
+
+                message(
+                    "Линк није важећи или је истекао. Затражите нови."
+                );
+            }
+        }
+
+        /* ==========================================
+           POSALJI MEJL
+        ========================================== */
+
+        requestForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const email = document.getElementById(
+                    "email"
+                ).value.trim();
+
+                if (!email) {
+                    return;
+                }
+
+                const button =
+                    document.getElementById(
+                        "request-button"
+                    );
+
+                button.disabled = true;
+
+                message("Слање захтева...");
+
+                try {
+
+                    const redirectTo = new URL(
+                        "portal-reset-lozinke.html",
+                        window.location.href
+                    ).href;
+
+                    const { error } =
+                        await sb.auth.resetPasswordForEmail(
+                            email,
+                            { redirectTo }
+                        );
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    requestForm.hidden = true;
+
+                    message(
+                        "Ако постоји налог за ову адресу, добићете е-маил са линком за обнову лозинке. Проверите и Spam фасциклу.",
+                        true
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Reset password request error:",
+                        error
+                    );
+
+                    message(
+                        "Захтев није послат. Покушајте поново касније."
+                    );
+
+                    button.disabled = false;
+                }
+            }
+        );
+
+        /* ==========================================
+           SACUVAJ NOVU LOZINKU
+        ========================================== */
+
+        passwordForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const password =
+                    document.getElementById(
+                        "new-password"
+                    ).value;
+
+                const repeat =
+                    document.getElementById(
+                        "repeat-password"
+                    ).value;
+
+                if (password.length < 10) {
+
+                    message(
+                        "Лозинка мора имати најмање 10 знакова."
+                    );
+
+                    return;
+                }
+
+                if (password !== repeat) {
+
+                    message(
+                        "Лозинке се не поклапају."
+                    );
+
+                    return;
+                }
+
+                const button =
+                    document.getElementById(
+                        "password-button"
+                    );
+
+                button.disabled = true;
+
+                message("Чување нове лозинке...");
+
+                const { error } =
+                    await sb.auth.updateUser({
+                        password
+                    });
+
+                if (error) {
+
+                    message(
+                        "Лозинка није сачувана: " +
+                        error.message
+                    );
+
+                    button.disabled = false;
+
+                    return;
+                }
+
+                await sb.auth.signOut();
+
+                passwordForm.hidden = true;
+
+                message(
+                    "Лозинка је успешно промењена. Сада можете да се пријавите на портал.",
+                    true
+                );
+            }
+        );
+
+        initialize();
+
+    })();
+    </script>
+
+</body>
+</html>
