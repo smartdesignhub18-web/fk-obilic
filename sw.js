@@ -57,7 +57,7 @@ self.addEventListener("push", event => {
     ).href;
 
     const iconUrl = new URL(
-        "images/pwa-transparent-192.png"
+        "images/pwa-transparent-192.png",
         self.registration.scope
     ).href;
 
