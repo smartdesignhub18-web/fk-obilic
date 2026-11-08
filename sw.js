@@ -2,13 +2,20 @@
 /* =====================================================
    FK OBILIC - PWA SERVICE WORKER
 
-   - Sistemska push obavestenja
-   - Automatsko otvaranje grupnog ceta
-   - Postojeca klupska obavestenja
-   - Bez kesiranja privatnih podataka
+   PUSH OBAVESTENJA:
+   - Treninzi i utakmice -> portal
+   - Grupni cet -> direktno otvara cet
+   - Radi i kada je aplikacija u pozadini
 ===================================================== */
 
 "use strict";
+
+const CHAT_MESSAGE_TYPE = "FK_OBILIC_OPEN_CHAT";
+
+
+/* =====================================================
+   INSTALACIJA
+===================================================== */
 
 self.addEventListener("install", event => {
     self.skipWaiting();
@@ -39,6 +46,12 @@ self.addEventListener("push", event => {
         };
     }
 
+    if (!payload || typeof payload !== "object") {
+        payload = {};
+    }
+
+    const isChat = payload.kind === "chat";
+
     const title =
         typeof payload.title === "string" &&
         payload.title.trim()
@@ -49,18 +62,15 @@ self.addEventListener("push", event => {
         typeof payload.body === "string" &&
         payload.body.trim()
             ? payload.body
-            : "Имате ново обавештење на порталу.";
+            : "Имате ново обавештење.";
 
-    // Prepoznaj poruku iz grupnog ceta.
-    const isChat = payload.kind === "chat";
-
-    const appUrl = new URL(
+    const destination = new URL(
         "portal.html",
         self.registration.scope
     );
 
     if (isChat) {
-        appUrl.searchParams.set("chat", "1");
+        destination.searchParams.set("chat", "1");
     }
 
     const iconUrl = new URL(
@@ -69,7 +79,8 @@ self.addEventListener("push", event => {
     ).href;
 
     const options = {
-        body,
+        body: body,
+
         icon: iconUrl,
         badge: iconUrl,
 
@@ -78,8 +89,8 @@ self.addEventListener("push", event => {
             : undefined,
 
         data: {
-            url: appUrl.href,
-            kind: isChat ? "chat" : "portal"
+            kind: isChat ? "chat" : "portal",
+            url: destination.href
         }
     };
 
@@ -130,49 +141,90 @@ self.addEventListener(
                         includeUncontrolled: true
                     });
 
-                // Ako je portal vec otvoren,
-                // aktiviraj postojeci prozor.
+                // 1. Ako je portal vec otvoren,
+                // pronadji taj prozor.
 
                 for (const client of windows) {
 
-                    const clientUrl =
-                        new URL(client.url);
+                    const currentUrl = new URL(
+                        client.url
+                    );
 
                     if (
-                        clientUrl.origin ===
-                            portalUrl.origin &&
+                        currentUrl.origin !==
+                            portalUrl.origin ||
 
-                        clientUrl.pathname ===
+                        currentUrl.pathname !==
                             portalUrl.pathname
                     ) {
+                        continue;
+                    }
 
-                        // Ako je obavestenje iz ceta,
-                        // kazi portalu da otvori chat.
+                    // Obicna obavestenja:
+                    // samo prikazi portal.
 
-                        if (
-                            isChat &&
-                            "postMessage" in client
-                        ) {
-
-                            client.postMessage({
-                                type:
-                                    "FK_OBILIC_OPEN_CHAT"
-                            });
-                        }
+                    if (!isChat) {
 
                         if ("focus" in client) {
-                            return client.focus();
+                            return await client.focus();
+                        }
+
+                        return;
+                    }
+
+                    // CHAT:
+                    // navigacija na ?chat=1
+                    // je pouzdanija od samog
+                    // slanja postMessage komande,
+                    // narocito na Android PWA.
+
+                    if ("navigate" in client) {
+
+                        try {
+
+                            const opened =
+                                await client.navigate(
+                                    destination.href
+                                );
+
+                            if (opened) {
+
+                                if ("focus" in opened) {
+                                    return await opened.focus();
+                                }
+
+                                return opened;
+                            }
+
+                        } catch (error) {
+
+                            console.warn(
+                                "Chat navigate:",
+                                error
+                            );
                         }
                     }
+
+                    // Rezervna varijanta ako
+                    // navigate nije podrzan.
+
+                    client.postMessage({
+                        type: CHAT_MESSAGE_TYPE
+                    });
+
+                    if ("focus" in client) {
+                        return await client.focus();
+                    }
+
+                    return;
                 }
 
-                // Ako portal nije otvoren,
-                // pokreni ga sa odgovarajucom
-                // adresom.
+                // 2. Ako aplikacija nije otvorena,
+                // pokreni portal sa ?chat=1.
 
                 if (self.clients.openWindow) {
 
-                    return self.clients.openWindow(
+                    return await self.clients.openWindow(
                         destination.href
                     );
                 }
