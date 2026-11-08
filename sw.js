@@ -2,11 +2,10 @@
 /* =====================================================
    FK OBILIC - PWA SERVICE WORKER
 
-   Instalacija aplikacije
-   Prijem sistemskih push obavestenja
-   Otvaranje portala kada se klikne na obavestenje
-
-   Bez kesiranja privatnih podataka korisnika.
+   - Sistemska push obavestenja
+   - Automatsko otvaranje grupnog ceta
+   - Postojeca klupska obavestenja
+   - Bez kesiranja privatnih podataka
 ===================================================== */
 
 "use strict";
@@ -21,8 +20,9 @@ self.addEventListener("activate", event => {
     );
 });
 
+
 /* =====================================================
-   PUSH OBAVESTENJE
+   PRIJEM PUSH OBAVESTENJA
 ===================================================== */
 
 self.addEventListener("push", event => {
@@ -49,12 +49,19 @@ self.addEventListener("push", event => {
         typeof payload.body === "string" &&
         payload.body.trim()
             ? payload.body
-            : "Имате ново обавештење на порталу клуба.";
+            : "Имате ново обавештење на порталу.";
+
+    // Prepoznaj poruku iz grupnog ceta.
+    const isChat = payload.kind === "chat";
 
     const appUrl = new URL(
         "portal.html",
         self.registration.scope
-    ).href;
+    );
+
+    if (isChat) {
+        appUrl.searchParams.set("chat", "1");
+    }
 
     const iconUrl = new URL(
         "images/pwa-transparent-192.png",
@@ -65,11 +72,14 @@ self.addEventListener("push", event => {
         body,
         icon: iconUrl,
         badge: iconUrl,
+
         tag: payload.id
             ? String(payload.id)
             : undefined,
+
         data: {
-            url: appUrl
+            url: appUrl.href,
+            kind: isChat ? "chat" : "portal"
         }
     };
 
@@ -81,8 +91,9 @@ self.addEventListener("push", event => {
     );
 });
 
+
 /* =====================================================
-   KLIK NA OBAVESTENJE
+   KLIK NA PUSH OBAVESTENJE
 ===================================================== */
 
 self.addEventListener(
@@ -91,10 +102,24 @@ self.addEventListener(
 
         event.notification.close();
 
-        const destination = new URL(
+        const isChat =
+            event.notification.data?.kind === "chat";
+
+        const portalUrl = new URL(
             "portal.html",
             self.registration.scope
-        ).href;
+        );
+
+        const destination = new URL(
+            portalUrl.href
+        );
+
+        if (isChat) {
+            destination.searchParams.set(
+                "chat",
+                "1"
+            );
+        }
 
         event.waitUntil(
             (async () => {
@@ -105,17 +130,35 @@ self.addEventListener(
                         includeUncontrolled: true
                     });
 
+                // Ako je portal vec otvoren,
+                // aktiviraj postojeci prozor.
+
                 for (const client of windows) {
 
-                    const url = new URL(client.url);
+                    const clientUrl =
+                        new URL(client.url);
 
                     if (
-                        url.origin ===
-                            new URL(destination).origin &&
-                        url.pathname.endsWith(
-                            "/portal.html"
-                        )
+                        clientUrl.origin ===
+                            portalUrl.origin &&
+
+                        clientUrl.pathname ===
+                            portalUrl.pathname
                     ) {
+
+                        // Ako je obavestenje iz ceta,
+                        // kazi portalu da otvori chat.
+
+                        if (
+                            isChat &&
+                            "postMessage" in client
+                        ) {
+
+                            client.postMessage({
+                                type:
+                                    "FK_OBILIC_OPEN_CHAT"
+                            });
+                        }
 
                         if ("focus" in client) {
                             return client.focus();
@@ -123,9 +166,14 @@ self.addEventListener(
                     }
                 }
 
+                // Ako portal nije otvoren,
+                // pokreni ga sa odgovarajucom
+                // adresom.
+
                 if (self.clients.openWindow) {
+
                     return self.clients.openWindow(
-                        destination
+                        destination.href
                     );
                 }
 

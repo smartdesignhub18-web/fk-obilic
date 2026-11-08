@@ -36,6 +36,13 @@
     let sending = false;
     let authVersion = 0;
 
+    
+let pendingOpenFromPush =
+    new URLSearchParams(
+        window.location.search
+    ).get("chat") === "1";
+
+
     let launcher;
     let panel;
     let list;
@@ -394,6 +401,50 @@
             input.focus();
         });
     }
+
+    
+/* =============================================
+   AUTOMATSKO OTVARANJE CETA IZ PUSH-A
+============================================= */
+
+function openChatFromPush() {
+
+    if (
+        !pendingOpenFromPush ||
+        !userId ||
+        !launcher ||
+        !panel
+    ) {
+        return;
+    }
+
+    pendingOpenFromPush = false;
+
+    openChat();
+
+    // Ukloni ?chat=1 iz adrese bez
+    // ponovnog ucitavanja portala.
+
+    const url = new URL(
+        window.location.href
+    );
+
+    if (
+        url.searchParams.get("chat") === "1"
+    ) {
+
+        url.searchParams.delete("chat");
+
+        window.history.replaceState(
+            window.history.state,
+            "",
+            url.pathname +
+            url.search +
+            url.hash
+        );
+    }
+}
+
 
     function closeChat() {
 
@@ -830,11 +881,17 @@
             );
         }
 
-        launcher.hidden = false;
+      
+launcher.hidden = false;
 
-        await loadMessages();
+await loadMessages();
 
-        startListening();
+// Ako je portal otvoren preko push
+// obavestenja, automatski otvori cet.
+openChatFromPush();
+
+startListening();
+
     }
 
     /* =============================================
@@ -844,6 +901,29 @@
     async function initialize() {
 
         if (!createChat()) return;
+
+// Prijem komande od service workera,
+// kada je aplikacija vec otvorena.
+
+if ("serviceWorker" in navigator) {
+
+    navigator.serviceWorker.addEventListener(
+        "message",
+        event => {
+
+            if (
+                event.data?.type !==
+                "FK_OBILIC_OPEN_CHAT"
+            ) {
+                return;
+            }
+
+            pendingOpenFromPush = true;
+
+            openChatFromPush();
+        }
+    );
+}
 
         const {
             data: { session }
