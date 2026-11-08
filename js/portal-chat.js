@@ -35,6 +35,11 @@
     let loading = false;
     let sending = false;
     let authVersion = 0;
+    
+let muteButton = null;
+let chatMuted = false;
+let muteSaving = false;
+
 
     
 let pendingOpenFromPush =
@@ -166,6 +171,28 @@ let pendingOpenFromPush =
         wrapper.id = "fk-chat-root";
 
         wrapper.innerHTML = `
+
+<button
+    type="button"
+    id="fk-chat-mute"
+    class="fk-chat-mute"
+    title="Утишај обавештења из чета"
+    aria-label="Утишај обавештења из чета"
+    aria-pressed="false"
+    disabled
+>
+    <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+    >
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+        <path
+            class="fk-chat-mute-slash"
+            d="M3 3l18 18"
+        />
+    </svg>
+</button>
 
             <button
                 type="button"
@@ -320,6 +347,15 @@ let pendingOpenFromPush =
         sendButton = document.getElementById(
             "fk-chat-send"
         );
+
+muteButton = document.getElementById(
+    "fk-chat-mute"
+);
+
+muteButton.addEventListener(
+    "click",
+    toggleChatMute
+);
 
         launcher.addEventListener(
             "click",
@@ -828,6 +864,134 @@ function openChatFromPush() {
         }
     }
 
+/* =============================================
+   UTISAVANJE PUSH OBAVESTENJA IZ CETA
+============================================= */
+
+function refreshMuteButton() {
+
+    if (!muteButton) return;
+
+    muteButton.classList.toggle(
+        "is-muted",
+        chatMuted
+    );
+
+    const label = chatMuted
+        ? "Укључи обавештења из чета"
+        : "Утишај обавештења из чета";
+
+    muteButton.title = label;
+
+    muteButton.setAttribute(
+        "aria-label",
+        label
+    );
+
+    muteButton.setAttribute(
+        "aria-pressed",
+        String(chatMuted)
+    );
+}
+
+
+async function loadChatMute(user) {
+
+    if (!user || !muteButton) return;
+
+    muteButton.disabled = true;
+
+    const { data, error } = await sb
+        .from("portal_chat_podesavanja")
+        .select("utisan")
+        .eq("user_id", user)
+        .maybeSingle();
+
+    // Korisnik se u medjuvremenu odjavio.
+    if (userId !== user) return;
+
+    if (error) {
+
+        console.error(
+            "FK CHAT mute load:",
+            error
+        );
+
+        return;
+    }
+
+    chatMuted = data?.utisan === true;
+
+    refreshMuteButton();
+
+    muteButton.disabled = false;
+}
+
+
+async function toggleChatMute() {
+
+    if (
+        !userId ||
+        !muteButton ||
+        muteSaving ||
+        muteButton.disabled
+    ) {
+        return;
+    }
+
+    const currentUser = userId;
+
+    const newValue = !chatMuted;
+
+    muteSaving = true;
+    muteButton.disabled = true;
+
+    try {
+
+        const { error } = await sb
+            .from("portal_chat_podesavanja")
+            .upsert(
+                {
+                    user_id: currentUser,
+                    utisan: newValue,
+                    izmenjeno_u:
+                        new Date().toISOString()
+                },
+                {
+                    onConflict: "user_id"
+                }
+            );
+
+        if (error) throw error;
+
+        if (userId === currentUser) {
+
+            chatMuted = newValue;
+
+            refreshMuteButton();
+        }
+
+    } catch (error) {
+
+        console.error(
+            "FK CHAT mute save:",
+            error
+        );
+
+        window.alert(
+            "Није могуће сачувати подешавање обавештења."
+        );
+
+    } finally {
+
+        muteSaving = false;
+
+        if (userId === currentUser) {
+            muteButton.disabled = false;
+        }
+    }
+}
+
     /* =============================================
        PRAVA PRISTUPA I NALOG
     ============================================= */
@@ -846,6 +1010,12 @@ function openChatFromPush() {
 
         userId = null;
         messages = [];
+        chatMuted = false;
+
+if (muteButton) {
+    muteButton.disabled = true;
+    refreshMuteButton();
+}
 
         launcher.hidden = true;
         panel.hidden = true;
@@ -874,6 +1044,11 @@ function openChatFromPush() {
         }
 
         userId = nextId;
+        await loadChatMute(nextId);
+
+if (version !== authVersion) {
+    return;
+}
 
         if (!getLastRead()) {
             setLastRead(

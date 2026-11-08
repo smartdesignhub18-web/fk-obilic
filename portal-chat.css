@@ -481,3 +481,68 @@
         transition: none;
     }
 }
+
+/* =====================================================
+   FK OBILIC - DUGME ZA UTISAVANJE CETA
+===================================================== */
+
+.fk-chat-mute {
+    width: 37px;
+    height: 37px;
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    position: relative;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.08);
+    color: #ffffff;
+
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.fk-chat-mute:hover:not(:disabled) {
+    background: rgba(255,255,255,.17);
+}
+
+.fk-chat-mute:disabled {
+    opacity: .55;
+    cursor: wait;
+}
+
+.fk-chat-mute svg {
+    width: 19px;
+    height: 19px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.fk-chat-mute-slash {
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.fk-chat-mute.is-muted {
+    background: rgba(208,38,75,.18);
+    border-color: rgba(237,71,111,.36);
+    color: #ff839d;
+}
+
+.fk-chat-mute.is-muted
+.fk-chat-mute-slash {
+    opacity: 1;
+}
+
+.fk-chat-mute:focus-visible {
+    outline: 2px solid #ff839d;
+    outline-offset: 3px;
+}

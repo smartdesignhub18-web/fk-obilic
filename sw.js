@@ -73,16 +73,23 @@ self.addEventListener("push", event => {
         destination.searchParams.set("chat", "1");
     }
 
-    const iconUrl = new URL(
-        "images/pwa-transparent-192.png",
-        self.registration.scope
-    ).href;
+    
+const iconUrl = new URL(
+    "images/grb.png",
+    self.registration.scope
+).href;
+
+const badgeUrl = new URL(
+    "images/pwa-transparent-192.png",
+    self.registration.scope
+).href;
+
 
     const options = {
         body: body,
 
         icon: iconUrl,
-        badge: iconUrl,
+badge: badgeUrl,
 
         tag: payload.id
             ? String(payload.id)
