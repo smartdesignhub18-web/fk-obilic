@@ -1,20 +1,19 @@
 
 /* =====================================================
    FK OBILIC NOVI KNEZEVAC
-   MODERAN GRUPNI CET
+   GRUPNI CET - ISPRAVLJENA VERZIJA
 
-   - Plutajuce dugme
-   - Jedan cet za sve aktivne clanove
-   - Poruke u realnom vremenu
-   - Broj neprocitanih poruka
-   - Prilagodjen Android PWA aplikaciji
+   - Grupni cet za aktivne clanove
+   - Realtime poruke
+   - Neprocitane poruke
+   - Android PWA i push otvaranje
+   - Utisavanje obavestenja u zaglavlju
 ===================================================== */
 
 (() => {
     "use strict";
 
     if (window.__fkObilicChatLoaded) return;
-    window.__fkObilicChatLoaded = true;
 
     const sb = window.fkObilicSupabase;
 
@@ -26,7 +25,18 @@
     }
 
     const TABLE = "portal_chat_poruke";
+    const SETTINGS = "portal_chat_podesavanja";
     const SEND_RPC = "portal_chat_posalji";
+
+    const ALLOWED_ROLES = [
+        "UPRAVA",
+        "TRENER",
+        "IGRAČ",
+        "IGRAC",
+        "УПРАВА",
+        "ТРЕНЕР",
+        "ИГРАЧ"
+    ];
 
     let userId = null;
     let messages = [];
@@ -34,19 +44,14 @@
     let polling = null;
     let loading = false;
     let sending = false;
+    let muteSaving = false;
+    let chatMuted = false;
     let authVersion = 0;
-    
-let muteButton = null;
-let chatMuted = false;
-let muteSaving = false;
 
-
-    
-let pendingOpenFromPush =
-    new URLSearchParams(
-        window.location.search
-    ).get("chat") === "1";
-
+    let pendingOpenFromPush =
+        new URLSearchParams(
+            window.location.search
+        ).get("chat") === "1";
 
     let launcher;
     let panel;
@@ -55,10 +60,19 @@ let pendingOpenFromPush =
     let input;
     let form;
     let sendButton;
+    let muteButton;
 
     /* =============================================
        POMOCNE FUNKCIJE
     ============================================= */
+
+    function byId(id) {
+        return document.getElementById(id);
+    }
+
+    function isOpen() {
+        return Boolean(panel && !panel.hidden);
+    }
 
     function initials(name) {
         const words = String(name || "")
@@ -70,9 +84,11 @@ let pendingOpenFromPush =
 
         return (
             words[0][0] +
-            (words.length > 1
-                ? words[words.length - 1][0]
-                : "")
+            (
+                words.length > 1
+                    ? words[words.length - 1][0]
+                    : ""
+            )
         ).toLocaleUpperCase("sr");
     }
 
@@ -97,21 +113,22 @@ let pendingOpenFromPush =
     }
 
     function dateLabel(value) {
-        const d = new Date(value);
         const today = new Date();
-        const yesterday = new Date();
+        const yesterday = new Date(today);
 
-        yesterday.setDate(today.getDate() - 1);
+        yesterday.setDate(
+            today.getDate() - 1
+        );
 
-        if (dateKey(d) === dateKey(today)) {
+        if (dateKey(value) === dateKey(today)) {
             return "ДАНАС";
         }
 
-        if (dateKey(d) === dateKey(yesterday)) {
+        if (dateKey(value) === dateKey(yesterday)) {
             return "ЈУЧЕ";
         }
 
-        return d.toLocaleDateString(
+        return new Date(value).toLocaleDateString(
             "sr-Cyrl-RS",
             {
                 day: "numeric",
@@ -146,54 +163,125 @@ let pendingOpenFromPush =
                 value
             );
         } catch {
-            // Chat radi i kada localStorage nije dostupan.
+            // Cet radi i bez localStorage.
         }
     }
 
-    function isOpen() {
-        return panel && !panel.hidden;
+    /* =============================================
+       STIL ZA DUGME ZA UTISAVANJE
+    ============================================= */
+
+    function addMuteStyles() {
+        if (byId("fk-chat-mute-styles")) {
+            return;
+        }
+
+        const style = document.createElement("style");
+
+        style.id = "fk-chat-mute-styles";
+
+        style.textContent = `
+            #fk-chat-panel .fk-chat-header {
+                display: flex;
+                align-items: center;
+            }
+
+            #fk-chat-panel .fk-chat-header-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            #fk-chat-panel .fk-chat-header-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-left: auto;
+                flex-shrink: 0;
+            }
+
+            #fk-chat-panel #fk-chat-mute {
+                position: static;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                padding: 7px;
+                border-radius: 10px;
+                border: 1px solid rgba(255,255,255,.3);
+                color: inherit;
+                background: rgba(255,255,255,.12);
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+            #fk-chat-panel #fk-chat-mute svg {
+                width: 21px;
+                height: 21px;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 1.9;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+
+            #fk-chat-panel #fk-chat-mute
+            .fk-chat-mute-slash {
+                display: none;
+            }
+
+            #fk-chat-panel #fk-chat-mute.is-muted
+            .fk-chat-mute-slash {
+                display: block;
+            }
+
+            #fk-chat-panel #fk-chat-mute.is-muted {
+                background: rgba(255,255,255,.27);
+            }
+
+            #fk-chat-panel #fk-chat-mute:disabled {
+                opacity: .5;
+                cursor: wait;
+            }
+
+            #fk-chat-panel #fk-chat-mute:focus-visible {
+                outline: 2px solid currentColor;
+                outline-offset: 2px;
+            }
+
+            #fk-chat-panel #fk-chat-close {
+                flex-shrink: 0;
+            }
+        `;
+
+        document.head.appendChild(style);
     }
 
     /* =============================================
-       KREIRAJ CHAT
+       KREIRANJE CETA
     ============================================= */
 
     function createChat() {
+        const app = byId("portal-app");
 
-        const app = document.getElementById(
-            "portal-app"
-        );
+        if (!app) {
+            console.error(
+                "FK Obilic CHAT: portal-app nije pronadjen."
+            );
+            return false;
+        }
 
-        if (!app) return false;
+        if (byId("fk-chat-root")) {
+            return false;
+        }
+
+        addMuteStyles();
 
         const wrapper = document.createElement("div");
 
         wrapper.id = "fk-chat-root";
 
         wrapper.innerHTML = `
-
-<button
-    type="button"
-    id="fk-chat-mute"
-    class="fk-chat-mute"
-    title="Утишај обавештења из чета"
-    aria-label="Утишај обавештења из чета"
-    aria-pressed="false"
-    disabled
->
-    <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-    >
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-        <path d="M10 21h4"/>
-        <path
-            class="fk-chat-mute-slash"
-            d="M3 3l18 18"
-        />
-    </svg>
-</button>
-
             <button
                 type="button"
                 id="fk-chat-launcher"
@@ -202,18 +290,8 @@ let pendingOpenFromPush =
                 aria-controls="fk-chat-panel"
                 hidden
             >
-
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
-                    <path d="
-                        M20 11.5
-                        a8 8 0 0 1-8 8
-                        a8.6 8.6 0 0 1-3.5-.7
-                        L4 20l1.3-4.4
-                        A8 8 0 1 1 20 11.5Z
-                    " />
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 11.5a8 8 0 0 1-8 8 8.6 8.6 0 0 1-3.5-.7L4 20l1.3-4.4A8 8 0 1 1 20 11.5Z"/>
                     <path d="M8 11.5h8"/>
                     <path d="M8 14.5h5"/>
                 </svg>
@@ -223,7 +301,6 @@ let pendingOpenFromPush =
                     class="fk-chat-badge"
                     hidden
                 >0</span>
-
             </button>
 
             <aside
@@ -232,18 +309,13 @@ let pendingOpenFromPush =
                 aria-label="Групни чет ФК Обилић"
                 hidden
             >
-
                 <div class="fk-chat-header">
 
                     <div class="fk-chat-header-logo">
-                        <img
-                            src="images/grb.png"
-                            alt=""
-                        >
+                        <img src="images/grb.png" alt="">
                     </div>
 
                     <div class="fk-chat-header-info">
-
                         <strong class="fk-chat-header-title">
                             Групни чет
                         </strong>
@@ -251,16 +323,40 @@ let pendingOpenFromPush =
                         <span class="fk-chat-header-subtitle">
                             ФК Обилић · Сви чланови портала
                         </span>
-
                     </div>
 
-                    <button
-                        type="button"
-                        id="fk-chat-close"
-                        class="fk-chat-close"
-                        aria-label="Затвори чет"
-                    >×</button>
+                    <div class="fk-chat-header-actions">
 
+                        <button
+                            type="button"
+                            id="fk-chat-mute"
+                            class="fk-chat-mute"
+                            title="Утишај обавештења из чета"
+                            aria-label="Утишај обавештења из чета"
+                            aria-pressed="false"
+                            disabled
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                                <path d="M10 21h4"/>
+                                <path
+                                    class="fk-chat-mute-slash"
+                                    d="M3 3l18 18"
+                                />
+                            </svg>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="fk-chat-close"
+                            class="fk-chat-close"
+                            aria-label="Затвори чет"
+                        >×</button>
+
+                    </div>
                 </div>
 
                 <div
@@ -276,12 +372,10 @@ let pendingOpenFromPush =
                 </div>
 
                 <div class="fk-chat-footer">
-
                     <form
                         id="fk-chat-form"
                         class="fk-chat-form"
                     >
-
                         <textarea
                             id="fk-chat-input"
                             class="fk-chat-input"
@@ -306,61 +400,29 @@ let pendingOpenFromPush =
                                 <path d="m5 12 7-7 7 7"/>
                             </svg>
                         </button>
-
                     </form>
 
                     <div class="fk-chat-footer-note">
                         Заједнички чет свих чланова клуба
                     </div>
-
                 </div>
-
             </aside>
         `;
 
         app.appendChild(wrapper);
 
-        launcher = document.getElementById(
-            "fk-chat-launcher"
-        );
-
-        panel = document.getElementById(
-            "fk-chat-panel"
-        );
-
-        list = document.getElementById(
-            "fk-chat-messages"
-        );
-
-        badge = document.getElementById(
-            "fk-chat-badge"
-        );
-
-        input = document.getElementById(
-            "fk-chat-input"
-        );
-
-        form = document.getElementById(
-            "fk-chat-form"
-        );
-
-        sendButton = document.getElementById(
-            "fk-chat-send"
-        );
-
-muteButton = document.getElementById(
-    "fk-chat-mute"
-);
-
-muteButton.addEventListener(
-    "click",
-    toggleChatMute
-);
+        launcher = byId("fk-chat-launcher");
+        panel = byId("fk-chat-panel");
+        list = byId("fk-chat-messages");
+        badge = byId("fk-chat-badge");
+        input = byId("fk-chat-input");
+        form = byId("fk-chat-form");
+        sendButton = byId("fk-chat-send");
+        muteButton = byId("fk-chat-mute");
 
         launcher.addEventListener(
             "click",
             () => {
-
                 if (isOpen()) {
                     closeChat();
                 } else {
@@ -369,17 +431,19 @@ muteButton.addEventListener(
             }
         );
 
-        document.getElementById(
-            "fk-chat-close"
-        ).addEventListener(
+        byId("fk-chat-close").addEventListener(
             "click",
             closeChat
+        );
+
+        muteButton.addEventListener(
+            "click",
+            toggleChatMute
         );
 
         document.addEventListener(
             "keydown",
             event => {
-
                 if (
                     event.key === "Escape" &&
                     isOpen()
@@ -392,13 +456,11 @@ muteButton.addEventListener(
         input.addEventListener(
             "keydown",
             event => {
-
                 if (
                     event.key === "Enter" &&
                     !event.shiftKey &&
                     !event.isComposing
                 ) {
-
                     event.preventDefault();
                     form.requestSubmit();
                 }
@@ -414,12 +476,11 @@ muteButton.addEventListener(
     }
 
     /* =============================================
-       OTVARANJE / ZATVARANJE
+       OTVARANJE I ZATVARANJE
     ============================================= */
 
     function openChat() {
-
-        if (!userId) return;
+        if (!userId || !panel) return;
 
         panel.hidden = false;
 
@@ -428,61 +489,19 @@ muteButton.addEventListener(
             "true"
         );
 
+        loadMessages();
         markAsRead();
 
-        loadMessages();
-
         requestAnimationFrame(() => {
+            if (!isOpen()) return;
+
             list.scrollTop = list.scrollHeight;
             input.focus();
         });
     }
 
-    
-/* =============================================
-   AUTOMATSKO OTVARANJE CETA IZ PUSH-A
-============================================= */
-
-function openChatFromPush() {
-
-    if (
-        !pendingOpenFromPush ||
-        !userId ||
-        !launcher ||
-        !panel
-    ) {
-        return;
-    }
-
-    pendingOpenFromPush = false;
-
-    openChat();
-
-    // Ukloni ?chat=1 iz adrese bez
-    // ponovnog ucitavanja portala.
-
-    const url = new URL(
-        window.location.href
-    );
-
-    if (
-        url.searchParams.get("chat") === "1"
-    ) {
-
-        url.searchParams.delete("chat");
-
-        window.history.replaceState(
-            window.history.state,
-            "",
-            url.pathname +
-            url.search +
-            url.hash
-        );
-    }
-}
-
-
     function closeChat() {
+        if (!panel) return;
 
         panel.hidden = true;
 
@@ -495,29 +514,68 @@ function openChatFromPush() {
     }
 
     /* =============================================
-       BROJ NEPROCITANIH
+       OTVARANJE IZ PUSH OBAVESTENJA
+    ============================================= */
+
+    function openChatFromPush() {
+        if (
+            !pendingOpenFromPush ||
+            !userId ||
+            !launcher ||
+            !panel
+        ) {
+            return;
+        }
+
+        pendingOpenFromPush = false;
+
+        openChat();
+
+        const url = new URL(
+            window.location.href
+        );
+
+        if (
+            url.searchParams.get("chat") === "1"
+        ) {
+            url.searchParams.delete("chat");
+
+            window.history.replaceState(
+                window.history.state,
+                "",
+                url.pathname + url.search + url.hash
+            );
+        }
+    }
+
+    /* =============================================
+       NECITANE PORUKE
     ============================================= */
 
     function updateUnread() {
+        if (!badge) return;
 
-        if (!userId) {
+        if (!userId || isOpen()) {
             badge.hidden = true;
             return;
         }
 
         const lastRead = getLastRead();
 
+        const readTime = lastRead
+            ? new Date(lastRead).getTime()
+            : 0;
+
         const unread = messages.filter(
             message => {
-
                 if (message.user_id === userId) {
                     return false;
                 }
 
                 return (
-                    !lastRead ||
-                    new Date(message.created_at).getTime() >
-                        new Date(lastRead).getTime()
+                    new Date(
+                        message.created_at
+                    ).getTime() > readTime
                 );
             }
         ).length;
@@ -531,6 +589,7 @@ function openChatFromPush() {
     }
 
     function markAsRead() {
+        if (!userId) return;
 
         setLastRead(
             new Date().toISOString()
@@ -544,6 +603,7 @@ function openChatFromPush() {
     ============================================= */
 
     function renderMessages() {
+        if (!list) return;
 
         const distanceFromBottom =
             list.scrollHeight -
@@ -556,10 +616,8 @@ function openChatFromPush() {
         list.replaceChildren();
 
         if (!messages.length) {
-
-            const empty = document.createElement(
-                "div"
-            );
+            const empty =
+                document.createElement("div");
 
             empty.className = "fk-chat-empty";
 
@@ -577,12 +635,10 @@ function openChatFromPush() {
         let previousDay = "";
 
         for (const message of messages) {
-
             const currentDay =
                 dateKey(message.created_at);
 
             if (currentDay !== previousDay) {
-
                 const separator =
                     document.createElement("div");
 
@@ -607,14 +663,18 @@ function openChatFromPush() {
                 "fk-chat-row " +
                 (own ? "own" : "other");
 
-            const avatar =
-                document.createElement("div");
+            if (!own) {
+                const avatar =
+                    document.createElement("div");
 
-            avatar.className =
-                "fk-chat-avatar";
+                avatar.className =
+                    "fk-chat-avatar";
 
-            avatar.textContent =
-                initials(message.ime_prezime);
+                avatar.textContent =
+                    initials(message.ime_prezime);
+
+                row.appendChild(avatar);
+            }
 
             const content =
                 document.createElement("div");
@@ -631,13 +691,12 @@ function openChatFromPush() {
             const name =
                 document.createElement("span");
 
-            name.textContent =
-                own
-                    ? "Ви"
-                    : (
-                        message.ime_prezime ||
-                        "Члан клуба"
-                    );
+            name.textContent = own
+                ? "Ви"
+                : (
+                    message.ime_prezime ||
+                    "Члан клуба"
+                );
 
             const time =
                 document.createElement("span");
@@ -653,15 +712,11 @@ function openChatFromPush() {
             bubble.className =
                 "fk-chat-bubble";
 
-            // Bezbedan tekst, bez izvrsavanja HTML-a.
+            // Poruke se prikazuju kao bezbedan tekst.
             bubble.textContent =
                 message.sadrzaj || "";
 
             content.append(meta, bubble);
-
-            if (!own) {
-                row.appendChild(avatar);
-            }
 
             row.appendChild(content);
 
@@ -671,29 +726,28 @@ function openChatFromPush() {
         list.appendChild(fragment);
 
         if (isOpen() && wasNearBottom) {
-
             requestAnimationFrame(() => {
-                list.scrollTop = list.scrollHeight;
+                if (isOpen()) {
+                    list.scrollTop =
+                        list.scrollHeight;
+                }
             });
         }
     }
 
     /* =============================================
-       UCITAVANJE IZ SUPABASE
+       UCITAVANJE PORUKA IZ SUPABASE
     ============================================= */
 
     async function loadMessages() {
-
-        if (!userId || loading) {
-            return;
-        }
+        if (!userId || loading) return;
 
         loading = true;
 
         const expectedUser = userId;
+        const version = authVersion;
 
         try {
-
             const { data, error } = await sb
                 .from(TABLE)
                 .select(
@@ -709,7 +763,10 @@ function openChatFromPush() {
 
             if (error) throw error;
 
-            if (userId !== expectedUser) {
+            if (
+                userId !== expectedUser ||
+                version !== authVersion
+            ) {
                 return;
             }
 
@@ -724,6 +781,12 @@ function openChatFromPush() {
             }
 
         } catch (error) {
+            if (
+                userId !== expectedUser ||
+                version !== authVersion
+            ) {
+                return;
+            }
 
             console.error(
                 "FK Obilic CHAT load:",
@@ -731,9 +794,6 @@ function openChatFromPush() {
             );
 
             if (isOpen()) {
-
-                list.innerHTML = "";
-
                 const notice =
                     document.createElement("div");
 
@@ -744,7 +804,7 @@ function openChatFromPush() {
                     "Поруке тренутно нису доступне. " +
                     "Проверите интернет и подешавања чета.";
 
-                list.appendChild(notice);
+                list.replaceChildren(notice);
             }
 
         } finally {
@@ -753,29 +813,26 @@ function openChatFromPush() {
     }
 
     /* =============================================
-       SLANJE PORUKE
+       SLANJE PORUKA
     ============================================= */
 
     async function sendMessage(event) {
-
         event.preventDefault();
 
         if (!userId || sending) return;
 
         const text = input.value.trim();
 
-        if (
-            !text ||
-            text.length > 1000
-        ) {
+        if (!text || text.length > 1000) {
             return;
         }
+
+        const expectedUser = userId;
 
         sending = true;
         sendButton.disabled = true;
 
         try {
-
             const { error } = await sb.rpc(
                 SEND_RPC,
                 {
@@ -785,29 +842,35 @@ function openChatFromPush() {
 
             if (error) throw error;
 
+            if (expectedUser !== userId) {
+                return;
+            }
+
             input.value = "";
 
             await loadMessages();
 
             requestAnimationFrame(() => {
+                if (!isOpen()) return;
+
                 list.scrollTop = list.scrollHeight;
                 input.focus();
             });
 
         } catch (error) {
-
             console.error(
                 "FK Obilic CHAT send:",
                 error
             );
 
-            window.alert(
-                error.message ||
-                "Порука није послата."
-            );
+            if (expectedUser === userId) {
+                window.alert(
+                    error.message ||
+                    "Порука није послата."
+                );
+            }
 
         } finally {
-
             sending = false;
             sendButton.disabled = false;
         }
@@ -817,9 +880,22 @@ function openChatFromPush() {
        REALTIME
     ============================================= */
 
-    function startListening() {
+    function stopListening() {
+        if (polling !== null) {
+            clearInterval(polling);
+            polling = null;
+        }
 
+        if (channel) {
+            sb.removeChannel(channel);
+            channel = null;
+        }
+    }
+
+    function startListening() {
         stopListening();
+
+        if (!userId) return;
 
         channel = sb
             .channel(
@@ -838,169 +914,180 @@ function openChatFromPush() {
             )
             .subscribe();
 
-        // Rezervna provera ako Realtime prekine vezu.
+        // Rezervna provera svakih 15 sekundi.
         polling = window.setInterval(
             () => {
-
-                if (!document.hidden && userId) {
+                if (
+                    !document.hidden &&
+                    userId
+                ) {
                     loadMessages();
                 }
-
             },
             15000
         );
     }
 
-    function stopListening() {
+    /* =============================================
+       UTISAVANJE OBAVESTENJA
+    ============================================= */
 
-        if (polling) {
-            clearInterval(polling);
-            polling = null;
-        }
+    function refreshMuteButton() {
+        if (!muteButton) return;
 
-        if (channel) {
-            sb.removeChannel(channel);
-            channel = null;
-        }
-    }
-
-/* =============================================
-   UTISAVANJE PUSH OBAVESTENJA IZ CETA
-============================================= */
-
-function refreshMuteButton() {
-
-    if (!muteButton) return;
-
-    muteButton.classList.toggle(
-        "is-muted",
-        chatMuted
-    );
-
-    const label = chatMuted
-        ? "Укључи обавештења из чета"
-        : "Утишај обавештења из чета";
-
-    muteButton.title = label;
-
-    muteButton.setAttribute(
-        "aria-label",
-        label
-    );
-
-    muteButton.setAttribute(
-        "aria-pressed",
-        String(chatMuted)
-    );
-}
-
-
-async function loadChatMute(user) {
-
-    if (!user || !muteButton) return;
-
-    muteButton.disabled = true;
-
-    const { data, error } = await sb
-        .from("portal_chat_podesavanja")
-        .select("utisan")
-        .eq("user_id", user)
-        .maybeSingle();
-
-    // Korisnik se u medjuvremenu odjavio.
-    if (userId !== user) return;
-
-    if (error) {
-
-        console.error(
-            "FK CHAT mute load:",
-            error
+        muteButton.classList.toggle(
+            "is-muted",
+            chatMuted
         );
 
-        return;
+        const label = chatMuted
+            ? "Укључи обавештења из чета"
+            : "Утишај обавештења из чета";
+
+        muteButton.title = label;
+
+        muteButton.setAttribute(
+            "aria-label",
+            label
+        );
+
+        muteButton.setAttribute(
+            "aria-pressed",
+            String(chatMuted)
+        );
     }
 
-    chatMuted = data?.utisan === true;
-
-    refreshMuteButton();
-
-    muteButton.disabled = false;
-}
-
-
-async function toggleChatMute() {
-
-    if (
-        !userId ||
-        !muteButton ||
-        muteSaving ||
-        muteButton.disabled
+    async function loadChatMute(
+        expectedUser,
+        version
     ) {
-        return;
-    }
+        if (!muteButton) return;
 
-    const currentUser = userId;
+        muteButton.disabled = true;
 
-    const newValue = !chatMuted;
+        try {
+            const { data, error } = await sb
+                .from(SETTINGS)
+                .select("utisan")
+                .eq("user_id", expectedUser)
+                .maybeSingle();
 
-    muteSaving = true;
-    muteButton.disabled = true;
+            if (error) throw error;
 
-    try {
+            if (
+                userId !== expectedUser ||
+                version !== authVersion
+            ) {
+                return;
+            }
 
-        const { error } = await sb
-            .from("portal_chat_podesavanja")
-            .upsert(
-                {
-                    user_id: currentUser,
-                    utisan: newValue,
-                    izmenjeno_u:
-                        new Date().toISOString()
-                },
-                {
-                    onConflict: "user_id"
-                }
+            chatMuted = data?.utisan === true;
+
+            refreshMuteButton();
+
+            muteButton.disabled = false;
+
+        } catch (error) {
+            console.error(
+                "FK Obilic CHAT mute load:",
+                error
             );
 
-        if (error) throw error;
+            if (
+                userId === expectedUser &&
+                version === authVersion
+            ) {
+                muteButton.title =
+                    "Подешавања обавештења нису доступна";
+            }
+        }
+    }
 
-        if (userId === currentUser) {
+    async function toggleChatMute() {
+        if (
+            !userId ||
+            !muteButton ||
+            muteSaving ||
+            muteButton.disabled
+        ) {
+            return;
+        }
+
+        const expectedUser = userId;
+        const version = authVersion;
+
+        const newValue = !chatMuted;
+
+        muteSaving = true;
+        muteButton.disabled = true;
+
+        try {
+            const { error } = await sb
+                .from(SETTINGS)
+                .upsert(
+                    {
+                        user_id: expectedUser,
+                        utisan: newValue,
+                        izmenjeno_u:
+                            new Date().toISOString()
+                    },
+                    {
+                        onConflict: "user_id"
+                    }
+                );
+
+            if (error) throw error;
+
+            if (
+                userId !== expectedUser ||
+                version !== authVersion
+            ) {
+                return;
+            }
 
             chatMuted = newValue;
 
             refreshMuteButton();
-        }
 
-    } catch (error) {
+        } catch (error) {
+            console.error(
+                "FK Obilic CHAT mute save:",
+                error
+            );
 
-        console.error(
-            "FK CHAT mute save:",
-            error
-        );
+            if (
+                userId === expectedUser &&
+                version === authVersion
+            ) {
+                window.alert(
+                    "Није могуће сачувати " +
+                    "подешавање обавештења."
+                );
+            }
 
-        window.alert(
-            "Није могуће сачувати подешавање обавештења."
-        );
+        } finally {
+            muteSaving = false;
 
-    } finally {
-
-        muteSaving = false;
-
-        if (userId === currentUser) {
-            muteButton.disabled = false;
+            if (
+                userId === expectedUser &&
+                version === authVersion
+            ) {
+                muteButton.disabled = false;
+            }
         }
     }
-}
 
     /* =============================================
-       PRAVA PRISTUPA I NALOG
+       PRIJAVA I PRAVA PRISTUPA
     ============================================= */
 
     async function setCurrentUser(user) {
-
         const nextId = user?.id || null;
 
-        if (nextId === userId && nextId) {
+        if (
+            nextId === userId &&
+            nextId
+        ) {
             return;
         }
 
@@ -1012,10 +1099,9 @@ async function toggleChatMute() {
         messages = [];
         chatMuted = false;
 
-if (muteButton) {
-    muteButton.disabled = true;
-    refreshMuteButton();
-}
+        refreshMuteButton();
+
+        muteButton.disabled = true;
 
         launcher.hidden = true;
         panel.hidden = true;
@@ -1023,50 +1109,55 @@ if (muteButton) {
 
         if (!nextId) return;
 
-        const { data: profile, error } = await sb
-            .from("portal_korisnici")
-            .select("aktivan,uloga")
-            .eq("user_id", nextId)
-            .maybeSingle();
+        try {
+            const { data: profile, error } =
+                await sb
+                    .from("portal_korisnici")
+                    .select("aktivan,uloga")
+                    .eq("user_id", nextId)
+                    .maybeSingle();
 
-        if (version !== authVersion) {
-            return;
-        }
+            if (version !== authVersion) {
+                return;
+            }
 
-        if (
-            error ||
-            !profile ||
-            profile.aktivan !== true ||
-            !["UPRAVA", "TRENER", "IGRAČ"]
-                .includes(profile.uloga)
-        ) {
-            return;
-        }
+            if (error) throw error;
 
-        userId = nextId;
-        await loadChatMute(nextId);
+            if (
+                !profile ||
+                profile.aktivan !== true ||
+                !ALLOWED_ROLES.includes(
+                    profile.uloga
+                )
+            ) {
+                return;
+            }
 
-if (version !== authVersion) {
-    return;
-}
+            userId = nextId;
 
-        if (!getLastRead()) {
-            setLastRead(
-                new Date().toISOString()
+            if (!getLastRead()) {
+                setLastRead(
+                    new Date().toISOString()
+                );
+            }
+
+            launcher.hidden = false;
+
+            startListening();
+
+            openChatFromPush();
+
+            await Promise.all([
+                loadChatMute(nextId, version),
+                loadMessages()
+            ]);
+
+        } catch (error) {
+            console.error(
+                "FK Obilic CHAT profile:",
+                error
             );
         }
-
-      
-launcher.hidden = false;
-
-await loadMessages();
-
-// Ako je portal otvoren preko push
-// obavestenja, automatski otvori cet.
-openChatFromPush();
-
-startListening();
-
     }
 
     /* =============================================
@@ -1074,49 +1165,35 @@ startListening();
     ============================================= */
 
     async function initialize() {
-
         if (!createChat()) return;
 
-// Prijem komande od service workera,
-// kada je aplikacija vec otvorena.
+        window.__fkObilicChatLoaded = true;
 
-if ("serviceWorker" in navigator) {
-
-    navigator.serviceWorker.addEventListener(
-        "message",
-        event => {
-
-            if (
-                event.data?.type !==
-                "FK_OBILIC_OPEN_CHAT"
-            ) {
-                return;
-            }
-
-            pendingOpenFromPush = true;
-
-            openChatFromPush();
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.addEventListener(
+                "message",
+                event => {
+                    if (
+                        event.data?.type ===
+                        "FK_OBILIC_OPEN_CHAT"
+                    ) {
+                        pendingOpenFromPush = true;
+                        openChatFromPush();
+                    }
+                }
+            );
         }
-    );
-}
-
-        const {
-            data: { session }
-        } = await sb.auth.getSession();
-
-        await setCurrentUser(
-            session?.user || null
-        );
 
         sb.auth.onAuthStateChange(
             (event, session) => {
-
                 if (
-                    event === "SIGNED_IN" ||
-                    event === "INITIAL_SESSION" ||
-                    event === "SIGNED_OUT"
+                    [
+                        "SIGNED_IN",
+                        "INITIAL_SESSION",
+                        "SIGNED_OUT",
+                        "USER_UPDATED"
+                    ].includes(event)
                 ) {
-
                     setTimeout(
                         () => {
                             setCurrentUser(
@@ -1129,11 +1206,30 @@ if ("serviceWorker" in navigator) {
             }
         );
 
+        try {
+            const { data, error } =
+                await sb.auth.getSession();
+
+            if (error) throw error;
+
+            await setCurrentUser(
+                data?.session?.user || null
+            );
+
+        } catch (error) {
+            console.error(
+                "FK Obilic CHAT session:",
+                error
+            );
+        }
+
         document.addEventListener(
             "visibilitychange",
             () => {
-
-                if (!document.hidden && userId) {
+                if (
+                    !document.hidden &&
+                    userId
+                ) {
                     loadMessages();
                 }
             }
@@ -1141,14 +1237,12 @@ if ("serviceWorker" in navigator) {
     }
 
     if (document.readyState === "loading") {
-
         document.addEventListener(
             "DOMContentLoaded",
-            initialize
+            initialize,
+            { once: true }
         );
-
     } else {
-
         initialize();
     }
 
