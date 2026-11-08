@@ -1,0 +1,483 @@
+
+/* =====================================================
+   FK OBILIC - MODERAN PLUTAJUCI CHAT
+===================================================== */
+
+#fk-chat-launcher[hidden],
+#fk-chat-panel[hidden] {
+    display: none !important;
+}
+
+#fk-chat-launcher {
+    position: fixed;
+    right: 22px;
+    bottom: calc(22px + env(safe-area-inset-bottom));
+    z-index: 10010;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 62px;
+    height: 62px;
+
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 23px;
+
+    background: linear-gradient(
+        145deg,
+        #e32c52,
+        #aa1233
+    );
+
+    color: #fff;
+
+    box-shadow:
+        0 12px 30px rgba(180,18,56,.35),
+        0 5px 20px rgba(0,0,0,.2);
+
+    cursor: pointer;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+#fk-chat-launcher:hover {
+    transform: translateY(-4px);
+}
+
+#fk-chat-launcher:active {
+    transform: scale(.94);
+}
+
+#fk-chat-launcher svg {
+    width: 29px;
+    height: 29px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.fk-chat-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+
+    min-width: 23px;
+    height: 23px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 5px;
+
+    border: 2px solid #15151b;
+    border-radius: 30px;
+
+    background: #fff;
+    color: #ba1538;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.fk-chat-badge[hidden] {
+    display: none !important;
+}
+
+/* =====================================================
+   CHAT PANEL
+===================================================== */
+
+#fk-chat-panel {
+    position: fixed;
+    right: 22px;
+    bottom: calc(98px + env(safe-area-inset-bottom));
+
+    z-index: 10009;
+
+    display: flex;
+    flex-direction: column;
+
+    width: min(390px, calc(100vw - 30px));
+    height: min(590px, calc(100dvh - 130px));
+
+    overflow: hidden;
+
+    background: rgba(25,26,33,.98);
+    color: #fff;
+
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 23px;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.46),
+        0 5px 20px rgba(0,0,0,.2);
+
+    backdrop-filter: blur(22px);
+
+    animation: fk-chat-open .22s ease-out;
+}
+
+@keyframes fk-chat-open {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.fk-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 17px;
+
+    background: #292a34;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.fk-chat-header-logo {
+    display: grid;
+    place-items: center;
+
+    width: 47px;
+    height: 47px;
+    flex-shrink: 0;
+
+    background: #39313c;
+    border-radius: 15px;
+}
+
+.fk-chat-header-logo img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.fk-chat-header-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.fk-chat-header-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .2px;
+}
+
+.fk-chat-header-subtitle {
+    display: block;
+    margin-top: 4px;
+
+    color: #b8b8c3;
+    font-size: 11px;
+}
+
+.fk-chat-close {
+    display: grid;
+    place-items: center;
+
+    width: 35px;
+    height: 35px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.08);
+    color: #fff;
+
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.fk-chat-close:hover {
+    background: rgba(255,255,255,.16);
+}
+
+/* =====================================================
+   PORUKE
+===================================================== */
+
+.fk-chat-messages {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: 20px 15px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #565762 transparent;
+}
+
+.fk-chat-day {
+    align-self: center;
+
+    padding: 5px 12px;
+    border-radius: 30px;
+
+    background: #33343e;
+    color: #bcbcc8;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.fk-chat-row {
+    display: flex;
+    align-items: end;
+    gap: 9px;
+
+    max-width: 94%;
+}
+
+.fk-chat-row.own {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.fk-chat-row.other {
+    align-self: flex-start;
+}
+
+.fk-chat-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 33px;
+    height: 33px;
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #48404d;
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.fk-chat-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.fk-chat-row.own .fk-chat-content {
+    align-items: flex-end;
+}
+
+.fk-chat-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #b5b5c1;
+    font-size: 10px;
+}
+
+.fk-chat-bubble {
+    padding: 11px 14px;
+
+    max-width: 100%;
+    width: fit-content;
+
+    background: #373842;
+    color: #f8f8fa;
+
+    border-radius: 17px 17px 17px 5px;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.fk-chat-row.own .fk-chat-bubble {
+    background: linear-gradient(
+        140deg,
+        #d22b4c,
+        #ad1839
+    );
+
+    color: #fff;
+
+    border-radius: 17px 17px 5px 17px;
+}
+
+.fk-chat-empty,
+.fk-chat-error,
+.fk-chat-loading {
+    margin: auto 0;
+    padding: 18px;
+
+    color: #aeb0bf;
+    text-align: center;
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.fk-chat-error {
+    color: #ff9cae;
+}
+
+/* =====================================================
+   POLJE ZA PISANJE
+===================================================== */
+
+.fk-chat-footer {
+    padding: 13px 14px;
+
+    background: #252630;
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.fk-chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 9px;
+
+    padding: 7px;
+
+    border: 1px solid #474852;
+    border-radius: 20px;
+
+    background: #31323d;
+}
+
+.fk-chat-input {
+    flex: 1;
+    min-width: 0;
+
+    max-height: 110px;
+    min-height: 26px;
+
+    padding: 7px;
+
+    resize: none;
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.fk-chat-input::placeholder {
+    color: #a1a2b0;
+}
+
+.fk-chat-send {
+    display: grid;
+    place-items: center;
+
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: #c61d40;
+    color: #fff;
+    cursor: pointer;
+}
+
+.fk-chat-send:hover:not(:disabled) {
+    background: #dc294e;
+}
+
+.fk-chat-send:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.fk-chat-send svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.fk-chat-footer-note {
+    margin: 9px 5px 0;
+
+    color: #858694;
+    font-size: 10px;
+    text-align: center;
+}
+
+/* =====================================================
+   TELEFON
+===================================================== */
+
+@media (max-width: 600px) {
+
+    #fk-chat-launcher {
+        right: 17px;
+        bottom: calc(
+            17px + env(safe-area-inset-bottom)
+        );
+
+        width: 60px;
+        height: 60px;
+    }
+
+    #fk-chat-panel {
+        top: 12px;
+        right: 9px;
+        bottom: calc(
+            87px + env(safe-area-inset-bottom)
+        );
+        left: 9px;
+
+        width: auto;
+        height: auto;
+        max-height: none;
+
+        border-radius: 19px;
+    }
+
+    .fk-chat-messages {
+        padding: 16px 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #fk-chat-panel {
+        animation: none;
+    }
+
+    #fk-chat-launcher {
+        transition: none;
+    }
+}
