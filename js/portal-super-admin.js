@@ -448,13 +448,17 @@
             const [playersResult, trainingResult, matchResult] =
                 await Promise.all([
 
-                    sb.from("igraci")
-                        .select("id,ime_prezime,aktivan", {
-                            count: "exact"
-                        })
-                        .eq("aktivan", true)
-                        .eq("selekcija", selection.naziv)
-                        .limit(5),
+
+sb.from("igraci")
+    .select("id,ime_prezime,aktivan", {
+        count: "exact"
+    })
+    .eq("aktivan", true)
+    .eq("selekcija", selection.naziv)
+    .order("ime_prezime", {
+        ascending: true
+    }),
+
 
                     sb.from("treninzi")
                         .select(
@@ -528,7 +532,7 @@
                 </div>
 
                 <h3 class="fk-sa-subheading">
-                    ИГРАЧИ – ПРВИХ 5
+                    ИГРАЧИ СЕЛЕКЦИЈЕ
                 </h3>
 
                 <div class="fk-sa-list">
